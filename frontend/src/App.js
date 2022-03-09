@@ -1,10 +1,19 @@
 import React from 'react';
-import { Counter } from './features/counter/Counter';
+import { Counter } from './features/counter/Counter'
+import Header from './components/Header'
+import Footer from './components/Footer'
+import {Container} from 'react-bootstrap'
 
 function App() {
   return (
     <>
-      <h1>ProShop MERN</h1>
+    <Header />
+      <main className='py-3'>
+        <Container>
+        ProShop MERN
+        </Container>
+      </main>
+    <Footer />
     </>
   );
 }
