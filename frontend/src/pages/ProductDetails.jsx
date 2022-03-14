@@ -3,7 +3,7 @@ import { Row, Col, Image, ListGroup, Card, Button} from 'react-bootstrap'
 import Rating from '../components/Rating'
 import products from '../products'
 
-const ProductScreen = ({ match}) => {
+const ProductDetails = ({ match}) => {
     const product = products.find(p => p._id === match.params.id)
     console.log(object);
   return (
@@ -28,4 +28,4 @@ const ProductScreen = ({ match}) => {
   )
 }
 
-export default ProductScreen
+export default ProductDetails
