@@ -13,12 +13,12 @@ const ProductDetails = ({ match }) => {
 
     useEffect(() => {
         const fetchProduct = async() => {
-          const { data } = await axios.get(`api/products/${params.id}`)
+          const { data } = await axios.get(`/api/products/${params.id}`)
     
           setProduct(data)
         }
     
-        fetchProduct(data)
+        fetchProduct()
     
       }, [])
 
