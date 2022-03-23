@@ -1,5 +1,5 @@
 import { useState, useEffect} from 'react'
-import { Link, useParams, useNavigate} from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Row, Col, Image, ListGroup, Card, Button, Form} from 'react-bootstrap'
 import Rating from '../components/Rating'
 import { useDispatch, useSelector } from 'react-redux'
@@ -15,6 +15,7 @@ const ProductDetails = () => {
     const {id} = useParams()
     const {product, isLoading, isError, message} = useSelector((state) => state.product)
     const navigate = useNavigate()
+
     //const product = products.find(p => p._id === params.id)
     //const [product, setProduct] = useState({})
 
@@ -38,7 +39,7 @@ const ProductDetails = () => {
       }, [dispatch, id, isError, message])
 
     const addToCartHandler = () => {
-        navigate(`/cart/${id}/${qty}`)
+        navigate(`/cart/${id}?qty=${qty}`)
     }
 
     if(isLoading) {

@@ -2,7 +2,7 @@ import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 import cartService from './cartService'
 
 //Get user from localStorage
-const cartItemsLS = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('user')) : []
+const cartItemsLS = JSON.parse(localStorage.getItem('user'))
 
 const initialState = {
     cartItems: cartItemsLS ? cartItemsLS : [],
@@ -18,6 +18,7 @@ export const addItem = createAsyncThunk('cart/item/add', async({id, qty}, thunkA
         console.log('This is addItem from cartSlice')
         console.log(`Id: ${id} and Qty: ${qty}`)
         const cartItems = thunkAPI.getState().cart.cartItems
+        console.log(cartItems);
         return await cartService.addItem(id, qty, cartItems)
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
@@ -42,7 +43,6 @@ export const cartSlice = createSlice({
 
             //Check if the item is already in the Cart
             const item = action.payload
-            console.log(typeof(state.cartItems))
             const existItem = state.cartItems.find(x => x.product === item.product)
 
             if(existItem){

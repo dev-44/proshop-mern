@@ -20,7 +20,7 @@ function App() {
 
             <Route path="/cart">
               <Route index element={<Cart />} />
-              <Route path=":id/:qty" element={<Cart />} />
+              <Route path=":id" element={<Cart />} />
             </Route>
 
           </Routes>
