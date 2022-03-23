@@ -18,7 +18,6 @@ export const addItem = createAsyncThunk('cart/item/add', async({id, qty}, thunkA
         console.log('This is addItem from cartSlice')
         console.log(`Id: ${id} and Qty: ${qty}`)
         const cartItems = thunkAPI.getState().cart.cartItems
-        console.log(cartItems);
         return await cartService.addItem(id, qty, cartItems)
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
