@@ -18,10 +18,14 @@ function App() {
             <Route path='/' element={<Home />} exact/>
             <Route path='/product/:id' element={<ProductDetails />} />
 
+            {/*}
             <Route path="/cart">
               <Route index element={<Cart />} />
               <Route path=":id" element={<Cart />} />
             </Route>
+          */}
+
+          <Route path='/cart' element={<Cart />} />
 
           </Routes>
           </Container>

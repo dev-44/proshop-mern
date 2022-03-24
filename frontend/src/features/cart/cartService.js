@@ -7,8 +7,8 @@ const addItem = async (id, qty, cartItems) => {
     const response = await axios.get(`/api/products/${id}`)
     const data = response.data
 
-    const item = {
-            product: data._id,
+    let item = {
+            id: data._id,
             name: data.name,
             image: data.image,
             price: data.price,
@@ -16,12 +16,12 @@ const addItem = async (id, qty, cartItems) => {
             qty
         }
 
-    const existItem = cartItems.find(x => x.product === item.product)
+    const existItem = cartItems.find(x => x.id === item.id)
 
     if(existItem){
         console.log('The item already exists')
         //Replace
-        cartItems = cartItems.map(x => x.product === existItem.product ? item : x)
+        cartItems = cartItems.map(x => x.id === existItem.id ? item : x)
         localStorage.setItem('cartItems', JSON.stringify(cartItems))
         return cartItems
     } else {
@@ -34,8 +34,17 @@ const addItem = async (id, qty, cartItems) => {
     
 }
 
+const changeQty = (id, qty, cartItems) => {
+    //console.log(`Id: ${id} and Qty: ${qty}`)
+    let updItem = cartItems.find(x => x.id === id)
+    updItem = {...updItem, qty}
+    cartItems = cartItems.map(x => x.id === id ? updItem : x)
+    return cartItems
+}
+
 const cartService = {
-    addItem
+    addItem,
+    changeQty
 }
 
 export default cartService

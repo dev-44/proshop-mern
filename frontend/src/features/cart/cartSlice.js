@@ -26,11 +26,24 @@ export const addItem = createAsyncThunk('cart/item/add', async({id, qty}, thunkA
     }
 })
 
+//Change Qty of Item in the Cart
+export const changeQty = createAsyncThunk('cart/item/changeQty', async({id, qty}, thunkAPI) => {
+    try {
+        
+        let cartItems = thunkAPI.getState().cart.cartItems
+        return await cartService.changeQty(id, qty, cartItems)
+
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
 export const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
-        reset: (state) => initialState
+        reset: (state) => initialState,
     },
     extraReducers: (builder) => {
         builder
@@ -41,27 +54,22 @@ export const cartSlice = createSlice({
             state.isLoading = false
             state.isSuccess = true
             state.cartItems = action.payload
-
-            /*
-            //Check if the item is already in the Cart
-            const item = action.payload
-            const existItem = state.cartItems.find(x => x.product === item.product)
-
-            if(existItem){
-                return {
-                    ...state,
-                    cartItems: state.cartItems.map(x => x.product === existItem.product ? item : x)
-                }
-            } else {
-                return {
-                    ...state,
-                    cartItems: [...state.cartItems, item]
-                }
-            }
-            */
             
         })
         .addCase(addItem.rejected, (state, action) => {
+            state.isLoading = false
+            state.isError = true
+            state.message = action.payload
+        })
+        .addCase(changeQty.pending, (state) => {
+            state.isLoading = true
+        })
+        .addCase(changeQty.fulfilled, (state, action) => {
+            state.isLoading = false
+            state.isSuccess = true
+            state.cartItems = action.payload
+        })
+        .addCase(changeQty.rejected, (state, action) => {
             state.isLoading = false
             state.isError = true
             state.message = action.payload

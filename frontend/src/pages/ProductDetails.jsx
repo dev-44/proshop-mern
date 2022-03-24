@@ -3,7 +3,8 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Row, Col, Image, ListGroup, Card, Button, Form} from 'react-bootstrap'
 import Rating from '../components/Rating'
 import { useDispatch, useSelector } from 'react-redux'
-import { getProductDetails, reset } from '../features/products/productSlice'
+import { getProductDetails } from '../features/products/productSlice'
+import { addItem } from '../features/cart/cartSlice'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 //import axios from 'axios'
@@ -39,7 +40,8 @@ const ProductDetails = () => {
       }, [dispatch, id, isError, message])
 
     const addToCartHandler = () => {
-        navigate(`/cart/${id}?qty=${qty}`)
+        dispatch(addItem({id, qty}))
+        navigate(`/cart`)
     }
 
     if(isLoading) {
