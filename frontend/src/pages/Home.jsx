@@ -49,7 +49,7 @@ const Home = () => {
 
   if(isError){
     return <Message variant='danger'>{message}</Message>
-}
+  }
 
   return (
     <>
