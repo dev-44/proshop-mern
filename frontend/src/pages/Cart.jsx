@@ -1,14 +1,15 @@
 import { useEffect } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams, useNavigate } from 'react-router-dom'
 import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap'
-import { changeQty } from '../features/cart/cartSlice'
+import { changeQty, removeItem } from '../features/cart/cartSlice'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 
 const Cart = () => {
     const dispatch = useDispatch()
     const {cartItems, isLoading, isError, message} = useSelector((state) => state.cart)
+    const navigate = useNavigate()
     
     //const {id} = useParams()
     //const [searchParams, setSearchParams] = useSearchParams()
@@ -24,10 +25,13 @@ const Cart = () => {
   */
 
   const removeItemHandler = (id) => {
-    console.log('remove');
+    dispatch(removeItem(id))
   }
 
-
+  const checkoutHandler = () => {
+      console.log('Checkout')
+      //navigate('/login?redirect=shipping')
+  }
 
   if(isLoading) {
     return <Loader />
@@ -82,7 +86,18 @@ const Cart = () => {
         </Col>
         <Col md={4}>
             <Card>
-                </Card>                                    
+                <ListGroup variant='flush'>
+                    <ListGroup.Item>
+                        <h3>Subtotal ({cartItems.reduce((acc, cur) => acc + cur.qty, 0)}) items</h3>
+                        ${cartItems.reduce((acc, cur) => acc + cur.qty * cur.price, 0).toFixed(2)}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                        <Button type='button' className='btn-block' disabled={cartItems.length === 0} onClick={checkoutHandler}>
+                            Proceed to Checkout
+                        </Button>
+                    </ListGroup.Item>
+                </ListGroup>
+            </Card>                                    
         </Col>
     </Row>
   )

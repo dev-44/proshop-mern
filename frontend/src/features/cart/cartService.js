@@ -39,12 +39,20 @@ const changeQty = (id, qty, cartItems) => {
     let updItem = cartItems.find(x => x.id === id)
     updItem = {...updItem, qty}
     cartItems = cartItems.map(x => x.id === id ? updItem : x)
+    localStorage.setItem('cartItems', JSON.stringify(cartItems))
     return cartItems
+}
+
+const removeItem = (id, cartItems) => {
+    cartItems = cartItems.filter((item) => item.id !== id)
+    localStorage.setItem('cartItems', JSON.stringify(cartItems))
+    return cartItems 
 }
 
 const cartService = {
     addItem,
-    changeQty
+    changeQty,
+    removeItem
 }
 
 export default cartService
