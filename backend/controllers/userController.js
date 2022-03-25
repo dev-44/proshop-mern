@@ -17,7 +17,7 @@ const authUser = asyncHandler(async(req, res) => {
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
-            token: null
+            token: generateToken(user._id)
         })
     } else {
         res.status(401)
@@ -28,7 +28,7 @@ const authUser = asyncHandler(async(req, res) => {
 //Generate Token
 const generateToken = (id) => {
     return jwt.sign({id}, process.env.JWT_SECRET, {
-        expiresIn: '30'
+        expiresIn: '30d' //days
     })
 }
 
