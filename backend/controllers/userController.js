@@ -27,7 +27,9 @@ const authUser = asyncHandler(async(req, res) => {
 
 //Generate Token
 const generateToken = (id) => {
-    return jwt.sign({id}, process.env.JWT_SECRET)
+    return jwt.sign({id}, process.env.JWT_SECRET, {
+        expiresIn: '30'
+    })
 }
 
 export {authUser}
