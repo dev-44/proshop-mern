@@ -1,6 +1,7 @@
 import User from '../models/userModel.js'
 import asyncHandler from 'express-async-handler'
 import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
 //@description      Auth user and get token
 //@route            POST api/users/login
@@ -23,5 +24,10 @@ const authUser = asyncHandler(async(req, res) => {
         throw new Error('Invalid Credentials')
     }
 })
+
+//Generate Token
+const generateToken = (id) => {
+    return jwt.sign({id}, process.env.JWT_SECRET)
+}
 
 export {authUser}
