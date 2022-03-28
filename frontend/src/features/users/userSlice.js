@@ -10,14 +10,21 @@ const initialState = {
     isSuccess: false,
     isLoading: false,
     message: ''
-
 }
+
+//Register User
+export const register = createAsyncThunk('users/register', async(userData, thunkAPI) => {
+    try {
+        return await userService.register(userData)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+}) 
 
 //Login User
 export const login = createAsyncThunk('users/login', async(userData, thunkAPI) => {
     try {
-        console.log('This is userSlice')
-        console.log(userData)
         return await userService.login(userData)
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
@@ -28,7 +35,12 @@ export const login = createAsyncThunk('users/login', async(userData, thunkAPI) =
 //Logout User
 export const logout = createAsyncThunk('users/logout', async() => {
     userService.logout()
-}) 
+})
+
+//Clear Error Message
+export const clearMsg = createAsyncThunk('users/clear-message', async() => {
+    return
+})
 
 export const userSlice = createSlice({
     name: 'user',
@@ -38,6 +50,20 @@ export const userSlice = createSlice({
     },
     extraReducers: (builder) =>{
         builder
+            .addCase(register.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(register.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.user = action.payload
+            })
+            .addCase(register.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+                state.user = null
+            })
             .addCase(login.pending, (state) => {
                 state.isLoading = true
             })
@@ -53,6 +79,9 @@ export const userSlice = createSlice({
             })
             .addCase(logout.fulfilled, (state, action) => {
                 state.user = null
+            })
+            .addCase(clearMsg.fulfilled, (state) => {
+                state.message = ''
             })
     }
 })

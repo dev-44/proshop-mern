@@ -4,7 +4,7 @@ import {Form, Button, Row, Col} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import {login} from '../features/users/userSlice'
+import {login, clearMsg} from '../features/users/userSlice'
 import FormContainer from '../components/FormContainer'
 
 const Login = () => {
@@ -21,11 +21,15 @@ const Login = () => {
     const {user, isLoading, isError, isSuccess, message} = useSelector(state => state.user)
 
     useEffect(() => {
+        if(message) {
+            setTimeout(() => dispatch(clearMsg()), 5000)
+        }
+
         //Redirect when register
         if(isSuccess || user){
             navigate('/')
         }
-    }, [isSuccess, user, navigate])
+    }, [isSuccess, user, navigate, dispatch, message])
 
     const onSubmit = (e) => {
         e.preventDefault()

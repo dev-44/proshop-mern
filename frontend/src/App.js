@@ -6,6 +6,7 @@ import {Container} from 'react-bootstrap'
 import Home from './pages/Home'
 import ProductDetails from './pages/ProductDetails'
 import Cart from './pages/Cart'
+import Register from './pages/Register'
 import Login from './pages/Login'
 
 function App() {
@@ -17,7 +18,8 @@ function App() {
           <Container>
           <Routes>
             <Route path='/' element={<Home />} exact/>
-            <Route path='/login' element={<Login />} />
+            <Route path='/register' element={<Register />} exact />
+            <Route path='/login' element={<Login />} exact />
             <Route path='/product/:id' element={<ProductDetails />} />
 
             {/*}
