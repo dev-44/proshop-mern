@@ -1,8 +1,21 @@
-import { Nav, Navbar, Container} from 'react-bootstrap'
+import { Nav, Navbar, Container, NavDropdown} from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import {FaShoppingCart, FaUser} from 'react-icons/fa'
+import { useNavigate } from 'react-router-dom'
+import {useDispatch, useSelector} from 'react-redux'
+import {logout, reset} from '../features/users/userSlice'
 
 const Header = () => {
+  const dispatch = useDispatch()
+  const { user } = useSelector((state) => state.user)
+  const navigate = useNavigate()
+
+  const onLogout = () => {
+     dispatch(logout())
+     dispatch(reset())
+     navigate('/')
+  }
+
   return (
     <header>
       <Navbar bg="primary" variant="dark" expand="md" collapseOnSelect>
@@ -17,10 +30,19 @@ const Header = () => {
               <LinkContainer to='/cart'>
                 <Nav.Link ><FaShoppingCart /> CART</Nav.Link>
               </LinkContainer>
-
-              <LinkContainer to='/login'>
+              {user ? (
+                <NavDropdown title={user.name} id='username'>
+                  <LinkContainer to='/profile'>
+                      <NavDropdown.Item>Profile</NavDropdown.Item>
+                  </LinkContainer>
+                  <NavDropdown.Item onClick={onLogout}>Logout</NavDropdown.Item>
+                </NavDropdown>
+              ) : (
+                <LinkContainer to='/login'>
                 <Nav.Link ><FaUser /> SIGN IN</Nav.Link>
               </LinkContainer>
+              )}
+
               
             </Nav>
           </Navbar.Collapse>
