@@ -49,6 +49,7 @@ const logout = () => {
 
 //Update User
 export const updateUser = async(userData) => {
+    console.log('Bandera userService')
     const config = {
         headers: {
             'Content-Type': 'application/json',
@@ -56,9 +57,11 @@ export const updateUser = async(userData) => {
         }
     }
 
-    const {data} = await axios.get(API_URL, userData, config)
-    console.log(data)
+    const {data} = await axios.put(API_URL + `/profile/${userData._id}`, userData, config)
+    console.log('Bandera userService2')
 
+    console.log(data)
+ 
     if(data){
         localStorage.setItem('user', JSON.stringify(data))
     }
@@ -66,10 +69,32 @@ export const updateUser = async(userData) => {
     return data
 }
 
+//Check Current Password
+const checkPassword = async(userData) => {
+
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${userData.token}`
+        }
+    }
+
+    const { email, oldPassword } = userData
+    const userDataToSend = {
+        email,
+        password: oldPassword
+    }
+
+    const {data} = await axios.post(API_URL + '/check-password', userDataToSend, config)
+    return data
+}
+
 const userService = {
     register,
     login,
-    logout
+    logout,
+    updateUser,
+    checkPassword
 }
 
 export default userService

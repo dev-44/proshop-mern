@@ -8,6 +8,9 @@ import ProductDetails from './pages/ProductDetails'
 import Cart from './pages/Cart'
 import Register from './pages/Register'
 import Login from './pages/Login'
+import Profile from './pages/Profile'
+import Orders from './pages/Orders'
+import ChangePassword from './pages/ChangePassword'
 
 function App() {
   return (
@@ -20,6 +23,9 @@ function App() {
             <Route path='/' element={<Home />} exact/>
             <Route path='/register' element={<Register />} exact />
             <Route path='/login' element={<Login />} exact />
+            <Route path='/profile' element={<Profile />} exact />
+            <Route path='/change-pass' element={<ChangePassword />} exact />
+            <Route path='/orders' element={<Orders />} exact />
             <Route path='/product/:id' element={<ProductDetails />} />
 
             {/*}

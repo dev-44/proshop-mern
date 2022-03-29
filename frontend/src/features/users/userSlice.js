@@ -9,6 +9,8 @@ const initialState = {
     isError: false,
     isSuccess: false,
     isLoading: false,
+    isMatch: false,
+    isLoggedIn: false,
     message: ''
 }
 
@@ -37,16 +39,45 @@ export const logout = createAsyncThunk('users/logout', async() => {
     userService.logout()
 })
 
+//Update User
+export const updateUser = createAsyncThunk('users/update', async(userData, thunkAPI) => {
+    try {
+        return await userService.updateUser(userData)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
 //Clear Error Message
 export const clearMsg = createAsyncThunk('users/clear-message', async() => {
     return
+})
+
+//Check Current Password
+export const checkPassword = createAsyncThunk('users/check-password', async(userData, thunkAPI) => {
+    try {
+        let {oldPassword} = userData
+        let currUser = thunkAPI.getState().user.user
+        let {email, token} = currUser
+
+        const userDataToSend ={
+            email, token, oldPassword
+        }
+
+        console.log(userDataToSend)
+        return await userService.checkPassword(userDataToSend)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
 })
 
 export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        reset: (state) => initialState
+        resetUser: (state) => initialState
     },
     extraReducers: (builder) =>{
         builder
@@ -71,8 +102,22 @@ export const userSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.user = action.payload
+                state.isLoggedIn = true
             })
             .addCase(login.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(updateUser.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(updateUser.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.user = action.payload
+            })
+            .addCase(updateUser.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload
@@ -83,8 +128,21 @@ export const userSlice = createSlice({
             .addCase(clearMsg.fulfilled, (state) => {
                 state.message = ''
             })
+            .addCase(checkPassword.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(checkPassword.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.isMatch = true
+            })
+            .addCase(checkPassword.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
     }
 })
 
-export const {reset} = userSlice.actions
+export const {resetUser} = userSlice.actions
 export default userSlice.reducer

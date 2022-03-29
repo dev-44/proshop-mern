@@ -86,6 +86,8 @@ const getUserProfile = asyncHandler(async(req, res) => {
 //@route            PUT api/users/profile
 //@access           Private
 const updateUserProfile = asyncHandler(async(req, res) => {
+
+    console.log('Bandera userController')
     const user = await User.findById(req.user._id)
 
     if(user) {
@@ -113,6 +115,20 @@ const updateUserProfile = asyncHandler(async(req, res) => {
     }
 })
 
+//Check Current Password
+const checkCurrentPassword = asyncHandler(async(req, res) => {
+    const { email, password } = req.body
+
+    const user = await User.findOne({ email })
+
+    if(user && (await bcrypt.compare(password, user.password))) {
+        res.status(200).json({status: 'verified'})
+    } else {
+        res.status(401)
+        throw new Error('Current Password is incorrect')
+    }
+})
+
 //Generate Token
 const generateToken = (id) => {
     return jwt.sign({id}, process.env.JWT_SECRET, {
@@ -120,4 +136,4 @@ const generateToken = (id) => {
     })
 }
 
-export {authUser, getUserProfile, registerUser, updateUserProfile}
+export {authUser, getUserProfile, registerUser, updateUserProfile, checkCurrentPassword}

@@ -3,7 +3,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import {FaShoppingCart, FaUser} from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
-import {logout, reset} from '../features/users/userSlice'
+import {logout, resetUser} from '../features/users/userSlice'
 
 const Header = () => {
   const dispatch = useDispatch()
@@ -12,7 +12,7 @@ const Header = () => {
 
   const onLogout = () => {
      dispatch(logout())
-     dispatch(reset())
+     dispatch(resetUser())
      navigate('/')
   }
 
@@ -33,7 +33,13 @@ const Header = () => {
               {user ? (
                 <NavDropdown title={user.name} id='username'>
                   <LinkContainer to='/profile'>
-                      <NavDropdown.Item>Profile</NavDropdown.Item>
+                      <NavDropdown.Item>Edit Profile</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to='/orders'>
+                      <NavDropdown.Item>Orders</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to='/change-pass'>
+                      <NavDropdown.Item>Change Password</NavDropdown.Item>
                   </LinkContainer>
                   <NavDropdown.Item onClick={onLogout}>Logout</NavDropdown.Item>
                 </NavDropdown>

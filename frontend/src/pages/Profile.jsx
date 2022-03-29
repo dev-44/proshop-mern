@@ -4,21 +4,15 @@ import {Form, Button, Row, Col} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { register, clearMsg } from '../features/users/userSlice'
+import { updateUser, clearMsg } from '../features/users/userSlice'
 import FormContainer from '../components/FormContainer'
+import {FaEdit} from 'react-icons/fa'
 
 const Profile = () => {
 
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        password2: ''
-    })
-
-    const[errorMsg, setErrorMsg] = useState('')
-
-    const {name, email, password, password2} = formData
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [errorMsg, setErrorMsg] = useState('')
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -29,8 +23,8 @@ const Profile = () => {
         if(!user){
             navigate('/')
         } else {
-            name = user.name
-            email = user.email
+            setName(user.name)
+            setEmail(user.email)
         }
 
         /*
@@ -54,36 +48,24 @@ const Profile = () => {
     const onSubmit = (e) => {
         e.preventDefault()
 
-        if(password !== password2){
-            setErrorMsg('Password do not match')
-            return
-        } 
-
-        if(name === '' || email === '' || password === '' || password2 === ''){
+        if(name === '' || email === ''){
             setErrorMsg('Please fill all the fields')
             return
         }
         
         const userData = {
-            name,
+            _id: user._id,
+            name, 
             email,
-            password
+            token: user.token
         }
 
-        dispatch(register(userData))
-        
-    }
-
-    const onChange = (e) => {
-        setFormData((prevState) => ({
-            ...prevState,
-            [e.target.id]: e.target.value
-        }))
+        dispatch(updateUser(userData))
     }
 
     return (
         <FormContainer>
-            <h1>Register</h1>
+            <h1>Edit User Profile</h1>
             {message && <Message variant='danger'>{message}</Message>}
             {errorMsg && <Message variant='danger'>{errorMsg}</Message>}
             {isLoading && <Loader />}
@@ -91,30 +73,16 @@ const Profile = () => {
 
                 <Form.Group controlId='name'>
                     <Form.Label>Name</Form.Label>
-                    <Form.Control type='text' placeholder='Enter Name' value={name} onChange={onChange}></Form.Control>
+                    <Form.Control type='text' placeholder='Enter Name' value={name} onChange={(e) => setName(e.target.value)}></Form.Control>
                 </Form.Group>
 
                 <Form.Group controlId='email'>
                     <Form.Label>Email Address</Form.Label>
-                    <Form.Control type='email' placeholder='Enter Email' value={email} onChange={onChange}></Form.Control>
+                    <Form.Control type='email' placeholder='Enter Email' value={email} onChange={(e) => setEmail(e.target.value)}></Form.Control>
                 </Form.Group>
 
-                <Form.Group controlId='password'>
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type='password' placeholder='Enter Password' value={password} onChange={onChange}></Form.Control>
-                </Form.Group>
-
-                <Form.Group controlId='password2'>
-                    <Form.Label>Confirm Password</Form.Label>
-                    <Form.Control type='password' placeholder='Confirm Password' value={password2} onChange={onChange}></Form.Control>
-                </Form.Group>
-
-                <Button className='mt-3' type='submit' variant='primary'>Register</Button>
+                <Button className='mt-3' type='submit' variant='primary'>Update</Button>
             </Form>
-
-            <Row className='py-3'>
-                <Col>Have an Account? <Link to='/login'>Login</Link></Col>
-            </Row>
         </FormContainer>
     )
 }
