@@ -11,6 +11,7 @@ import Login from './pages/Login'
 import Profile from './pages/Profile'
 import Orders from './pages/Orders'
 import ChangePassword from './pages/ChangePassword'
+import Shipping from './pages/Shipping'
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path='/change-pass' element={<ChangePassword />} exact />
             <Route path='/orders' element={<Orders />} exact />
             <Route path='/product/:id' element={<ProductDetails />} />
+            <Route path='/shipping' element={<Shipping />} />
 
             {/*}
             <Route path="/cart">

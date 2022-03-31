@@ -65,7 +65,7 @@ const Profile = () => {
 
     return (
         <FormContainer>
-            <h1>Edit User Profile</h1>
+            <h1>USER PROFILE</h1>
             {message && <Message variant='danger'>{message}</Message>}
             {errorMsg && <Message variant='danger'>{errorMsg}</Message>}
             {isLoading && <Loader />}
@@ -81,8 +81,12 @@ const Profile = () => {
                     <Form.Control type='email' placeholder='Enter Email' value={email} onChange={(e) => setEmail(e.target.value)}></Form.Control>
                 </Form.Group>
 
-                <Button className='mt-3' type='submit' variant='primary'>Update</Button>
+                <Button className='mt-3' type='submit' variant='primary'>UPDATE</Button>
             </Form>
+
+            <Row className='mt-3'>
+                <Col>No Shipping Address Yet? <Link to='/shipping'>Add one</Link></Col>
+            </Row>
         </FormContainer>
     )
 }

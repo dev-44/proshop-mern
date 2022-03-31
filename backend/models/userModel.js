@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import shipAddress from "./shipAddressModel"
 
 const userSchema = mongoose.Schema({
     name: {
@@ -19,6 +20,7 @@ const userSchema = mongoose.Schema({
         required: true,
         default: false
     },
+    shippingAddreses: [shipAddress.shipAddressSchema]
 }, {
     timestamps: true
 })

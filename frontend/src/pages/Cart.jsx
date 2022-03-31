@@ -30,7 +30,7 @@ const Cart = () => {
 
   const checkoutHandler = () => {
       console.log('Checkout')
-      //navigate('/login?redirect=shipping')
+      navigate('/shipping')
   }
 
   if(isLoading) {
