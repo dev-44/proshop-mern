@@ -1,5 +1,14 @@
 import mongoose from "mongoose"
-import shipAddress from "./shipAddressModel"
+
+const shipAddressSchema = mongoose.Schema({
+    address: {type: String, required: true},
+    city: {type: String, required: true},
+    postalCode: {type: String, required: true},
+    country: {type: String, required: true},
+}, {
+    timestamps: true
+})
+
 
 const userSchema = mongoose.Schema({
     name: {
@@ -20,11 +29,15 @@ const userSchema = mongoose.Schema({
         required: true,
         default: false
     },
-    shippingAddreses: [shipAddress.shipAddressSchema]
+    shippingAddresses: [shipAddressSchema],
 }, {
     timestamps: true
 })
 
 const User = mongoose.model('User', userSchema)
+const ShipAddress = mongoose.model('ShipAddress', shipAddressSchema)
 
-export default User
+export {
+    User, 
+    ShipAddress
+}

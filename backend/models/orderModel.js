@@ -6,6 +6,11 @@ const orderSchema = mongoose.Schema({
         required: true,
         ref: 'User'
     },
+    shippingAddress: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'ShipAddress'
+    },
     orderItems: [
         {
             name: { type: String, required: true },
@@ -18,12 +23,7 @@ const orderSchema = mongoose.Schema({
                 ref: 'Product'
             }
         }
-    ],    
-    shippingAddress: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'shipAddress'
-    },    
+    ],        
     paymentMethod: {
         type: String,
         required: true

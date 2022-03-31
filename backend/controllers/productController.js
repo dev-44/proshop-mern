@@ -9,8 +9,8 @@ const getProducts = asyncHandler(async(req, res) => {
     res.json(products)
 })
 
-//@description      Fetch all products
-//@route            GET api/products
+//@description      Get a single product
+//@route            GET api/products/:id
 //@access           Public
 const getProductById = asyncHandler(async(req, res) => {
     const product = await Product.findById(req.params.id)

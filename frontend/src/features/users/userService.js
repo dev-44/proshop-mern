@@ -89,12 +89,25 @@ const checkPassword = async(userData) => {
     return data
 }
 
+const addShippingAddress = async(userData) => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${userData.token}`
+        }
+    }
+
+    const {data} = await axios.post(API_URL + `/shipping-address/${userData._id}`, userData, config)
+    return data
+}
+
 const userService = {
     register,
     login,
     logout,
     updateUser,
-    checkPassword
+    checkPassword,
+    addShippingAddress
 }
 
 export default userService

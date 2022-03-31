@@ -10,39 +10,43 @@ const Shipping = () => {
     const [postalCode, setPostalCode] = useState('')
     const [country, setCountry] = useState('')
 
+    const {user} = useSelector(state => state.user)
+
     const onSubmit = (e) => {
         e.preventDefault()
     }
 
   return (
       <>
-        <FormContainer>
-            <h1>SHIPPING</h1>
-            <Form onSubmit={onSubmit}>
+        <h1>SHIPPING</h1>
+            {/*Conditional*/}
+            <FormContainer>
+                <Form onSubmit={onSubmit}>
 
-                <Form.Group controlId='address'>
-                    <Form.Label>Address</Form.Label>
-                    <Form.Control type='text' placeholder='Enter Address' value={address} onChange={(e) => setAddress(e.target.value)} required></Form.Control>
-                </Form.Group>
+                    <Form.Group controlId='address'>
+                        <Form.Label>Address</Form.Label>
+                        <Form.Control type='text' placeholder='Enter Address' value={address} onChange={(e) => setAddress(e.target.value)} required></Form.Control>
+                    </Form.Group>
 
-                <Form.Group controlId='city'>
-                    <Form.Label>City</Form.Label>
-                    <Form.Control type='text' placeholder='Enter City' value={city} onChange={(e) => setCity(e.target.value)} required></Form.Control>
-                </Form.Group>
+                    <Form.Group controlId='city'>
+                        <Form.Label>City</Form.Label>
+                        <Form.Control type='text' placeholder='Enter City' value={city} onChange={(e) => setCity(e.target.value)} required></Form.Control>
+                    </Form.Group>
 
-                <Form.Group controlId='postalCode'>
-                    <Form.Label>Postal Code</Form.Label>
-                    <Form.Control type='text' placeholder='Enter Postal Code' value={postalCode} onChange={(e) => setPostalCode(e.target.value)} required></Form.Control>
-                </Form.Group>
+                    <Form.Group controlId='postalCode'>
+                        <Form.Label>Postal Code</Form.Label>
+                        <Form.Control type='text' placeholder='Enter Postal Code' value={postalCode} onChange={(e) => setPostalCode(e.target.value)} required></Form.Control>
+                    </Form.Group>
 
-                <Form.Group controlId='country'>
-                    <Form.Label>Country</Form.Label>
-                    <Form.Control type='text' placeholder='Enter Country' value={country} onChange={(e) => setCountry(e.target.name)} required></Form.Control>
-                </Form.Group>
-                
-                <Button type='submit' variant='primary' className='mt-3'>CONTINUE</Button>
-            </Form>
+                    <Form.Group controlId='country'>
+                        <Form.Label>Country</Form.Label>
+                        <Form.Control type='text' placeholder='Enter Country' value={country} onChange={(e) => setCountry(e.target.name)} required></Form.Control>
+                    </Form.Group>
+                    
+                    <Button type='submit' variant='primary' className='mt-3'>CONTINUE</Button>
+                </Form>
         </FormContainer>
+
       </>
   )
 }

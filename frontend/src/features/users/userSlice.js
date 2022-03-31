@@ -11,6 +11,7 @@ const initialState = {
     isLoading: false,
     isMatch: false,
     isLoggedIn: false,
+    shippingAddresses: [],
     message: ''
 }
 
@@ -50,12 +51,12 @@ export const updateUser = createAsyncThunk('users/update', async(userData, thunk
 })
 
 //Clear Error Message
-export const clearMsg = createAsyncThunk('users/clear-message', async() => {
+export const clearMsg = createAsyncThunk('users/clearMessage', async() => {
     return
 })
 
 //Check Current Password
-export const checkPassword = createAsyncThunk('users/check-password', async(userData, thunkAPI) => {
+export const checkPassword = createAsyncThunk('users/checkPassword', async(userData, thunkAPI) => {
     try {
         let {oldPassword} = userData
         let currUser = thunkAPI.getState().user.user
@@ -67,6 +68,17 @@ export const checkPassword = createAsyncThunk('users/check-password', async(user
 
         console.log(userDataToSend)
         return await userService.checkPassword(userDataToSend)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+//Add a Shipping Address
+const addShippingAddress = createAsyncThunk('users/shippingAddress/add', async(userData, thunkAPI) => {
+    try {
+        const user = thunkAPI.getState().user.user
+        return await userService.addShippingAddress(userData)
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)
@@ -137,6 +149,19 @@ export const userSlice = createSlice({
                 state.isMatch = true
             })
             .addCase(checkPassword.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(addShippingAddress.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(addShippingAddress.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.shippingAddresses = action.payload
+            })
+            .addCase(addShippingAddress.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload

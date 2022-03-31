@@ -1,4 +1,4 @@
-import User from '../models/userModel.js'
+import {User} from '../models/userModel.js'
 import asyncHandler from 'express-async-handler'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
@@ -17,6 +17,7 @@ const authUser = asyncHandler(async(req, res) => {
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
+            shippingAddresses: user.shippingAddresses,
             token: generateToken(user._id)
         })
     } else {
@@ -74,7 +75,8 @@ const getUserProfile = asyncHandler(async(req, res) => {
             _id: user._id,
             name: user.name,
             email: user.email,
-            isAdmin: user.isAdmin
+            isAdmin: user.isAdmin,
+            shippingAddresses: user.shippingAddresses
         })
     } else {
         res.status(404)
@@ -115,7 +117,9 @@ const updateUserProfile = asyncHandler(async(req, res) => {
     }
 })
 
-//Check Current Password
+//@description      Check current password
+//@route            POST api/users/check-password
+//@access           Private
 const checkCurrentPassword = asyncHandler(async(req, res) => {
     const { email, password } = req.body
 
@@ -129,6 +133,23 @@ const checkCurrentPassword = asyncHandler(async(req, res) => {
     }
 })
 
+//@description      Add a new shipping address
+//@route            PUT api/users/:id/shipping 
+//@access           Private
+const addShippingAddress = asyncHandler(async(req, res) => {
+    const user = await User.findById(req.user._id)
+
+    if(user) {
+        user.shippingAddresses.push(req.body)
+        const updatedUser = await user.save()
+        res.json(updatedUser.shippingAddresses)
+    } else {
+        res.status(404)
+        throw new Error('User not found')
+    }
+})
+
+
 //Generate Token
 const generateToken = (id) => {
     return jwt.sign({id}, process.env.JWT_SECRET, {
@@ -136,4 +157,11 @@ const generateToken = (id) => {
     })
 }
 
-export {authUser, getUserProfile, registerUser, updateUserProfile, checkCurrentPassword}
+export {
+    authUser, 
+    getUserProfile, 
+    registerUser, 
+    updateUserProfile, 
+    checkCurrentPassword,
+    addShippingAddress
+}
