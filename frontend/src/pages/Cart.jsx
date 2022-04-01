@@ -8,7 +8,7 @@ import Message from '../components/Message'
 
 const Cart = () => {
     const dispatch = useDispatch()
-    const {cartItems, isLoading, isError, message} = useSelector((state) => state.cart)
+    const {cart, isLoading, isError, message} = useSelector((state) => state.cart)
     const navigate = useNavigate()
     
     //const {id} = useParams()
@@ -46,9 +46,9 @@ const Cart = () => {
     <Row>
         <Col md={8}>
             <h1>Shopping Cart</h1>
-            {cartItems.length === 0 ? <Message>Your cart is empty <Link to='/'>Go Back</Link></Message> : (
+            {cart.length === 0 ? <Message>Your cart is empty <Link to='/'>Go Back</Link></Message> : (
                 <ListGroup variant='flush'>
-                    {cartItems.map((item) => (
+                    {cart.map((item) => (
                         <ListGroup.Item key={item.id}>
                             <Row>
                                 <Col md={2}>
@@ -88,11 +88,11 @@ const Cart = () => {
             <Card>
                 <ListGroup variant='flush'>
                     <ListGroup.Item>
-                        <h3>Subtotal ({cartItems.reduce((acc, cur) => acc + cur.qty, 0)}) items</h3>
-                        ${cartItems.reduce((acc, cur) => acc + cur.qty * cur.price, 0).toFixed(2)}
+                        <h3>Subtotal ({cart.reduce((acc, cur) => acc + cur.qty, 0)}) items</h3>
+                        ${cart.reduce((acc, cur) => acc + cur.qty * cur.price, 0).toFixed(2)}
                     </ListGroup.Item>
                     <ListGroup.Item>
-                        <Button type='button' className='btn-block' disabled={cartItems.length === 0} onClick={checkoutHandler}>
+                        <Button type='button' className='btn-block' disabled={cart.length === 0} onClick={checkoutHandler}>
                             Proceed to Checkout
                         </Button>
                     </ListGroup.Item>

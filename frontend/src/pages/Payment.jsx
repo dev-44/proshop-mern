@@ -1,17 +1,20 @@
 import {useState} from 'react'
 import {useNavigate, Link} from 'react-router-dom'
-import {Form, Button, Row, Col} from 'react-bootstrap'
-import {useDispatch, useSelector} from 'react-redux'
+import {Form, Button, Col} from 'react-bootstrap'
 import FormContainer from '../components/FormContainer'
 import CheckoutSteps from '../components/CheckoutSteps'
 
-const Shipping = () => {
+import {useDispatch, useSelector} from 'react-redux'
+import { savePaymentMethod } from '../features/cart/cartSlice'
+
+const Payment = () => {
     const [address, setAddress] = useState('')
     const [city, setCity] = useState('')
     const [postalCode, setPostalCode] = useState('')
     const [country, setCountry] = useState('')
 
     const {user} = useSelector(state => state.user)
+    const {cart, shippingAddress} = useSelector((state) => state.cart)
 
     const onSubmit = (e) => {
         e.preventDefault()
@@ -53,4 +56,4 @@ const Shipping = () => {
   )
 }
 
-export default Shipping
+export default Payment

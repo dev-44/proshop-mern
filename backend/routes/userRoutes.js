@@ -9,6 +9,6 @@ router.post('/check-password', protect, checkCurrentPassword)
 router.route('/profile/:id')
     //.get(protect, getUserProfile)
     .put(protect, updateUserProfile)
-put('/profile/:id/shipping',)
+router.put('/profile/:id/shipping',)
 
 export default router

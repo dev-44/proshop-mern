@@ -2,10 +2,11 @@ import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 import cartService from './cartService'
 
 //Get user from localStorage
-const cartItemsLS = JSON.parse(localStorage.getItem('cartItems'))
+const cartLS = JSON.parse(localStorage.getItem('cartItems'))
 
 const initialState = {
-    cartItems: cartItemsLS ? cartItemsLS : [],
+    cart: cartLS ? cartLS : [],
+    shippingAddress: '',
     isError: false,
     isSuccess: false,
     isLoading: false,
@@ -17,9 +18,9 @@ export const addItem = createAsyncThunk('cart/item/add', async({id, qty}, thunkA
     try {
         console.log('This is addItem from cartSlice')
         console.log(`Id: ${id} and Qty: ${qty}`)
-        const cartItems = thunkAPI.getState().cart.cartItems
-        console.log(cartItems)
-        return await cartService.addItem(id, qty, cartItems)
+        const cart = thunkAPI.getState().cart.cart
+        console.log(cart)
+        return await cartService.addItem(id, qty, cart)
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)
@@ -29,8 +30,8 @@ export const addItem = createAsyncThunk('cart/item/add', async({id, qty}, thunkA
 //Change Qty of Item in the Cart
 export const changeQty = createAsyncThunk('cart/item/changeQty', async({id, qty}, thunkAPI) => {
     try {
-        let cartItems = thunkAPI.getState().cart.cartItems
-        return await cartService.changeQty(id, qty, cartItems)
+        let cart = thunkAPI.getState().cart.cart
+        return await cartService.changeQty(id, qty, cart)
 
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
@@ -40,8 +41,8 @@ export const changeQty = createAsyncThunk('cart/item/changeQty', async({id, qty}
 
 export const removeItem = createAsyncThunk('/cart/item/remove', async(id,thunkAPI) => {
     try {
-        let cartItems = thunkAPI.getState().cart.cartItems
-        return await cartService.removeItem(id, cartItems)
+        let cart = thunkAPI.getState().cart.cart
+        return await cartService.removeItem(id, cart)
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)
@@ -62,7 +63,7 @@ export const cartSlice = createSlice({
         .addCase(addItem.fulfilled, (state, action) => {
             state.isLoading = false
             state.isSuccess = true
-            state.cartItems = action.payload
+            state.cart = action.payload
             
         })
         .addCase(addItem.rejected, (state, action) => {
@@ -76,7 +77,7 @@ export const cartSlice = createSlice({
         .addCase(changeQty.fulfilled, (state, action) => {
             state.isLoading = false
             state.isSuccess = true
-            state.cartItems = action.payload
+            state.cart = action.payload
         })
         .addCase(changeQty.rejected, (state, action) => {
             state.isLoading = false
@@ -89,7 +90,7 @@ export const cartSlice = createSlice({
         .addCase(removeItem.fulfilled, (state, action) => {
             state.isLoading = false
             state.isSuccess = true
-            state.cartItems = action.payload
+            state.cart = action.payload
         })
         .addCase(removeItem.rejected, (state, action) => {
             state.isLoading = false
