@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import { addShippingAddress, editShippingAddress } from '../features/users/userSlice'
 
 //Design
-import {Card, Form, Button, Row, Col} from 'react-bootstrap'
+import {Card, Form, Button, Row, Col, Modal} from 'react-bootstrap'
 import FormContainer from '../components/FormContainer'
 import CheckoutSteps from '../components/CheckoutSteps'
 import ShippingAddress from '../components/ShippingAddress'
@@ -22,6 +22,7 @@ const Shipping = () => {
     const [country, setCountry] = useState('')
     const [openForm, setOpenForm] = useState(false)
     const [isEditing, setIsEditing] = useState(false)
+    const [openModal, setOpenModal] = useState(false)
 
     const {user} = useSelector(state => state.user)
     const {shippingAddresses} = useSelector(state => state.user.user)
@@ -88,7 +89,8 @@ const Shipping = () => {
     }
 
     const deleteAddress = () => {
-
+        console.log('Delete')
+        handleCloseModal()
     }
 
     const clearForm = () => {
@@ -99,6 +101,9 @@ const Shipping = () => {
         setCountry('')
         console.log('Form Cleared');
     }
+
+    const handleOpenModal = () => setOpenModal(true)
+    const handleCloseModal = () => setOpenModal(false)
 
     const addressForm = (
         <FormContainer>
@@ -136,6 +141,21 @@ const Shipping = () => {
 
   return (
       <>    
+        <Modal show={openModal} onHide={handleCloseModal}>
+            <Modal.Header closeButton>
+                <Modal.Title>Attention</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Are you sure to delete this Address?</Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleCloseModal}>
+                    Close
+                </Button>
+                <Button variant="danger" onClick={deleteAddress}>
+                    Delete
+                </Button>
+            </Modal.Footer>
+      </Modal>
+
             <CheckoutSteps step1 step2 />
             <h1 className='text-center'>Shipping Address</h1>
             {shippingAddresses.length > 0 && !openForm ? (
@@ -149,7 +169,7 @@ const Shipping = () => {
                                     <ShippingAddress key={address._id} address={address} />
                                     <Button className='btn-reverse btn-sm mt-3'>Choose</Button>
                                     <Button className='btn-sm mx-2 mt-3' type='button' onClick={() => editAddress(address, address._id)}><FaEdit /></Button>
-                                    <Button className='btn-sm mt-3' onClick={deleteAddress} ><FaTrash /></Button>
+                                    <Button className='btn-sm mt-3' onClick={handleOpenModal} ><FaTrash /></Button>
                                 </div>
                             </Card>
                       </Col> 
