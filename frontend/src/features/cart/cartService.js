@@ -51,30 +51,11 @@ const removeItem = (id, cartItems) => {
     return cartItems 
 }
 
-//Add a New Shipping Address to the user profile
-const addShippingAddress = async (shippingAddressData, user) => {
-
-    const {_id, token} = user
-
-    const config = {
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-        }
-    }
-
-    const {data} = await axios.post(`api/users/profile/${_id}/shipping`, shippingAddressData, config)
-    console.log(data)
-    return data
-    
-    
-}
 
 const cartService = {
     addItem,
     changeQty,
     removeItem,
-    addShippingAddress
 }
 
 export default cartService

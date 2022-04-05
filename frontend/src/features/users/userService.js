@@ -88,8 +88,27 @@ const checkPassword = async(userData) => {
     return data
 }
 
+//Add a Shipping Address
+const addShippingAddress = async (newAddress, user) => {
+
+    const {_id, token} = user
+
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const {data} = await axios.post(`api/users/profile/${_id}/shipping`, newAddress, config)
+    console.log('Data returned from the backend')
+    console.log(data)
+    localStorage.setItem('user', JSON.stringify(data))
+    return data
+}
+
 //Edit Shipping Address
-const editShippingAddressUser = async(address, user) => {
+const editShippingAddress = async(address, user) => {
     console.log('This is UserService')
     const {_id, token} = user
 
@@ -101,6 +120,9 @@ const editShippingAddressUser = async(address, user) => {
     }
 
     const {data} = await axios.put(`api/users/profile/${_id}/shipping`, address, config)
+    console.log('Data returned from the backend')
+    console.log(data)
+    localStorage.setItem('user', JSON.stringify(data))
     return data
 }
 
@@ -111,7 +133,8 @@ const userService = {
     logout,
     updateUser,
     checkPassword,
-    editShippingAddressUser
+    addShippingAddress,
+    editShippingAddress
 }
 
 export default userService

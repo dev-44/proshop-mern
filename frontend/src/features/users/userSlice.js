@@ -75,17 +75,23 @@ export const checkPassword = createAsyncThunk('users/checkPassword', async(userD
 })
 
 //Add a Shipping Address
-export const addShippingAddressUser = createAsyncThunk('users/shippingAddress/add', async(newAddress, thunkAPI) => {
-    return newAddress
+export const addShippingAddress = createAsyncThunk('users/shippingAddress/add', async(newAddress, thunkAPI) => {
+    try {
+        let user = thunkAPI.getState().user.user
+        return await userService.addShippingAddress(newAddress, user)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
 })
 
 //Edit Shipping Address
-export const editShippingAddressUser = createAsyncThunk('users/shippingAddress/edit', async(address, thunkAPI) => {
+export const editShippingAddress = createAsyncThunk('users/shippingAddress/edit', async(editedAddress, thunkAPI) => {
     try {
-        console.log('This is user Slice')
-        console.log(address)
+        console.log('Edit Address')
+        console.log(editedAddress)
         const user = thunkAPI.getState().user.user
-        return await userService.editShippingAddressUser(address, user)
+        return await userService.editShippingAddress(editedAddress, user)
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)      
@@ -166,30 +172,29 @@ export const userSlice = createSlice({
                 state.isError = true
                 state.message = action.payload
             })
-            .addCase(addShippingAddressUser.pending, (state) => {
+            .addCase(addShippingAddress.pending, (state) => {
                 state.isLoading = true
             })
-            .addCase(addShippingAddressUser.fulfilled, (state, action) => {
+            .addCase(addShippingAddress.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.user.shippingAddresses.push(action.payload)
-                localStorage.setItem('user', JSON.stringify(state.user))
+                state.user = action.payload
+                //state.user.shippingAddresses.push(action.payload)
             })
-            .addCase(addShippingAddressUser.rejected, (state, action) => {
+            .addCase(addShippingAddress.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload
             })
-            .addCase(editShippingAddressUser.pending, (state) => {
+            .addCase(editShippingAddress.pending, (state) => {
                 state.isLoading = true
             })
-            .addCase(editShippingAddressUser.fulfilled, (state, action) => {
+            .addCase(editShippingAddress.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.user.shippingAddresses = action.payload
-                localStorage.setItem('user', JSON.stringify(state.user))
+                state.user = action.payload
             })
-            .addCase(editShippingAddressUser.rejected, (state, action) => {
+            .addCase(editShippingAddress.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload

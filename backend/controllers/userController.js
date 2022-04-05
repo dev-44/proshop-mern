@@ -139,15 +139,24 @@ const checkCurrentPassword = asyncHandler(async(req, res) => {
 //@route            POST api/users/:id/shipping 
 //@access           Private
 const addShippingAddress = asyncHandler(async(req, res) => {
-
     const user = await User.findById(req.params.id)
+    console.log(req.headers.authorization)
 
     if(user) {
         console.log(req.body)
         user.shippingAddresses.push(req.body)
         const updatedUser = await user.save()
-        const length = updatedUser.shippingAddresses.length
-        res.json(updatedUser.shippingAddresses[length - 1])
+        res.json({
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            isAdmin: updatedUser.isAdmin,
+            shippingAddresses: updatedUser.shippingAddresses,
+            token: generateToken(updatedUser._id)
+        })
+        //Return the last object added to the array
+        //const length = updatedUser.shippingAddresses.length
+        //res.json(updatedUser.shippingAddresses[length - 1])
     } else {
         res.status(404)
         throw new Error('User not found')
@@ -172,6 +181,7 @@ const editShippingAddress = asyncHandler(async(req, res) => {
             "$set": {
                 "shippingAddresses.$._id": newAddress.id,
                 "shippingAddresses.$.address": newAddress.address,
+                "shippingAddresses.$.city": newAddress.city,
                 "shippingAddresses.$.postalCode": newAddress.postalCode,
                 "shippingAddresses.$.country": newAddress.country,
                 "shippingAddress.$.updateAt": new Date()
@@ -189,10 +199,21 @@ const editShippingAddress = asyncHandler(async(req, res) => {
             
     );
 
-    const user = await User.findById(req.params.id)
-    console.log('---------------------------')
-    console.log(user.shippingAddresses)
-    res.json(user.shippingAddresses)
+    const user = await User.findById(userId)
+
+    if (user) {
+        res.json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            shippingAddresses: user.shippingAddresses,
+            token: generateToken(user._id)
+        })
+    } else {
+        res.status(404)
+        throw new Error('User not found')
+    }
 })
 
 

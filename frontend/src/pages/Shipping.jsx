@@ -4,8 +4,8 @@ import {useNavigate, Link} from 'react-router-dom'
 
 //Redux
 import {useDispatch, useSelector} from 'react-redux'
-import { addShippingAddress } from '../features/cart/cartSlice'
-import { addShippingAddressUser, editShippingAddressUser } from '../features/users/userSlice'
+//import { addShippingAddress } from '../features/cart/cartSlice'
+import { addShippingAddress, editShippingAddress } from '../features/users/userSlice'
 
 //Design
 import {Card, Form, Button, Row, Col} from 'react-bootstrap'
@@ -39,18 +39,18 @@ const Shipping = () => {
     const onSubmit = (e) => {
         e.preventDefault()
         
-        const shippingAddressData = {
+        const newAddress = {
             address,
             city,
             postalCode,
             country
         }
 
-        console.log(shippingAddressData)
+        console.log(newAddress)
         
         //After Confirm the Address
-        dispatch(addShippingAddress(shippingAddressData))
-        dispatch(addShippingAddressUser(shippingAddressData))
+        //dispatch(addShippingAddress(newAddress))
+        dispatch(addShippingAddress(newAddress))
         clearForm()
         setOpenForm(!openForm)
     }
@@ -73,7 +73,7 @@ const Shipping = () => {
 
     const updateAddress = () => {
         console.log('Update');
-        const shippingAddressData = {
+        const editedAddress = {
             id: addressId,
             address: address,
             city: city,
@@ -81,7 +81,7 @@ const Shipping = () => {
             country: country
         }
 
-        dispatch(editShippingAddressUser(shippingAddressData))
+        dispatch(editShippingAddress(editedAddress))
         setIsEditing(false)
         clearForm()
         setOpenForm(!openForm)

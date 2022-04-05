@@ -54,9 +54,7 @@ export const removeItem = createAsyncThunk('/cart/item/remove', async(id,thunkAP
 //Add Shipping Address
 export const addShippingAddress = createAsyncThunk('/cart/shippingAddress/add', async(shippingAddressData, thunkAPI) => {
     try {
-        let user = thunkAPI.getState().user.user
-        let newAddress =  await cartService.addShippingAddress(shippingAddressData, user)
-        return newAddress
+
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)
