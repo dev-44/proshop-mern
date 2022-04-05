@@ -11,7 +11,6 @@ const initialState = {
     isLoading: false,
     isMatch: false,
     isLoggedIn: false,
-    shippingAddresses: [],
     message: ''
 }
 
@@ -43,6 +42,7 @@ export const logout = createAsyncThunk('users/logout', async() => {
 //Update User
 export const updateUser = createAsyncThunk('users/update', async(userData, thunkAPI) => {
     try {
+        console.log(userData)
         return await userService.updateUser(userData)
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
@@ -75,13 +75,20 @@ export const checkPassword = createAsyncThunk('users/checkPassword', async(userD
 })
 
 //Add a Shipping Address
-const addShippingAddress = createAsyncThunk('users/shippingAddress/add', async(userData, thunkAPI) => {
+export const addShippingAddressUser = createAsyncThunk('users/shippingAddress/add', async(newAddress, thunkAPI) => {
+    return newAddress
+})
+
+//Edit Shipping Address
+export const editShippingAddressUser = createAsyncThunk('users/shippingAddress/edit', async(address, thunkAPI) => {
     try {
+        console.log('This is user Slice')
+        console.log(address)
         const user = thunkAPI.getState().user.user
-        return await userService.addShippingAddress(userData)
+        return await userService.editShippingAddressUser(address, user)
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
-        return thunkAPI.rejectWithValue(message)
+        return thunkAPI.rejectWithValue(message)      
     }
 })
 
@@ -136,6 +143,12 @@ export const userSlice = createSlice({
             })
             .addCase(logout.fulfilled, (state, action) => {
                 state.user = null
+                state.isError = false
+                state.isSuccess = false
+                state.isLoading = false
+                state.isMatch = false
+                state.isLoggedIn = false
+                state.message = null
             })
             .addCase(clearMsg.fulfilled, (state) => {
                 state.message = ''
@@ -153,15 +166,30 @@ export const userSlice = createSlice({
                 state.isError = true
                 state.message = action.payload
             })
-            .addCase(addShippingAddress.pending, (state) => {
+            .addCase(addShippingAddressUser.pending, (state) => {
                 state.isLoading = true
             })
-            .addCase(addShippingAddress.fulfilled, (state, action) => {
+            .addCase(addShippingAddressUser.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.shippingAddresses = action.payload
+                state.user.shippingAddresses.push(action.payload)
+                localStorage.setItem('user', JSON.stringify(state.user))
             })
-            .addCase(addShippingAddress.rejected, (state, action) => {
+            .addCase(addShippingAddressUser.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(editShippingAddressUser.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(editShippingAddressUser.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.user.shippingAddresses = action.payload
+                localStorage.setItem('user', JSON.stringify(state.user))
+            })
+            .addCase(editShippingAddressUser.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload

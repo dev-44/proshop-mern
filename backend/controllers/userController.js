@@ -55,6 +55,7 @@ const registerUser = asyncHandler(async(req, res) => {
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
+            shippingAddresses: user.shippingAddresses,
             token: generateToken(user._id)
         })
     } else {
@@ -76,7 +77,8 @@ const getUserProfile = asyncHandler(async(req, res) => {
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
-            shippingAddresses: user.shippingAddresses
+            shippingAddresses: user.shippingAddresses,
+            token: generateToken(updatedUser._id)
         })
     } else {
         res.status(404)
@@ -88,9 +90,8 @@ const getUserProfile = asyncHandler(async(req, res) => {
 //@route            PUT api/users/profile
 //@access           Private
 const updateUserProfile = asyncHandler(async(req, res) => {
-
-    console.log('Bandera userController')
-    const user = await User.findById(req.user._id)
+    
+    const user = await User.findById(req.params.id)
 
     if(user) {
         user.name = req.body.name || user.name
@@ -109,6 +110,7 @@ const updateUserProfile = asyncHandler(async(req, res) => {
             name: updatedUser.name,
             email: updatedUser.email,
             isAdmin: updatedUser.isAdmin,
+            shippingAddresses: updatedUser.shippingAddresses,
             token: generateToken(updatedUser._id)
         })
     } else {
@@ -134,19 +136,63 @@ const checkCurrentPassword = asyncHandler(async(req, res) => {
 })
 
 //@description      Add a new shipping address
-//@route            PUT api/users/:id/shipping 
+//@route            POST api/users/:id/shipping 
 //@access           Private
 const addShippingAddress = asyncHandler(async(req, res) => {
-    const user = await User.findById(req.user._id)
+
+    const user = await User.findById(req.params.id)
 
     if(user) {
+        console.log(req.body)
         user.shippingAddresses.push(req.body)
         const updatedUser = await user.save()
-        res.json(updatedUser.shippingAddresses)
+        const length = updatedUser.shippingAddresses.length
+        res.json(updatedUser.shippingAddresses[length - 1])
     } else {
         res.status(404)
         throw new Error('User not found')
     }
+})
+
+//@description      Update a shipping address
+//@route            PUT api/users/:id/shipping 
+//@access           Private
+const editShippingAddress = asyncHandler(async(req, res) => {
+    console.log('Edit Shipping Address userController')
+    const newAddress = req.body
+    console.log(newAddress)
+    const userId = req.params.id
+
+    //Find a document a SubDocument
+    //const docSub = await User.findOne({ "_id": userId, "shippingAddresses._id": newAddress.id})
+
+    User.findOneAndUpdate(
+        { "_id": userId, "shippingAddresses._id": newAddress.id},
+        { 
+            "$set": {
+                "shippingAddresses.$._id": newAddress.id,
+                "shippingAddresses.$.address": newAddress.address,
+                "shippingAddresses.$.postalCode": newAddress.postalCode,
+                "shippingAddresses.$.country": newAddress.country,
+                "shippingAddress.$.updateAt": new Date()
+            },
+            
+        }, {timestamps:{createdAt:false, updatedAt:true}},
+        (err, doc) => {
+            if(doc) {
+                console.log('Success')
+            }
+            if(err) {
+                console.log(err)
+            }
+        }
+            
+    );
+
+    const user = await User.findById(req.params.id)
+    console.log('---------------------------')
+    console.log(user.shippingAddresses)
+    res.json(user.shippingAddresses)
 })
 
 
@@ -163,5 +209,6 @@ export {
     registerUser, 
     updateUserProfile, 
     checkCurrentPassword,
-    addShippingAddress
+    addShippingAddress,
+    editShippingAddress
 }

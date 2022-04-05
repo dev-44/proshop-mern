@@ -6,7 +6,7 @@ const cartLS = JSON.parse(localStorage.getItem('cartItems'))
 
 const initialState = {
     cart: cartLS ? cartLS : [],
-    shippingAddress: '',
+    shippingAddress: {},
     isError: false,
     isSuccess: false,
     isLoading: false,
@@ -39,10 +39,24 @@ export const changeQty = createAsyncThunk('cart/item/changeQty', async({id, qty}
     }
 })
 
+
+//Remove Item from the Cart
 export const removeItem = createAsyncThunk('/cart/item/remove', async(id,thunkAPI) => {
     try {
         let cart = thunkAPI.getState().cart.cart
         return await cartService.removeItem(id, cart)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+//Add Shipping Address
+export const addShippingAddress = createAsyncThunk('/cart/shippingAddress/add', async(shippingAddressData, thunkAPI) => {
+    try {
+        let user = thunkAPI.getState().user.user
+        let newAddress =  await cartService.addShippingAddress(shippingAddressData, user)
+        return newAddress
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)
@@ -93,6 +107,20 @@ export const cartSlice = createSlice({
             state.cart = action.payload
         })
         .addCase(removeItem.rejected, (state, action) => {
+            state.isLoading = false
+            state.isError = true
+            state.message = action.payload
+        })
+        .addCase(addShippingAddress.pending, (state) => {
+            state.isLoading = true
+        })
+        .addCase(addShippingAddress.fulfilled, (state, action) => {
+            state.isLoading = false
+            state.isSuccess = true
+            state.shippingAddress = action.payload
+            
+        })
+        .addCase(addShippingAddress.rejected, (state, action) => {
             state.isLoading = false
             state.isError = true
             state.message = action.payload

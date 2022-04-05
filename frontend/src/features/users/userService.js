@@ -58,7 +58,6 @@ export const updateUser = async(userData) => {
     }
 
     const {data} = await axios.put(API_URL + `/profile/${userData._id}`, userData, config)
-    console.log('Bandera userService2')
 
     console.log(data)
  
@@ -89,17 +88,22 @@ const checkPassword = async(userData) => {
     return data
 }
 
-const addShippingAddress = async(userData) => {
+//Edit Shipping Address
+const editShippingAddressUser = async(address, user) => {
+    console.log('This is UserService')
+    const {_id, token} = user
+
     const config = {
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${userData.token}`
+            Authorization: `Bearer ${token}`
         }
     }
 
-    const {data} = await axios.post(API_URL + `/shipping-address/${userData._id}`, userData, config)
+    const {data} = await axios.put(`api/users/profile/${_id}/shipping`, address, config)
     return data
 }
+
 
 const userService = {
     register,
@@ -107,7 +111,7 @@ const userService = {
     logout,
     updateUser,
     checkPassword,
-    addShippingAddress
+    editShippingAddressUser
 }
 
 export default userService

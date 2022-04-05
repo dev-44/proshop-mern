@@ -4,7 +4,7 @@ import {Form, Button, Row, Col} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { updateUser, clearMsg } from '../features/users/userSlice'
+import { updateUser, clearMsg, resetUser } from '../features/users/userSlice'
 import FormContainer from '../components/FormContainer'
 import {FaEdit} from 'react-icons/fa'
 
@@ -13,6 +13,7 @@ const Profile = () => {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [errorMsg, setErrorMsg] = useState('')
+    const [successMsg, setSuccessMsg] = useState('')
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -27,13 +28,6 @@ const Profile = () => {
             setEmail(user.email)
         }
 
-        /*
-        //Redirect when register
-        if(isSuccess){
-            navigate('/')
-        }
-        */
-
         if(errorMsg){
             setTimeout(() => {
                 setErrorMsg('')
@@ -42,6 +36,11 @@ const Profile = () => {
 
         if(message) {
             setTimeout(() => dispatch(clearMsg()), 5000)
+        }
+
+        if(isSuccess) {
+            setSuccessMsg('Profile Updated Successfully')
+            setTimeout(() => {setSuccessMsg('')}, 5000)
         }
     }, [isSuccess, user, navigate, dispatch, errorMsg, message])
 
@@ -68,6 +67,7 @@ const Profile = () => {
             <h1>USER PROFILE</h1>
             {message && <Message variant='danger'>{message}</Message>}
             {errorMsg && <Message variant='danger'>{errorMsg}</Message>}
+            {successMsg && <Message variant='success'>{successMsg}</Message>}
             {isLoading && <Loader />}
             <Form onSubmit={onSubmit}>
 
@@ -84,9 +84,6 @@ const Profile = () => {
                 <Button className='mt-3' type='submit' variant='primary'>UPDATE</Button>
             </Form>
 
-            <Row className='mt-3'>
-                <Col>No Shipping Address Yet? <Link to='/shipping'>Add one</Link></Col>
-            </Row>
         </FormContainer>
     )
 }

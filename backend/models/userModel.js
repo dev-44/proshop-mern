@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-const shipAddressSchema = mongoose.Schema({
+const shippingAddressSchema = mongoose.Schema({
     address: {type: String, required: true},
     city: {type: String, required: true},
     postalCode: {type: String, required: true},
@@ -29,13 +29,13 @@ const userSchema = mongoose.Schema({
         required: true,
         default: false
     },
-    shippingAddresses: [shipAddressSchema],
+    shippingAddresses: [shippingAddressSchema],
 }, {
     timestamps: true
 })
 
 const User = mongoose.model('User', userSchema)
-const ShipAddress = mongoose.model('ShipAddress', shipAddressSchema)
+const ShipAddress = mongoose.model('ShippingAddress', shippingAddressSchema)
 
 export {
     User, 

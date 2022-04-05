@@ -12,7 +12,6 @@ const Header = () => {
 
   const onLogout = () => {
      dispatch(logout())
-     dispatch(resetUser())
      navigate('/')
   }
 

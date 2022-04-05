@@ -28,13 +28,15 @@ const Home = () => {
       setTimeout(() => {
         setSuccessMsg('')
       }, 5000)
-      dispatch(resetUser())
     }
+    
     return () => {              //Clear/Unmount.Return a function
         if(isSuccess) {
             dispatch(reset())
         }
     }
+    
+   
 }, [dispatch, isSuccess, isLoggedIn])
 
   useEffect(() => {

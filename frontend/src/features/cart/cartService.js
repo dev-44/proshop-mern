@@ -34,6 +34,7 @@ const addItem = async (id, qty, cartItems) => {
     
 }
 
+//Change quantity of the Item in the Cart
 const changeQty = (id, qty, cartItems) => {
     //console.log(`Id: ${id} and Qty: ${qty}`)
     let updItem = cartItems.find(x => x.id === id)
@@ -43,16 +44,37 @@ const changeQty = (id, qty, cartItems) => {
     return cartItems
 }
 
+//Remove item from the Cart
 const removeItem = (id, cartItems) => {
     cartItems = cartItems.filter((item) => item.id !== id)
     localStorage.setItem('cartItems', JSON.stringify(cartItems))
     return cartItems 
 }
 
+//Add a New Shipping Address to the user profile
+const addShippingAddress = async (shippingAddressData, user) => {
+
+    const {_id, token} = user
+
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const {data} = await axios.post(`api/users/profile/${_id}/shipping`, shippingAddressData, config)
+    console.log(data)
+    return data
+    
+    
+}
+
 const cartService = {
     addItem,
     changeQty,
-    removeItem
+    removeItem,
+    addShippingAddress
 }
 
 export default cartService
