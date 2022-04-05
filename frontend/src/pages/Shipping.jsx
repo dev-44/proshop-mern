@@ -145,7 +145,7 @@ const Shipping = () => {
             <Modal.Header closeButton>
                 <Modal.Title>Attention</Modal.Title>
             </Modal.Header>
-            <Modal.Body>Are you sure to delete this Address?</Modal.Body>
+            <Modal.Body>Are you sure you want to delete this Address?</Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleCloseModal}>
                     Close
