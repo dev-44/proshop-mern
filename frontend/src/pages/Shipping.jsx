@@ -5,7 +5,7 @@ import {useNavigate, Link} from 'react-router-dom'
 //Redux
 import {useDispatch, useSelector} from 'react-redux'
 //import { addShippingAddress } from '../features/cart/cartSlice'
-import { addShippingAddress, editShippingAddress } from '../features/users/userSlice'
+import { addShippingAddress, editShippingAddress, deleteShippingAddress, clearMsg } from '../features/users/userSlice'
 
 //Design
 import {Card, Form, Button, Row, Col, Modal} from 'react-bootstrap'
@@ -13,6 +13,7 @@ import FormContainer from '../components/FormContainer'
 import CheckoutSteps from '../components/CheckoutSteps'
 import ShippingAddress from '../components/ShippingAddress'
 import {FaEdit, FaTrash} from 'react-icons/fa'
+import Message from '../components/Message'
 
 const Shipping = () => {
     const [addressId, setAddressId] = useState('')
@@ -23,19 +24,26 @@ const Shipping = () => {
     const [openForm, setOpenForm] = useState(false)
     const [isEditing, setIsEditing] = useState(false)
     const [openModal, setOpenModal] = useState(false)
+    const [successMsg, setSuccessMsg] = useState('')
 
-    const {user} = useSelector(state => state.user)
+    const {user, message, isSuccess} = useSelector(state => state.user)
     const {shippingAddresses} = useSelector(state => state.user.user)
 
-    const {shippingAddress, isSuccess} = useSelector(state => state.cart)
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
     useEffect(() => {
         if (shippingAddresses.length === 0) {
+            setIsEditing(false)
             setOpenForm(true)
         }
-    }, [])
+    }, [shippingAddresses.length])
+
+    useEffect(() => {
+        if(message) {
+            setTimeout(() => dispatch(clearMsg()), 5000)
+        }
+    }, [message])
 
     const onSubmit = (e) => {
         e.preventDefault()
@@ -52,8 +60,13 @@ const Shipping = () => {
         //After Confirm the Address
         //dispatch(addShippingAddress(newAddress))
         dispatch(addShippingAddress(newAddress))
-        clearForm()
         setOpenForm(!openForm)
+        clearForm()
+
+        if(isSuccess) {
+            setSuccessMsg('SHIPPING ADDRESS has been CREATED successfully')
+            setTimeout(() => {setSuccessMsg('')}, 5000)
+        }
     }
 
     const editAddress = (address, id) => {
@@ -86,11 +99,28 @@ const Shipping = () => {
         setIsEditing(false)
         clearForm()
         setOpenForm(!openForm)
+
+        if(isSuccess) {
+            setSuccessMsg('SHIPPING ADDRESS has been MODIFIED successfully')
+            setTimeout(() => {setSuccessMsg('')}, 5000)
+        }
+    }
+
+    const preDeleteAddress = (addressId) => {
+        console.log(addressId)
+        setAddressId(addressId)
+        handleOpenModal()
     }
 
     const deleteAddress = () => {
         console.log('Delete')
+        dispatch(deleteShippingAddress(addressId))
         handleCloseModal()
+
+        if(isSuccess) {
+            setSuccessMsg('SHIPPING ADDRESS has been DELETED successfully')
+            setTimeout(() => {setSuccessMsg('')}, 5000)
+        }
     }
 
     const clearForm = () => {
@@ -108,7 +138,7 @@ const Shipping = () => {
     const addressForm = (
         <FormContainer>
 
-            {isEditing ? <h1 className='text-center'>EDIT ADDRESS</h1>  : <h1>NEW SHIPPING ADDRESS</h1>}
+            <h1 className='text-center'>{isEditing ? 'Edit Address' : 'New Shipping Address'}</h1>
             <Form onSubmit={onSubmit}>
 
                 <Form.Group controlId='address'>
@@ -150,14 +180,16 @@ const Shipping = () => {
                 <Button variant="secondary" onClick={handleCloseModal}>
                     Close
                 </Button>
-                <Button variant="danger" onClick={deleteAddress}>
+                <Button variant="danger" onClick={() => deleteAddress(addressId)}>
                     Delete
                 </Button>
             </Modal.Footer>
       </Modal>
 
             <CheckoutSteps step1 step2 />
-            <h1 className='text-center'>Shipping Address</h1>
+            <h1 className='text-center'>SHIPPING ADDRESS</h1>
+            {successMsg && <Message variant='success'>{successMsg}</Message>}
+            {message && <Message variant='danger'>{message}</Message>}
             {shippingAddresses.length > 0 && !openForm ? (
                 <>
                 
@@ -169,7 +201,7 @@ const Shipping = () => {
                                     <ShippingAddress key={address._id} address={address} />
                                     <Button className='btn-reverse btn-sm mt-3'>Choose</Button>
                                     <Button className='btn-sm mx-2 mt-3' type='button' onClick={() => editAddress(address, address._id)}><FaEdit /></Button>
-                                    <Button className='btn-sm mt-3' onClick={handleOpenModal} ><FaTrash /></Button>
+                                    <Button className='btn-sm mt-3' onClick={() => preDeleteAddress(address._id)}><FaTrash /></Button>
                                 </div>
                             </Card>
                       </Col> 

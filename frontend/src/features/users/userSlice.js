@@ -88,10 +88,19 @@ export const addShippingAddress = createAsyncThunk('users/shippingAddress/add', 
 //Edit Shipping Address
 export const editShippingAddress = createAsyncThunk('users/shippingAddress/edit', async(editedAddress, thunkAPI) => {
     try {
-        console.log('Edit Address')
-        console.log(editedAddress)
         const user = thunkAPI.getState().user.user
         return await userService.editShippingAddress(editedAddress, user)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)      
+    }
+})
+
+//Delete Shipping Address
+export const deleteShippingAddress = createAsyncThunk('users/shippingAddress/delete', async(idAddress, thunkAPI) => {
+    try {
+        const user = thunkAPI.getState().user.user
+        return await userService.deleteShippingAddress(idAddress, user)
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)      
@@ -195,6 +204,19 @@ export const userSlice = createSlice({
                 state.user = action.payload
             })
             .addCase(editShippingAddress.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(deleteShippingAddress.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(deleteShippingAddress.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.user = action.payload
+            })
+            .addCase(deleteShippingAddress.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload

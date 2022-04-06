@@ -7,7 +7,8 @@ import {
     updateUserProfile, 
     checkCurrentPassword,
     addShippingAddress,
-    editShippingAddress
+    editShippingAddress,
+    deleteShippingAddress
 } from '../controllers/userController.js'
 import {protect} from '../middleware/authMiddleware.js'
 
@@ -20,5 +21,6 @@ router.route('/profile/:id')
 router.route('/profile/:id/shipping')
     .post(protect, addShippingAddress)
     .put(protect, editShippingAddress)
+router.delete('/profile/:id/shipping/:idaddress', protect, deleteShippingAddress)
 
 export default router
