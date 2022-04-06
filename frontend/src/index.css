@@ -33,3 +33,18 @@ h3 {
     text-align: center;
     font-weight: 700;
 }
+
+.choose {
+    color: #f4f4f4;
+}
+
+.container {
+    position: relative;
+  }
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5ex;
+  }

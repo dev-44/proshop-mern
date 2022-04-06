@@ -12,6 +12,8 @@ import Profile from './pages/Profile'
 import Orders from './pages/Orders'
 import ChangePassword from './pages/ChangePassword'
 import Shipping from './pages/Shipping'
+import Payment from './pages/Payment'
+import PlaceOrder from './pages/PlaceOrder'
 
 function App() {
   return (
@@ -25,10 +27,12 @@ function App() {
             <Route path='/register' element={<Register />} exact />
             <Route path='/login' element={<Login />} exact />
             <Route path='/profile' element={<Profile />} exact />
-            <Route path='/change-pass' element={<ChangePassword />} exact />
+            <Route path='/changepassword' element={<ChangePassword />} exact />
             <Route path='/orders' element={<Orders />} exact />
             <Route path='/product/:id' element={<ProductDetails />} />
             <Route path='/shipping' element={<Shipping />} />
+            <Route path='/payment' element={<Payment />} />
+            <Route path='/placeorder' element={<PlaceOrder />} />
 
             {/*}
             <Route path="/cart">

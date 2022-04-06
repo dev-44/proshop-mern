@@ -8,46 +8,40 @@ import {useDispatch, useSelector} from 'react-redux'
 import { savePaymentMethod } from '../features/cart/cartSlice'
 
 const Payment = () => {
-    const [address, setAddress] = useState('')
-    const [city, setCity] = useState('')
-    const [postalCode, setPostalCode] = useState('')
-    const [country, setCountry] = useState('')
+
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+
+    const [paymentMethod, setPaymentMethod] = useState('Paypal')
 
     const {user} = useSelector(state => state.user)
     const {cart, shippingAddress} = useSelector((state) => state.cart)
 
+    if(!shippingAddress) {
+        navigate('/shipping')
+    }
+
     const onSubmit = (e) => {
         e.preventDefault()
+        dispatch(savePaymentMethod(paymentMethod))
+        navigate('/placeorder')
     }
 
   return (
       <>
             {/*Conditional*/}
             <FormContainer>
-                <CheckoutSteps step1 step2 />
-                <h1>SHIPPING</h1>
+                <CheckoutSteps step1 step2 step3/>
+                <h1>PAYMENT METHOD</h1>
                 <Form onSubmit={onSubmit}>
-
-                    <Form.Group controlId='address'>
-                        <Form.Label>Address</Form.Label>
-                        <Form.Control type='text' placeholder='Enter Address' value={address} onChange={(e) => setAddress(e.target.value)} required></Form.Control>
-                    </Form.Group>
-
-                    <Form.Group controlId='city'>
-                        <Form.Label>City</Form.Label>
-                        <Form.Control type='text' placeholder='Enter City' value={city} onChange={(e) => setCity(e.target.value)} required></Form.Control>
-                    </Form.Group>
-
-                    <Form.Group controlId='postalCode'>
-                        <Form.Label>Postal Code</Form.Label>
-                        <Form.Control type='text' placeholder='Enter Postal Code' value={postalCode} onChange={(e) => setPostalCode(e.target.value)} required></Form.Control>
-                    </Form.Group>
-
-                    <Form.Group controlId='country'>
-                        <Form.Label>Country</Form.Label>
-                        <Form.Control type='text' placeholder='Enter Country' value={country} onChange={(e) => setCountry(e.target.name)} required></Form.Control>
-                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label as='lengend'>Select Method</Form.Label>
                     
+                        <Col>
+                            <Form.Check type='radio' label='PayPal' id='paypal' name='paymentMethod' value='PayPal' checked onChange={(e) => setPaymentMethod(e.target.value)} />
+                            {/* <Form.Check type='radio' label='Stripe' id='stripe' name='paymentMethod' value='Stripe' onChange={(e) => setPaymentMethod(e.target.value)} /> */}
+                        </Col>
+                    </Form.Group>
                     <Button type='submit' variant='primary' className='mt-3'>CONTINUE</Button>
                 </Form>
         </FormContainer>

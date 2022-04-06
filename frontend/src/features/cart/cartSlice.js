@@ -7,6 +7,7 @@ const cartLS = JSON.parse(localStorage.getItem('cartItems'))
 const initialState = {
     cart: cartLS ? cartLS : [],
     shippingAddress: {},
+    paymentMethod: '',
     isError: false,
     isSuccess: false,
     isLoading: false,
@@ -52,9 +53,19 @@ export const removeItem = createAsyncThunk('/cart/item/remove', async(id,thunkAP
 })
 
 //Add Shipping Address
-export const addShippingAddress = createAsyncThunk('/cart/shippingAddress/add', async(shippingAddressData, thunkAPI) => {
+export const addShippingAddressCart = createAsyncThunk('/cart/shippingAddress/add', async(shippingAddressData, thunkAPI) => {
     try {
+        console.log('Here')
+        return shippingAddressData
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
 
+export const savePaymentMethod = createAsyncThunk('cart/paymentMethod/save', async(paymentMethod, thunkAPI) => {
+    try {
+        return paymentMethod
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)
@@ -109,16 +120,30 @@ export const cartSlice = createSlice({
             state.isError = true
             state.message = action.payload
         })
-        .addCase(addShippingAddress.pending, (state) => {
+        .addCase(addShippingAddressCart.pending, (state) => {
             state.isLoading = true
         })
-        .addCase(addShippingAddress.fulfilled, (state, action) => {
+        .addCase(addShippingAddressCart.fulfilled, (state, action) => {
             state.isLoading = false
             state.isSuccess = true
             state.shippingAddress = action.payload
             
         })
-        .addCase(addShippingAddress.rejected, (state, action) => {
+        .addCase(addShippingAddressCart.rejected, (state, action) => {
+            state.isLoading = false
+            state.isError = true
+            state.message = action.payload
+        })
+        .addCase(savePaymentMethod.pending, (state) => {
+            state.isLoading = true
+        })
+        .addCase(savePaymentMethod.fulfilled, (state, action) => {
+            state.isLoading = false
+            state.isSuccess = true
+            state.paymentMethod = action.payload
+            
+        })
+        .addCase(savePaymentMethod.rejected, (state, action) => {
             state.isLoading = false
             state.isError = true
             state.message = action.payload

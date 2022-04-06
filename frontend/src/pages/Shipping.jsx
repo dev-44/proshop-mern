@@ -4,7 +4,7 @@ import {useNavigate, Link} from 'react-router-dom'
 
 //Redux
 import {useDispatch, useSelector} from 'react-redux'
-//import { addShippingAddress } from '../features/cart/cartSlice'
+import { addShippingAddressCart } from '../features/cart/cartSlice'
 import { addShippingAddress, editShippingAddress, deleteShippingAddress, clearMsg } from '../features/users/userSlice'
 
 //Design
@@ -25,6 +25,14 @@ const Shipping = () => {
     const [isEditing, setIsEditing] = useState(false)
     const [openModal, setOpenModal] = useState(false)
     const [successMsg, setSuccessMsg] = useState('')
+    const [choose, setChoose] = useState('')
+    const [addressSelected, setAddressSelected] = useState({
+        id: '',
+        address: '',
+        city: '',
+        postalCode: '',
+        country: ''
+    })
 
     const {user, message, isSuccess} = useSelector(state => state.user)
     const {shippingAddresses} = useSelector(state => state.user.user)
@@ -56,9 +64,6 @@ const Shipping = () => {
         }
 
         console.log(newAddress)
-        
-        //After Confirm the Address
-        //dispatch(addShippingAddress(newAddress))
         dispatch(addShippingAddress(newAddress))
         setOpenForm(!openForm)
         clearForm()
@@ -132,8 +137,33 @@ const Shipping = () => {
         console.log('Form Cleared');
     }
 
+    //Modal
     const handleOpenModal = () => setOpenModal(true)
     const handleCloseModal = () => setOpenModal(false)
+
+    const chooseAddress = (address) => {
+        if(address._id === choose) {
+            setChoose('')
+        } else {
+            setChoose(address._id)
+
+            const choise = {
+                id: address._id,
+                address: address.address,
+                city: address.city,
+                postalCode: address.postalCode,
+                country: address.country
+            }
+
+            setAddressSelected(choise)
+        }
+    }
+
+    const saveAddress = () => {
+        console.log('Click on saveAddress')
+        dispatch(addShippingAddressCart(addressSelected))
+        navigate('/payment')
+    }
 
     const addressForm = (
         <FormContainer>
@@ -195,11 +225,11 @@ const Shipping = () => {
                 
                 <Row>
                     {shippingAddresses.map((address) => (
-                      <Col  sm={12} md={6} lg={4} xl={3}>
-                            <Card className='px-3 py-3'>
+                      <Col sm={12} md={6} lg={4} xl={3}>
+                            <Card className={`py-3 px-3 ${choose === address._id && 'choose'}`} bg={choose === address._id && 'success'}>
                                 <div>
                                     <ShippingAddress key={address._id} address={address} />
-                                    <Button className='btn-reverse btn-sm mt-3'>Choose</Button>
+                                    <Button className='btn-reverse btn-sm mt-3' onClick={() => chooseAddress(address)}>{choose !== address._id ? 'Choose' : 'Quit'}</Button>
                                     <Button className='btn-sm mx-2 mt-3' type='button' onClick={() => editAddress(address, address._id)}><FaEdit /></Button>
                                     <Button className='btn-sm mt-3' onClick={() => preDeleteAddress(address._id)}><FaTrash /></Button>
                                 </div>
@@ -210,14 +240,25 @@ const Shipping = () => {
 
 
                 </>
-            ) : addressForm} 
+            ) : addressForm}
+
+        {choose && (
+        <div className='container'>
+            <div className='center'>
+                <Button variant='primary' onClick={() => saveAddress()}>Continue</Button>
+            </div>
+        </div>
+        )}
+
         {shippingAddresses.length > 0 && !openForm ? 
-            (<div className='mt-5 text-center'>Want to send to another address? <Link to='' onClick={() => {
+            (<div className='mt-3 text-center'>Want to send to another address? <Link to='' onClick={() => {
                 setOpenForm(!openForm)
+                setChoose('')
                 clearForm()
             }}>Add one</Link></div>) : 
-            (<div className='mt-5 text-center'><Link to='' onClick={() => {
+            (<div className='mt-3 text-center'><Link to='' onClick={() => {
                 setOpenForm(!openForm) 
+                setChoose('')
                 clearForm()
             }}>Back to addresses</Link></div>)}
       </>
