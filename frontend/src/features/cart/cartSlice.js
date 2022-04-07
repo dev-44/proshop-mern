@@ -7,6 +7,7 @@ const cartLS = JSON.parse(localStorage.getItem('cartItems'))
 const initialState = {
     cart: cartLS ? cartLS : [],
     shippingAddress: {},
+    itemsPrice: '',
     paymentMethod: '',
     isError: false,
     isSuccess: false,

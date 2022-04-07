@@ -8,7 +8,8 @@ const create = (app) => {
             "/api/users/login", 
             "/api/users/check-password", 
             "/api/users/profile/:id",
-            "/api/users/profile/:id/shipping"
+            "/api/users/profile/:id/shipping",
+            "/api/orders"
         ], 
         createProxyMiddleware({
             target: "http://localhost:5000"

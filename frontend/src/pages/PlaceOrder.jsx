@@ -1,18 +1,50 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import {useNavigate, Link} from 'react-router-dom'
 import {Button, Row, Col, ListGroup, Image, Card} from 'react-bootstrap'
 import Message from '../components/Message'
 import CheckoutSteps from '../components/CheckoutSteps'
 
 import {useDispatch, useSelector} from 'react-redux'
-
+import { createOrder } from '../features/orders/orderSlice'
 
 const PlaceOrder = () => {
 
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+
     const {cart, shippingAddress, paymentMethod} = useSelector(state => state.cart)
+    const {order, isSuccess, isError, message} = useSelector(state => state.order)
+    
+    useEffect(() => {
+        if(isSuccess) {
+            navigate(`order/${order._id}`)
+        }
+        //eslint-disable-next-line
+    },[navigate, isSuccess])
+
+    //Calculate Prices
+    const addDecimals = (num) => {
+        return (Math.round(num * 100) / 100).toFixed(2)
+    }
+
+    let itemsPrice = addDecimals(cart.reduce((acc, item) => acc + item.price * item.qty, 0))
+    let shippingPrice = itemsPrice > 100 ? 10 : 0
+    let taxPrice = addDecimals(Number(0.15 * itemsPrice))
+    let totalPrice = addDecimals(Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice))
 
     const placeOrderHandler = () => {
-        
+
+        const newOrder = {
+            orderItems: cart,
+            shippingAddress,
+            paymentMethod,
+            itemsPrice,
+            shippingPrice,
+            taxPrice,
+            totalPrice
+        }
+
+        dispatch(createOrder(newOrder))
     }
 
   return (
@@ -54,7 +86,7 @@ const PlaceOrder = () => {
                                                 </Link>
                                             </Col>
                                             <Col md={4}>
-                                                {item.qty} x ${item.price} = ${item.qty * item.price}
+                                                {item.qty} x ${item.price} = ${addDecimals(item.qty * item.price)}
                                             </Col>
                                         </Row>
                                     </ListGroup.Item>
@@ -77,33 +109,37 @@ const PlaceOrder = () => {
                         <ListGroup.Item>
                             <Row>
                                 <Col>Items</Col>
-                                <Col>${cart.itemsPrice}</Col>
+                                <Col>$ {itemsPrice}</Col>
                             </Row>
                         </ListGroup.Item>
 
                         <ListGroup.Item>
                             <Row>
                                 <Col>Shipping</Col>
-                                <Col>${cart.shippingPrice}</Col>
-                            </Row>
+                                <Col>$ {shippingPrice}</Col>
+                            </Row> 
                         </ListGroup.Item>
 
                         <ListGroup.Item>
                             <Row>
                                 <Col>Tax</Col>
-                                <Col>${cart.taxPrice}</Col>
+                                <Col>$ {taxPrice}</Col>
                             </Row>
                         </ListGroup.Item>
 
                         <ListGroup.Item>
                             <Row>
                                 <Col>TOTAL</Col>
-                                <Col>${cart.totalPrice}</Col>
+                                <Col>$ {totalPrice}</Col>
                             </Row>
                         </ListGroup.Item>
 
                         <ListGroup.Item>
-                            <Button type='button' className='btn-block' disabled={cart.lenght === 0} onClick={placeOrderHandler}>Place Order</Button>
+                            {isError && <Message variant='danger'>{message}</Message>}
+                        </ListGroup.Item>
+
+                        <ListGroup.Item>
+                            <Button type='button' className='btn btn-block' disabled={cart.lenght === 0} onClick={placeOrderHandler}>Place Order</Button>
                         </ListGroup.Item>
                     </ListGroup>
                 </Card>

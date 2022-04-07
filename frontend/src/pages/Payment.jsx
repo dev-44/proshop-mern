@@ -35,7 +35,7 @@ const Payment = () => {
                 <h1>PAYMENT METHOD</h1>
                 <Form onSubmit={onSubmit}>
                     <Form.Group>
-                        <Form.Label as='lengend'>Select Method</Form.Label>
+                        <Form.Label as='legend'>Select Method</Form.Label>
                     
                         <Col>
                             <Form.Check type='radio' label='PayPal' id='paypal' name='paymentMethod' value='PayPal' checked onChange={(e) => setPaymentMethod(e.target.value)} />
