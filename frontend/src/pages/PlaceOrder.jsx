@@ -9,7 +9,11 @@ import {useDispatch, useSelector} from 'react-redux'
 
 const PlaceOrder = () => {
 
-    const {shippingAddress, paymentMethod} = useSelector(state => state.cart)
+    const {cart, shippingAddress, paymentMethod} = useSelector(state => state.cart)
+
+    const placeOrderHandler = () => {
+        
+    }
 
   return (
     <>
@@ -34,7 +38,75 @@ const PlaceOrder = () => {
                         </p>
                     </ListGroup.Item>
 
+                    <ListGroup.Item>
+                        <h2>ORDER ITEMS</h2>
+                        {cart.length === 0 ? <Message>Your Cart is Empty</Message> : (
+                            <ListGroup variant='flush'>
+                                {cart.map((item, index) => (
+                                    <ListGroup.Item key={index}>
+                                        <Row>
+                                            <Col md={1}>
+                                                 <Image src={item.image} alt={item.name} fluid rounded />
+                                            </Col>
+                                            <Col>
+                                                <Link to={`/product/${item.product}`}>
+                                                    {item.name}
+                                                </Link>
+                                            </Col>
+                                            <Col md={4}>
+                                                {item.qty} x ${item.price} = ${item.qty * item.price}
+                                            </Col>
+                                        </Row>
+                                    </ListGroup.Item>
+                                ))}
+                            </ListGroup>
+                        )}
+                    </ListGroup.Item>
+
                 </ListGroup>
+            </Col>
+
+            <Col md={4}>
+                <Card>
+                    <ListGroup variant='flush'>
+
+                        <ListGroup.Item>
+                            <h2>Order Summary</h2>
+                        </ListGroup.Item>
+
+                        <ListGroup.Item>
+                            <Row>
+                                <Col>Items</Col>
+                                <Col>${cart.itemsPrice}</Col>
+                            </Row>
+                        </ListGroup.Item>
+
+                        <ListGroup.Item>
+                            <Row>
+                                <Col>Shipping</Col>
+                                <Col>${cart.shippingPrice}</Col>
+                            </Row>
+                        </ListGroup.Item>
+
+                        <ListGroup.Item>
+                            <Row>
+                                <Col>Tax</Col>
+                                <Col>${cart.taxPrice}</Col>
+                            </Row>
+                        </ListGroup.Item>
+
+                        <ListGroup.Item>
+                            <Row>
+                                <Col>TOTAL</Col>
+                                <Col>${cart.totalPrice}</Col>
+                            </Row>
+                        </ListGroup.Item>
+
+                        <ListGroup.Item>
+                            <Button type='button' className='btn-block' disabled={cart.lenght === 0} onClick={placeOrderHandler}>Place Order</Button>
+                        </ListGroup.Item>
+                    </ListGroup>
+                </Card>
             </Col>
         </Row>
     </>

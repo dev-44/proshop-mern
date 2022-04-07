@@ -26,6 +26,7 @@ const Shipping = () => {
     const [openModal, setOpenModal] = useState(false)
     const [successMsg, setSuccessMsg] = useState('')
     const [choose, setChoose] = useState('')
+    const [chooseToDelete, setChooseToDelete] = useState('')
     const [addressSelected, setAddressSelected] = useState({
         id: '',
         address: '',
@@ -51,7 +52,7 @@ const Shipping = () => {
         if(message) {
             setTimeout(() => dispatch(clearMsg()), 5000)
         }
-    }, [message])
+    }, [message, dispatch])
 
     const onSubmit = (e) => {
         e.preventDefault()
@@ -78,7 +79,8 @@ const Shipping = () => {
         if(!user){
             navigate('/')
         } else {
-            console.log(id);
+            console.log(id)
+            setChoose('')
             setIsEditing(true)
             setAddressId(address._id)
             setAddress(address.address)
@@ -113,6 +115,8 @@ const Shipping = () => {
 
     const preDeleteAddress = (addressId) => {
         console.log(addressId)
+        setChoose('')
+        setChooseToDelete(addressId)
         setAddressId(addressId)
         handleOpenModal()
     }
@@ -120,6 +124,7 @@ const Shipping = () => {
     const deleteAddress = () => {
         console.log('Delete')
         dispatch(deleteShippingAddress(addressId))
+        setChooseToDelete('')
         handleCloseModal()
 
         if(isSuccess) {
@@ -139,7 +144,10 @@ const Shipping = () => {
 
     //Modal
     const handleOpenModal = () => setOpenModal(true)
-    const handleCloseModal = () => setOpenModal(false)
+    const handleCloseModal = () => {
+        setChooseToDelete('')
+        setOpenModal(false)
+    }
 
     const chooseAddress = (address) => {
         if(address._id === choose) {
@@ -226,7 +234,7 @@ const Shipping = () => {
                 <Row>
                     {shippingAddresses.map((address) => (
                       <Col sm={12} md={6} lg={4} xl={3}>
-                            <Card className={`py-3 px-3 ${choose === address._id && 'choose'}`} bg={choose === address._id && 'success'}>
+                            <Card className={`py-3 px-3 ${(choose === address._id || chooseToDelete === address._id) && 'choose'}`} bg={choose === address._id ? 'success' : chooseToDelete === address._id && 'danger' }>
                                 <div>
                                     <ShippingAddress key={address._id} address={address} />
                                     <Button className='btn-reverse btn-sm mt-3' onClick={() => chooseAddress(address)}>{choose !== address._id ? 'Choose' : 'Quit'}</Button>
