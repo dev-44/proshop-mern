@@ -1,69 +1,50 @@
 import {useState, useEffect} from 'react'
-import {useNavigate, Link} from 'react-router-dom'
+import {useNavigate, useParams, Link} from 'react-router-dom'
 import {Button, Row, Col, ListGroup, Image, Card} from 'react-bootstrap'
 import Message from '../components/Message'
-import CheckoutSteps from '../components/CheckoutSteps'
+import Loader from '../components/Loader'
 
 import {useDispatch, useSelector} from 'react-redux'
-import { createOrder } from '../features/orders/orderSlice'
+import { getOrder } from '../features/orders/orderSlice'
 
-const PlaceOrder = () => {
+const Order = () => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const params = useParams()
 
-    const {cart, shippingAddress, paymentMethod} = useSelector(state => state.cart)
-    const {order, isSuccess, isError, message} = useSelector(state => state.order)
+    console.log(params.id)
+
+    const {order, isLoading, isSuccess, isError, message} = useSelector(state => state.order)
+    const {orderItems, shippingAddress, paymentMethod, itemsPrice, shippingPrice, taxPrice, totalPrice} = order
     
     useEffect(() => {
-
-        if(!shippingAddress) {
-            navigate('/shipping')
-        }
-        if(isSuccess) {
-            navigate(`/order/${order._id}`)
-        }
-        //eslint-disable-next-line
-    },[navigate, isSuccess])
+        dispatch(getOrder(params.id))
+    },[])
 
     //Calculate Prices
     const addDecimals = (num) => {
         return (Math.round(num * 100) / 100).toFixed(2)
     }
 
-    let itemsPrice = addDecimals(cart.reduce((acc, item) => acc + item.price * item.qty, 0))
-    let shippingPrice = itemsPrice > 100 ? 10 : 0
-    let taxPrice = addDecimals(Number(0.15 * itemsPrice))
-    let totalPrice = addDecimals(Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice))
 
-    const placeOrderHandler = () => {
-
-        const newOrder = {
-            orderItems: cart,
-            shippingAddress,
-            paymentMethod,
-            itemsPrice,
-            shippingPrice,
-            taxPrice,
-            totalPrice
-        }
-
-        dispatch(createOrder(newOrder))
-    }
-
-  return (
-    <>
-        <CheckoutSteps step1 step2 step3 step4/>
-        <Row>
+  return isLoading ? <Loader /> : isError ? <Message variant='danger'>{message}</Message> : isSuccess &&
+  <>
+    <h1>ORDER {order._id.toUpperCase()}</h1>
+    <Row>
             <Col md={8}>
                 <ListGroup variant='flush'>
 
                     <ListGroup.Item>
                         <h2>SHIPPING</h2>
+                        <p><strong>Name: </strong>{order.user.name}</p>
+                        <p><strong>Email: </strong>{' '}
+                        <a href={`mailto:${order.user.email}`}>{order.user.email}</a></p>
                         <p>
                             <strong>Address: </strong>
                             {shippingAddress.address}, {shippingAddress.city}, {shippingAddress.postalCode}, {shippingAddress.country}
                         </p>
+                        {order.isDelivered ? <Message variant='success'>Delivered on {order.deliveredAt}</Message> : <Message variant='danger'>Not Delivered</Message>}
                     </ListGroup.Item>
 
                     <ListGroup.Item>
@@ -72,13 +53,14 @@ const PlaceOrder = () => {
                             <strong>Method: </strong>
                             {paymentMethod}
                         </p>
+                        {order.isPaid ? <Message variant='success'>Paid on {order.payAt}</Message> : <Message variant='danger'>Not Paid</Message>}
                     </ListGroup.Item>
 
                     <ListGroup.Item>
                         <h2>ORDER ITEMS</h2>
-                        {cart.length === 0 ? <Message>Your Cart is Empty</Message> : (
+                        {orderItems.length === 0 ? <Message>Order is Empty</Message> : (
                             <ListGroup variant='flush'>
-                                {cart.map((item, index) => (
+                                {orderItems.map((item, index) => (
                                     <ListGroup.Item key={index}>
                                         <Row>
                                             <Col md={1}>
@@ -138,19 +120,11 @@ const PlaceOrder = () => {
                             </Row>
                         </ListGroup.Item>
 
-                        <ListGroup.Item>
-                            {isError && <Message variant='danger'>{message}</Message>}
-                        </ListGroup.Item>
-
-                        <ListGroup.Item>
-                            <Button type='button' className='btn btn-block' disabled={cart.lenght === 0} onClick={placeOrderHandler}>Place Order</Button>
-                        </ListGroup.Item>
                     </ListGroup>
                 </Card>
             </Col>
         </Row>
-    </>
-  )
+  </>
 }
 
-export default PlaceOrder
+export default Order

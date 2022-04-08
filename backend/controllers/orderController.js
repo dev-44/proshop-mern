@@ -6,7 +6,6 @@ import asyncHandler from 'express-async-handler'
 //@access           Private
 const AddOrderItems = asyncHandler(async(req, res) => {
 
-    console.log('This is orderController')
     const { orderItems, shippingAddress, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice } = req.body
 
     if(orderItems && orderItems.length === 0) {
@@ -14,8 +13,8 @@ const AddOrderItems = asyncHandler(async(req, res) => {
         throw new Error('No order items')
     } else {
         const order = new Order({
-            orderItems, 
             user: req.user._id,
+            orderItems,
             shippingAddress, 
             paymentMethod, 
             itemsPrice, 
@@ -24,10 +23,53 @@ const AddOrderItems = asyncHandler(async(req, res) => {
             totalPrice
         })
 
-        const createdOrder = await order.save()
-
-        res.status(201).json(createdOrder)
+        try {
+            const createdOrder = await order.save()
+            res.status(201).json(createdOrder)
+        } catch (error) {
+            console.log(error)
+        }
     }
 })
 
-export {AddOrderItems}
+//@description      Get order by id
+//@route            GET api/orders/:id
+//@access           Private
+const getOrderById = asyncHandler(async(req, res) => {
+    const order = await Order.findById(req.params.id).populate('user', 'name email')
+
+    if(order) {
+        res.json(order)
+    } else {
+        res.status(404)
+        throw new Error('Order not Found')
+    }
+})
+
+//@description      Update Order to Paid
+//@route            GET api/orders/:id/paid
+//@access           Private
+const updateOrderToPaid = asyncHandler(async(req, res) => {
+    const order = await Order.findById(req.params.id)
+
+    //If PayPal
+    if(order) {
+        order.isPaid = true
+        order.paidAt = Date.now()
+        order.paymentResult = {
+            id: req.body.id,
+            status: req.body.status,
+            update_time: req.body.update_time,
+            email: req.body.payer.email_address
+        }
+
+        const updatedOrder = await order.save()
+
+        res.json(updatedOrder)
+    } else {
+        res.status(404)
+        throw new Error('Order not Found')
+    }
+})
+
+export {AddOrderItems, getOrderById, updateOrderToPaid}

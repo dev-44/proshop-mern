@@ -28,7 +28,6 @@ const Shipping = () => {
     const [choose, setChoose] = useState('')
     const [chooseToDelete, setChooseToDelete] = useState('')
     const [addressSelected, setAddressSelected] = useState({
-        id: '',
         address: '',
         city: '',
         postalCode: '',
@@ -156,7 +155,6 @@ const Shipping = () => {
             setChoose(address._id)
 
             const choise = {
-                id: address._id,
                 address: address.address,
                 city: address.city,
                 postalCode: address.postalCode,
@@ -233,7 +231,7 @@ const Shipping = () => {
                 
                 <Row>
                     {shippingAddresses.map((address) => (
-                      <Col sm={12} md={6} lg={4} xl={3}>
+                      <Col key={address._id} sm={12} md={6} lg={4} xl={3}>
                             <Card className={`py-3 px-3 ${(choose === address._id || chooseToDelete === address._id) && 'choose'}`} bg={choose === address._id ? 'success' : chooseToDelete === address._id && 'danger' }>
                                 <div>
                                     <ShippingAddress key={address._id} address={address} />

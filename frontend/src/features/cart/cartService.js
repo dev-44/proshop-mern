@@ -8,13 +8,13 @@ const addItem = async (id, qty, cartItems) => {
     const data = response.data
 
     let item = {
-            id: data._id,
-            name: data.name,
-            image: data.image,
-            price: data.price,
-            countInStock: data.countInStock,
-            qty
-        }
+        name: data.name,
+        qty,
+        image: data.image,
+        price: data.price,
+        countInStock: data.countInStock,
+        id: data._id,
+    }
 
     const existItem = cartItems.find(x => x.id === item.id)
 
