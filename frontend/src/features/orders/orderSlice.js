@@ -3,10 +3,12 @@ import orderService from './orderService'
 
 const initialState = {
     order: {},
+    orderPay: {},
     isLoading: false,
     isSuccess: false,
     isError: false,
-    message: ''
+    message: '',
+    isPaid: false
 }
 
 //Create an Order
@@ -28,6 +30,18 @@ export const getOrder = createAsyncThunk('orders/getSingleOrder', async(id, thun
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message) 
+    }
+})
+
+//Pay Order
+export const payOrder = createAsyncThunk('orders/pay', async(paymentResult, thunkAPI) => {
+    try {
+        const orderId = thunkAPI.getState().order.order._id
+        const token = thunkAPI.getState().user.user.token
+        return await orderService.payOrder(orderId, paymentResult, token)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
     }
 })
 

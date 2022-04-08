@@ -1,5 +1,7 @@
 import {useState, useEffect} from 'react'
 import {useNavigate, useParams, Link} from 'react-router-dom'
+import axios from 'axios'
+
 import {Button, Row, Col, ListGroup, Image, Card} from 'react-bootstrap'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
@@ -9,16 +11,34 @@ import { getOrder } from '../features/orders/orderSlice'
 
 const Order = () => {
 
+    const [sdkReady, setSdkReady] = useState(false)
+
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const params = useParams()
 
     console.log(params.id)
 
-    const {order, isLoading, isSuccess, isError, message} = useSelector(state => state.order)
+    const {order, isLoading, isSuccess, isError, message, isPaid} = useSelector(state => state.order)
     const {orderItems, shippingAddress, paymentMethod, itemsPrice, shippingPrice, taxPrice, totalPrice} = order
     
     useEffect(() => {
+        //Adding the script dinamically
+        const addPayPalScript = async () => {
+            const {data:clientId} = await axios.get('/api/config/paypal')
+            const script = document.createElement('script')
+            script.type = 'text/javascript'
+            script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`
+            script.async = true
+            script.onload = () => {
+                setSdkReady(true)
+            }
+
+            document.body.appendChild(script)
+        }
+
+        addPayPalScript()
+
         dispatch(getOrder(params.id))
     },[])
 

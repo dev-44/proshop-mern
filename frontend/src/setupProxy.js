@@ -9,7 +9,8 @@ const create = (app) => {
             "/api/users/check-password", 
             "/api/users/profile/:id",
             "/api/users/profile/:id/shipping",
-            "/api/orders"
+            "/api/orders",
+            "/api/config/paypal"
         ], 
         createProxyMiddleware({
             target: "http://localhost:5000"

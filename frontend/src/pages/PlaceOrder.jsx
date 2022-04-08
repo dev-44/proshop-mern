@@ -1,9 +1,15 @@
 import {useState, useEffect} from 'react'
 import {useNavigate, Link} from 'react-router-dom'
+
+
+//Design
 import {Button, Row, Col, ListGroup, Image, Card} from 'react-bootstrap'
+
+//Components
 import Message from '../components/Message'
 import CheckoutSteps from '../components/CheckoutSteps'
 
+//Redux
 import {useDispatch, useSelector} from 'react-redux'
 import { createOrder } from '../features/orders/orderSlice'
 
@@ -12,8 +18,11 @@ const PlaceOrder = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
+    //Cart
     const {cart, shippingAddress, paymentMethod} = useSelector(state => state.cart)
     const {order, isSuccess, isError, message} = useSelector(state => state.order)
+
+
     
     useEffect(() => {
 

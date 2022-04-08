@@ -29,9 +29,24 @@ import axios from 'axios'
     return data
  }
 
+ //Pay Order
+ const payOrder = async(orderId, paymentResult, token) => {
+
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const {data} = await axios.put(`/api/orders/${orderId}/pay`, paymentResult, config)
+    return data
+ }
+
 const orderService = {
     createOrder,
-    getOrder
+    getOrder,
+    payOrder
 }
 
 export default orderService
