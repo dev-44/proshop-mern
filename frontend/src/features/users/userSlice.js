@@ -6,6 +6,7 @@ const user = JSON.parse(localStorage.getItem('user'))
 
 const initialState = {
     user: user ? user : null,
+    orders: [],
     isError: false,
     isSuccess: false,
     isLoading: false,
@@ -101,6 +102,17 @@ export const deleteShippingAddress = createAsyncThunk('users/shippingAddress/del
     try {
         const user = thunkAPI.getState().user.user
         return await userService.deleteShippingAddress(idAddress, user)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)      
+    }
+})
+
+//Get User Orders
+export const getUserOrders = createAsyncThunk('users/orders/getAll', async(_, thunkAPI) => {
+    try {
+        const token = thunkAPI.getState().user.user.token
+        return await userService.getUserOrders(token)
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)      
@@ -217,6 +229,19 @@ export const userSlice = createSlice({
                 state.user = action.payload
             })
             .addCase(deleteShippingAddress.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(getUserOrders.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(getUserOrders.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.orders = action.payload
+            })
+            .addCase(getUserOrders.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload

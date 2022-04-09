@@ -26,6 +26,8 @@ import axios from 'axios'
     }
 
     const {data} = await axios.get(`/api/orders/${id}`, config)
+    console.log('Get Order Data')
+    console.log(data)
     return data
  }
 

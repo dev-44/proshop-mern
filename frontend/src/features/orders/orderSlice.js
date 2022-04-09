@@ -3,12 +3,13 @@ import orderService from './orderService'
 
 const initialState = {
     order: {},
-    orderPay: {},
     isLoading: false,
     isSuccess: false,
     isError: false,
     message: '',
-    isPaid: false
+    isPaid: false,
+    isLoadingPay: false,
+    isPlaced: false
 }
 
 //Create an Order
@@ -50,6 +51,13 @@ export const orderSlice = createSlice({
     initialState,
     reducers: {
         reset: (state) => initialState,
+        resetPay: (state) => {
+            state.isLoadingPay = false
+            state.isPaid = false
+        },
+        resetIsPlaced: (state) => {
+            state.isPlaced = false
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -60,7 +68,7 @@ export const orderSlice = createSlice({
             state.isLoading = false
             state.isSuccess = true
             state.order = action.payload
-            
+            state.isPlaced = true
         })
         .addCase(createOrder.rejected, (state, action) => {
             state.isLoading = false
@@ -73,16 +81,30 @@ export const orderSlice = createSlice({
         .addCase(getOrder.fulfilled, (state, action) => {
             state.isLoading = false
             state.isSuccess = true
-            state.order = action.payload
-            
+            state.order = action.payload    
         })
         .addCase(getOrder.rejected, (state, action) => {
             state.isLoading = false
             state.isError = true
             state.message = action.payload
         })
+        .addCase(payOrder.pending, (state) => {
+            state.isLoadingPay = true
+        })
+        .addCase(payOrder.fulfilled, (state, action) => {
+            state.isLoadingPay = false
+            state.isSuccess = true
+            state.isPaid = true
+            state.order = action.payload
+            
+        })
+        .addCase(payOrder.rejected, (state, action) => {
+            state.isLoadingPay = false
+            state.isError = true
+            state.message = action.payload
+        })
     }
 })
 
-export const {reset} = orderSlice.actions
+export const {reset, resetPay, resetIsPlaced} = orderSlice.actions
 export default orderSlice.reducer

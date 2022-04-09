@@ -4,6 +4,7 @@ const API_URL = 'api/users'
 
 //Register User
 export const register = async(userData) => {
+
     const config = {
         headers: {
             'Content-Type': 'application/json'
@@ -23,8 +24,6 @@ export const register = async(userData) => {
 
 //Login User
 export const login = async(userData) => {
-
-    console.log('This is userService')
 
     const config = {
         headers: {
@@ -49,7 +48,7 @@ const logout = () => {
 
 //Update User
 export const updateUser = async(userData) => {
-    console.log('Bandera userService')
+
     const config = {
         headers: {
             'Content-Type': 'application/json',
@@ -107,7 +106,7 @@ const addShippingAddress = async (newAddress, user) => {
 
 //Edit Shipping Address
 const editShippingAddress = async(address, user) => {
-    console.log('This is UserService')
+
     const {_id, token} = user
 
     const config = {
@@ -124,10 +123,8 @@ const editShippingAddress = async(address, user) => {
 
 //Delete Shipping Address
 const deleteShippingAddress = async(idAddress, user) => {
-    console.log('This is UserService')
+
     const {_id, token} = user
-    console.log('Token')
-    console.log(token);
 
     const config = {
         headers: {
@@ -143,6 +140,20 @@ const deleteShippingAddress = async(idAddress, user) => {
     return data
 }
 
+//Get user Orders
+const getUserOrders = async(token) => {
+
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const {data} = await axios.get('api/orders/myorders', config)
+    return data
+}
+
 
 const userService = {
     register,
@@ -152,7 +163,8 @@ const userService = {
     checkPassword,
     addShippingAddress,
     editShippingAddress,
-    deleteShippingAddress
+    deleteShippingAddress,
+    getUserOrders
 }
 
 export default userService

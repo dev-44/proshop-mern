@@ -14,7 +14,7 @@ const initialState = {
     isError: false,
     isSuccess: false,
     isLoading: false,
-    message: ''
+    message: '',
 }
 
 //Add an item to the cart
@@ -82,6 +82,10 @@ export const cartSlice = createSlice({
     initialState,
     reducers: {
         reset: (state) => initialState,
+        clearCart: (state) => {
+            localStorage.removeItem('cartItems')
+            state.cart = []
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -156,5 +160,5 @@ export const cartSlice = createSlice({
     }
 })
 
-export const {reset} = cartSlice.actions
+export const {reset, clearCart} = cartSlice.actions
 export default cartSlice.reducer
