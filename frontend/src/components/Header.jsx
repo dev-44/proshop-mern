@@ -3,7 +3,8 @@ import { LinkContainer } from 'react-router-bootstrap'
 import {FaShoppingCart, FaUser} from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
-import {logout, resetUser} from '../features/users/userSlice'
+import {logout, reset} from '../features/users/userSlice'
+import { reset as resetAdmin } from '../features/admins/adminSlice'
 
 const Header = () => {
   const dispatch = useDispatch()
@@ -12,12 +13,17 @@ const Header = () => {
 
   const onLogout = () => {
      dispatch(logout())
+     dispatch(reset())
+
+     if (user.isAdmin) {
+       dispatch(resetAdmin())
+     }
      navigate('/')
   }
 
   return (
     <header>
-      <Navbar bg="primary" variant="dark" expand="md" collapseOnSelect>
+      <Navbar bg={!user ? 'primary' : user.isAdmin ? '' : 'primary'} style={(user && user.isAdmin) ? {backgroundColor: '#236968'} : {}} variant="dark" expand="md" collapseOnSelect>
         <Container>
             <LinkContainer to='/'>
               <Navbar.Brand>PROSHOP</Navbar.Brand>  
@@ -29,7 +35,7 @@ const Header = () => {
               <LinkContainer to='/cart'>
                 <Nav.Link ><FaShoppingCart /> CART</Nav.Link>
               </LinkContainer>
-              {user ? (
+              {(user && !user.isAdmin) ? (
                 <NavDropdown title={user.name} id='username'>
                   <LinkContainer to='/profile'>
                       <NavDropdown.Item>Edit Profile</NavDropdown.Item>
@@ -42,13 +48,35 @@ const Header = () => {
                   </LinkContainer>
                   <NavDropdown.Item onClick={onLogout}>Logout</NavDropdown.Item>
                 </NavDropdown>
-              ) : (
+              ) : !user && (
                 <LinkContainer to='/login'>
                 <Nav.Link ><FaUser /> SIGN IN</Nav.Link>
               </LinkContainer>
               )}
 
-              
+              {(user && user.isAdmin) && (
+                <NavDropdown title='ADMIN' id='adminmenu'>
+
+                  <LinkContainer to='/admin/userslist'>
+                      <NavDropdown.Item>USERS</NavDropdown.Item>
+                  </LinkContainer>
+
+                  <LinkContainer to='/admin/productlist'>
+                      <NavDropdown.Item>PRODUCTS</NavDropdown.Item>
+                  </LinkContainer>
+
+                  <LinkContainer to='/admin/orderlist'>
+                      <NavDropdown.Item>ORDERS</NavDropdown.Item>
+                  </LinkContainer>
+
+                  <LinkContainer to='/changepassword'>
+                      <NavDropdown.Item>Change Password</NavDropdown.Item>
+                  </LinkContainer>
+
+                  <NavDropdown.Item onClick={onLogout}>Logout</NavDropdown.Item>
+
+              </NavDropdown>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>

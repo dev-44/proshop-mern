@@ -213,7 +213,6 @@ const editShippingAddress = asyncHandler(async(req, res) => {
             throw new Error('User not found')
         }
     } catch (error) {
-        console.log('Somo error $$$$$$$$$$')
         console.log(error)
     }
 })
@@ -248,6 +247,55 @@ const deleteShippingAddress = asyncHandler(async(req, res) => {
     }
 })
 
+//@desc     Get All Users
+//@route    GET /api/users
+//@access   Private/Admin
+const getUsers = asyncHandler(async(req, res) => {
+    const users = await User.find({})
+    res.json(users)
+})
+
+//@desc     Delete user
+//@route    DELETE /api/users/:id
+//@access   Private/Admin
+const deleteUser = asyncHandler(async(req, res) => {
+    console.log('This is delete from userController')
+    const user = await User.findById(req.params.id)
+    
+    if(user) {
+        await user.remove()
+        const users = await User.find({})
+        res.json(users)
+    } else {
+        res.status(404)
+        throw new Error('User not found')
+    }
+})
+
+//@desc     Make user an ADMIN
+//@route    PUT /api/users/:id
+//@access   Private/Admin
+const makeAdmin = asyncHandler(async(req, res) => {
+
+    const user = await User.findById(req.params.id)
+    
+    if(user) {
+        user.isAdmin = !user.isAdmin
+
+        try {
+            await user.save()
+            const users = await User.find({})
+            res.json(users)
+        } catch (error) {
+            console.log('Error while saving in the DB'.red.inverse)
+            console.log(error)
+        }
+    } else {
+        res.status(404)
+        throw new Error('User not found')
+    }
+})
+
 
 //Generate Token
 const generateToken = (id) => {
@@ -264,5 +312,8 @@ export {
     checkCurrentPassword,
     addShippingAddress,
     editShippingAddress,
-    deleteShippingAddress
+    deleteShippingAddress,
+    getUsers,
+    deleteUser,
+    makeAdmin
 }

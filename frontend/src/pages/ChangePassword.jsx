@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { checkPassword, updateUser, clearMsg, resetUser } from '../features/users/userSlice'
+import { checkPassword, updateUser, clearMsg, reset } from '../features/users/userSlice'
 import FormContainer from "../components/FormContainer"
 import {Form, Button} from 'react-bootstrap'
 
@@ -53,9 +53,9 @@ const ChangePassword = () => {
             }
             dispatch(updateUser(userData))
             setSuccessMsg('Password changed successfully')
-            dispatch(resetUser())
+            dispatch(reset())
         }
-    }, [isMatch, resetUser])
+    }, [isMatch, reset])
 
     const onSubmit = (e) => {
         e.preventDefault()

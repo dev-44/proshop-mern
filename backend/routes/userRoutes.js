@@ -8,11 +8,19 @@ import {
     checkCurrentPassword,
     addShippingAddress,
     editShippingAddress,
-    deleteShippingAddress
+    deleteShippingAddress,
+    getUsers,
+    deleteUser,
+    makeAdmin
 } from '../controllers/userController.js'
-import {protect} from '../middleware/authMiddleware.js'
+import {protect, isAdmin} from '../middleware/authMiddleware.js'
 
-router.post('/', registerUser)
+router.route('/')
+    .post(registerUser)
+    .get(protect, isAdmin, getUsers)
+router.route('/:id')
+    .put(protect, isAdmin, makeAdmin)
+    .delete(protect, isAdmin, deleteUser)
 router.post('/login', authUser)
 router.post('/check-password', protect, checkCurrentPassword)
 router.route('/profile/:id')

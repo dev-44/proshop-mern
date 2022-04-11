@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux"
 import { getUserOrders } from "../features/users/userSlice"
 import { Table, Button } from "react-bootstrap"
 import { LinkContainer } from "react-router-bootstrap"
-import FormContainer from "../components/FormContainer"
 import Loader from "../components/Loader"
 import Message from "../components/Message"
 
@@ -22,6 +21,7 @@ const Orders = () => {
     } else {
       dispatch(getUserOrders())
     }
+    // eslint-disable-next-line
   }, [])
 
   return (

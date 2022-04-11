@@ -5,7 +5,7 @@ const users = [
         name: 'Admin user',
         email: 'admin@example.com',
         password: bcrypt.hashSync('123456', 10),
-        idAdmin: true,
+        isAdmin: true,
         shippingAddresses: [],
     },
     {

@@ -15,6 +15,8 @@ import Shipping from './pages/Shipping'
 import Payment from './pages/Payment'
 import PlaceOrder from './pages/PlaceOrder'
 import Order from './pages/Order'
+import UsersList from './pages/UsersList'
+import ProductList from './pages/ProductList'
 
 function App() {
   return (
@@ -24,17 +26,19 @@ function App() {
         <main className='py-3'>
           <Container>
           <Routes>
-            <Route path='/' element={<Home />} exact/>
-            <Route path='/register' element={<Register />} exact />
-            <Route path='/login' element={<Login />} exact />
-            <Route path='/profile' element={<Profile />} exact />
-            <Route path='/changepassword' element={<ChangePassword />} exact />
+            <Route path='/' element={<Home />} exact />
+            <Route path='/register' element={<Register />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/profile' element={<Profile />}  />
+            <Route path='/changepassword' element={<ChangePassword />} />
             <Route path='/orders' element={<Orders />} exact />
             <Route path='/product/:id' element={<ProductDetails />} />
             <Route path='/shipping' element={<Shipping />} />
             <Route path='/payment' element={<Payment />} />
             <Route path='/placeorder' element={<PlaceOrder />} />
             <Route path='/order/:id' element={<Order />} />
+            <Route path='/admin/userslist' element={<UsersList />} />
+            <Route path='/admin/productlist' element={<ProductList />} />
 
             {/*}
             <Route path="/cart">

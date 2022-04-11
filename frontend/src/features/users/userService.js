@@ -3,7 +3,7 @@ import axios from "axios"
 const API_URL = 'api/users'
 
 //Register User
-export const register = async(userData) => {
+const register = async(userData) => {
 
     const config = {
         headers: {
@@ -23,7 +23,7 @@ export const register = async(userData) => {
 
 
 //Login User
-export const login = async(userData) => {
+const login = async(userData) => {
 
     const config = {
         headers: {
@@ -47,7 +47,7 @@ const logout = () => {
 }
 
 //Update User
-export const updateUser = async(userData) => {
+const updateUser = async(userData) => {
 
     const config = {
         headers: {
