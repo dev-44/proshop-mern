@@ -1,4 +1,5 @@
 import Product from '../models/productModel.js'
+import Order from '../models/orderModel.js'
 import asyncHandler from 'express-async-handler'
 
 //@description      Fetch all products
@@ -23,7 +24,40 @@ const getProductById = asyncHandler(async(req, res) => {
     }
 })
 
+//@description      Delete a product
+//@route            DELETE api/products/:id
+//@access           Private/Admin
+const deleteProduct = asyncHandler(async(req, res) => {
+    const product = await Product.findById(req.params.id)
+    const orders = await Order.find({})
+
+    orders.map(myFunction)
+
+    function myFunction(order) {
+        var exists = order.orderItems.filter(item => item._id === req.params.id)
+        console.log(exists)
+    }
+
+   
+    /*
+    orders.map(order => order.orderItems.filter(item => item._id === req.params.id, () => {
+        console.log('We found it')
+    }))
+    */
+
+    /*
+    if() {
+        res.status(404)
+        throw new Error('Exists orders with that product. Cant Delete')
+    } else {
+        await product.remove()
+        res.json({message: 'Product removed'})
+    }
+    */
+})
+
 export {
     getProducts,
-    getProductById
+    getProductById,
+    deleteProduct
 }

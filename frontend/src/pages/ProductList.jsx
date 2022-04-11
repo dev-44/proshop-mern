@@ -5,7 +5,8 @@ import {Table, Button, Modal, Row, Col} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { getProducts } from '../features/products/productSlice'
+import Product from '../components/Product'
+import { getProducts, deleteProduct, resetIsDeleted } from '../features/products/productSlice'
 
 const ProductList = () => {
 
@@ -16,7 +17,7 @@ const ProductList = () => {
     const navigate = useNavigate()
 
     const {user} = useSelector(state => state.user)
-    const {products, isLoading, isError, message} = useSelector(state => state.product)
+    const {products, isLoading, isError, message, isDeleted} = useSelector(state => state.product)
 
     useEffect(() => {
         if ((user && user.isAdmin) ) {
@@ -24,7 +25,11 @@ const ProductList = () => {
         } else {
             navigate('/')
         }
-    }, [dispatch, navigate, user])
+
+        if(isDeleted) {
+            dispatch(resetIsDeleted())
+        }
+    }, [dispatch, navigate, user, isDeleted])
 
     const createProductHandler = () => {
 
@@ -36,7 +41,7 @@ const ProductList = () => {
     }
 
     const deleteHandler = () => {
-
+        dispatch(deleteProduct(productToRemove))
         setProductToRemove('')
         handleCloseModal()
     }
@@ -74,6 +79,8 @@ const ProductList = () => {
                 </Button>
             </Col>
         </Row>
+
+        {(!isError && message) && <Message variant='success'>{message}</Message>}
 
         {isLoading  ? <Loader /> : isError ? <Message variant='danger'>{message}</Message> : (
             <Table striped bordered hover responsive className='table-sm'>
