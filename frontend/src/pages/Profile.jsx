@@ -4,7 +4,7 @@ import {Form, Button, Row, Col} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { updateUser, clearMsg, resetUser } from '../features/users/userSlice'
+import { updateUser, resetError } from '../features/users/userSlice'
 import FormContainer from '../components/FormContainer'
 import {FaEdit} from 'react-icons/fa'
 
@@ -17,7 +17,7 @@ const Profile = () => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const {user, isLoading, isError, isSuccess, message} = useSelector(state => state.user)
+    const {user, isLoading, isError, isSuccess, message, isUpdated} = useSelector(state => state.user)
 
     useEffect(() => {
 
@@ -35,10 +35,10 @@ const Profile = () => {
         }
 
         if(message) {
-            setTimeout(() => dispatch(clearMsg()), 5000)
+            setTimeout(() => dispatch(resetError()), 5000)
         }
 
-        if(isSuccess) {
+        if(isUpdated) {
             setSuccessMsg('Profile Updated Successfully')
             setTimeout(() => {setSuccessMsg('')}, 5000)
         }

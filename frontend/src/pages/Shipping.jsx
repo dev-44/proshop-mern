@@ -5,7 +5,7 @@ import {useNavigate, Link} from 'react-router-dom'
 //Redux
 import {useDispatch, useSelector} from 'react-redux'
 import { addShippingAddressCart } from '../features/cart/cartSlice'
-import { addShippingAddress, editShippingAddress, deleteShippingAddress, clearMsg } from '../features/users/userSlice'
+import { addShippingAddress, editShippingAddress, deleteShippingAddress, resetError } from '../features/users/userSlice'
 
 //Design
 import {Card, Form, Button, Row, Col, Modal} from 'react-bootstrap'
@@ -49,7 +49,7 @@ const Shipping = () => {
 
     useEffect(() => {
         if(message) {
-            setTimeout(() => dispatch(clearMsg()), 5000)
+            setTimeout(() => dispatch(resetError()), 5000)
         }
     }, [message, dispatch])
 

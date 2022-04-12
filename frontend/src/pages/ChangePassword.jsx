@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { checkPassword, updateUser, clearMsg, reset } from '../features/users/userSlice'
+import { checkPassword, updateUser, resetError, reset } from '../features/users/userSlice'
 import FormContainer from "../components/FormContainer"
 import {Form, Button} from 'react-bootstrap'
 
@@ -31,7 +31,7 @@ const ChangePassword = () => {
         }
 
         if(message) {
-            setTimeout(() => dispatch(clearMsg()), 5000)
+            setTimeout(() => dispatch(resetError()), 5000)
         }
 
         if(successMsg){

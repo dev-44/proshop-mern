@@ -4,7 +4,7 @@ import {Form, Button, Row, Col} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { register, clearMsg } from '../features/users/userSlice'
+import { register, resetError } from '../features/users/userSlice'
 import FormContainer from '../components/FormContainer'
 
 const Register = () => {
@@ -37,7 +37,7 @@ const Register = () => {
         }
 
         if(message) {
-            setTimeout(() => dispatch(clearMsg()), 5000)
+            setTimeout(() => dispatch(resetError()), 5000)
         }
     }, [isSuccess, user, navigate, dispatch, errorMsg, message])
 

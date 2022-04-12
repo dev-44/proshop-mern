@@ -12,6 +12,7 @@ const initialState = {
     isLoading: false,
     isMatch: false,
     isLoggedIn: false,
+    isUpdated: false,
     message: ''
 }
 
@@ -51,10 +52,6 @@ export const updateUser = createAsyncThunk('users/update', async(userData, thunk
     }
 })
 
-//Clear Error Message
-export const clearMsg = createAsyncThunk('users/clearMessage', async() => {
-    return
-})
 
 //Check Current Password
 export const checkPassword = createAsyncThunk('users/checkPassword', async(userData, thunkAPI) => {
@@ -123,7 +120,12 @@ export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        reset: (state) => initialState
+        reset: (state) => initialState,
+        resetError: (state) => {
+            state.message = ''
+            state.isError = false
+            state.isUpdated = false
+    }
     },
     extraReducers: (builder) =>{
         builder
@@ -161,6 +163,7 @@ export const userSlice = createSlice({
             .addCase(updateUser.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
+                state.isUpdated = true
                 state.user = action.payload
             })
             .addCase(updateUser.rejected, (state, action) => {
@@ -176,9 +179,6 @@ export const userSlice = createSlice({
                 state.isMatch = false
                 state.isLoggedIn = false
                 state.message = null
-            })
-            .addCase(clearMsg.fulfilled, (state) => {
-                state.message = ''
             })
             .addCase(checkPassword.pending, (state) => {
                 state.isLoading = true
@@ -249,5 +249,5 @@ export const userSlice = createSlice({
     }
 })
 
-export const {reset} = userSlice.actions
+export const {reset, resetError} = userSlice.actions
 export default userSlice.reducer

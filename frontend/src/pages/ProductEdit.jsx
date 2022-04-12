@@ -52,10 +52,6 @@ const ProductEdit = () => {
             setTimeout(() => dispatch(resetMessage()), 5000)
         }
 
-        if(isSuccess) {
-            setSuccessMsg('Profile Updated Successfully')
-            setTimeout(() => {setSuccessMsg('')}, 5000)
-        }
     }, [navigate, dispatch, productId, product, isSuccess, errorMsg, message])
 
     const onSubmit = (e) => {

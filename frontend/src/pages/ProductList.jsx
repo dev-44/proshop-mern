@@ -42,6 +42,11 @@ const ProductList = () => {
             setTimeout(() => dispatch(resetMessage()), 5000)
         }
 
+        if(isCreated) {
+            setSuccessMessage('Product created with success')
+            setTimeout(() => setSuccessMessage(''), 5000)
+        }
+
     }, [dispatch, isDeleted, isError, isCreated,])
 
     const createProductHandler = () => {
