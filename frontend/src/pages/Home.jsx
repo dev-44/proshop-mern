@@ -9,7 +9,6 @@ import Message from '../components/Message'
 //Redux
 import {useSelector, useDispatch} from 'react-redux'
 import { getProducts, reset } from '../features/products/productSlice'
-import { resetUser } from '../features/users/userSlice'
 
 const Home = () => {
 
@@ -30,11 +29,13 @@ const Home = () => {
       }, 5000)
     }
     
+    /*
     return () => {              //Clear/Unmount.Return a function
         if(isSuccess) {
             dispatch(reset())
         }
     }
+    */
     
    
 }, [dispatch, isSuccess, isLoggedIn])

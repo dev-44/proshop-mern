@@ -5,19 +5,19 @@ import {Table, Button, Modal, Row, Col} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import Product from '../components/Product'
-import { getProducts, deleteProduct, resetIsDeleted } from '../features/products/productSlice'
+import { getProducts, deleteProduct, resetDeleted, resetMessage} from '../features/products/productSlice'
 
 const ProductList = () => {
 
     const [openModal, setOpenModal] = useState(false)
     const [productToRemove, setProductToRemove] = useState('')
+    const [successMessage, setSuccessMessage] = useState('')
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const {user} = useSelector(state => state.user)
-    const {products, isLoading, isError, message, isDeleted} = useSelector(state => state.product)
+    const {products, isLoading, isSuccess, isError, message, isDeleted} = useSelector(state => state.product)
 
     useEffect(() => {
         if ((user && user.isAdmin) ) {
@@ -25,11 +25,22 @@ const ProductList = () => {
         } else {
             navigate('/')
         }
+        // eslint-disable-next-line
+    },[])
 
+    useEffect(() => {
         if(isDeleted) {
-            dispatch(resetIsDeleted())
+            dispatch(getProducts())
+            setSuccessMessage('Product deleted with success')
+            setTimeout(() => setSuccessMessage(''), 5000)
+            dispatch(resetDeleted())
         }
-    }, [dispatch, navigate, user, isDeleted])
+
+        if(isError) {
+            setTimeout(() => dispatch(resetMessage()), 5000)
+        }
+
+    }, [dispatch, isDeleted, isError])
 
     const createProductHandler = () => {
 
@@ -80,9 +91,10 @@ const ProductList = () => {
             </Col>
         </Row>
 
-        {(!isError && message) && <Message variant='success'>{message}</Message>}
+        {(successMessage) && <Message variant='success'>{successMessage}</Message>}
+        {(isError && message) && <Message variant='danger'>{message}</Message>}
 
-        {isLoading  ? <Loader /> : isError ? <Message variant='danger'>{message}</Message> : (
+        {isLoading  ? <Loader /> : (
             <Table striped bordered hover responsive className='table-sm'>
                 <thead>
                     <tr>

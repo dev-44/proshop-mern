@@ -12,7 +12,10 @@ const users = [
         name: 'John Doe',
         email: 'john@example.com',
         password: bcrypt.hashSync('123456', 10),
-        shippingAddresses: [],
+        shippingAddresses: [{address: 'Palma y Elsa Escalante 1343',
+                            city: 'Fernando de la Mora',
+                            postalCode: '2300',
+                            country: 'PY'}],
     },
     {
         name: 'Jane Doe',

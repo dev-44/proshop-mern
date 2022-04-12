@@ -30,30 +30,24 @@ const getProductById = asyncHandler(async(req, res) => {
 const deleteProduct = asyncHandler(async(req, res) => {
     const product = await Product.findById(req.params.id)
     const orders = await Order.find({})
+    
+    let items = []
+    orders.map(order => order.orderItems.map(item => items.push(item)))
+    console.log(items)
+    console.log('-----------------------')
+    console.log(req.params.id)
+    items.map(item => console.log(item.id.valueOf()))
+    let match = items.filter(item => item.id.valueOf() === req.params.id)
+    console.log(match)
+    console.log(match.length)
 
-    orders.map(myFunction)
-
-    function myFunction(order) {
-        var exists = order.orderItems.filter(item => item._id === req.params.id)
-        console.log(exists)
-    }
-
-   
-    /*
-    orders.map(order => order.orderItems.filter(item => item._id === req.params.id, () => {
-        console.log('We found it')
-    }))
-    */
-
-    /*
-    if() {
+    if(match.length > 0) {
         res.status(404)
         throw new Error('Exists orders with that product. Cant Delete')
     } else {
         await product.remove()
         res.json({message: 'Product removed'})
     }
-    */
 })
 
 export {

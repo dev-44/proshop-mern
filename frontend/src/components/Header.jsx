@@ -13,7 +13,6 @@ const Header = () => {
 
   const onLogout = () => {
      dispatch(logout())
-     dispatch(reset())
 
      if (user.isAdmin) {
        dispatch(resetAdmin())

@@ -10,7 +10,7 @@ const initialState = {
     isSuccess: false,
     isLoading: false,
     message: '',
-    isDeleted : false
+    isDeleted: false
 }
 
 //Get All Products
@@ -49,7 +49,12 @@ export const productSlice = createSlice({
     initialState,
     reducers: {
         reset: (state) => initialState,
-        resetIsDeleted: (state) => state.isDeleted = false
+        resetDeleted: (state) => {state.isDeleted = false},
+        resetMessage: (state) => {
+            state.message = ''
+            state.isError = false
+            state.isSuccess = false
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -86,7 +91,6 @@ export const productSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.isDeleted = true
-                state.message = action.payload
             })
             .addCase(deleteProduct.rejected, (state, action) => {
                 state.isLoading = false
@@ -96,5 +100,5 @@ export const productSlice = createSlice({
     }
 })
 
-export const {reset, resetIsDeleted} = productSlice.actions
+export const {reset, resetDeleted, resetMessage} = productSlice.actions
 export default productSlice.reducer
