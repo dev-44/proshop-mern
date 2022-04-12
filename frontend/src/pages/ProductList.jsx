@@ -5,7 +5,7 @@ import {Table, Button, Modal, Row, Col} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { getProducts, deleteProduct, resetDeleted, resetMessage, reset, createProduct} from '../features/products/productSlice'
+import { getProducts, deleteProduct, resetDeleted, resetMessage, reset, createProduct, getProductDetails} from '../features/products/productSlice'
 
 const ProductList = () => {
 
@@ -17,7 +17,7 @@ const ProductList = () => {
     const navigate = useNavigate()
 
     const {user} = useSelector(state => state.user)
-    const {products, isLoading, isSuccess, isError, message, isDeleted, isCreated} = useSelector(state => state.product)
+    const {products, isLoading, isSuccess, isError, message, isDeleted, isCreated, isUpdated} = useSelector(state => state.product)
 
     useEffect(() => {
         dispatch(reset())
@@ -47,7 +47,12 @@ const ProductList = () => {
             setTimeout(() => setSuccessMessage(''), 5000)
         }
 
-    }, [dispatch, isDeleted, isError, isCreated,])
+        if(isUpdated) {
+            setSuccessMessage('Product Updated with success')
+            setTimeout(() => setSuccessMessage(''), 5000)
+        }
+
+    }, [dispatch, isDeleted, isError, isCreated, isUpdated])
 
     const createProductHandler = () => {
         navigate('/admin/product/create')
@@ -64,6 +69,10 @@ const ProductList = () => {
         handleCloseModal()
     }
 
+    const editProduct = (id) => {
+        dispatch(getProductDetails(id))
+        navigate(`/admin/product/${id}`)
+    }
 
     //Modals
     const handleOpenModal = () => setOpenModal(true)
@@ -122,11 +131,11 @@ const ProductList = () => {
                             <td>{product.category}</td>
                             <td>{product.brand}</td>
                             <td>
-                                <LinkContainer to={`/admin/product/${product._id}`}>
-                                    <Button variant='light' className='btn-sm'>
+                
+                                    <Button variant='light' className='btn-sm' onClick={()=> editProduct(product._id)}>
                                         <i className='fas fa-edit'></i>
                                     </Button>
-                                </LinkContainer>
+                                
                                 
                                 <Button variant='danger' className='btn-sm' onClick={()=>preDeleteProduct(product._id)}>
                                     <i className='fas fa-trash'></i>

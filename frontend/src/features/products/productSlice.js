@@ -3,9 +3,7 @@ import productService from './productService'
 
 const initialState = {
     products: [],
-    product: {
-        reviews: []
-    },
+    product: {},
     isError: false,
     isSuccess: false,
     isLoading: false,
@@ -51,6 +49,17 @@ export const createProduct = createAsyncThunk('product/create', async(productDat
     try {
         const token = thunkAPI.getState().user.user.token
         return await productService.createProduct(productData, token)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+//Update Product
+export const updateProduct = createAsyncThunk('product/update', async(productData, thunkAPI) => {
+    try {
+        const token = thunkAPI.getState().user.user.token
+        return await productService.updateProduct(productData, token)
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)
@@ -120,6 +129,20 @@ export const productSlice = createSlice({
                 state.products.push(action.payload) 
             })
             .addCase(createProduct.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(updateProduct.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(updateProduct.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.isUpdated = true
+                state.products = action.payload 
+            })
+            .addCase(updateProduct.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload

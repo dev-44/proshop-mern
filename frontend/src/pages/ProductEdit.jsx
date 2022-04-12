@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
-import { getProductDetails, resetMessage } from '../features/products/productSlice'
+import { getProductDetails, resetMessage, updateProduct, reset } from '../features/products/productSlice'
 
 const ProductEdit = () => {
 
@@ -26,10 +26,9 @@ const ProductEdit = () => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const {product, isLoading, isError, isSuccess, message} = useSelector(state => state.product)
+    const {product, isLoading, isError, isSuccess, message, isUpdated} = useSelector(state => state.product)
 
     useEffect(() => {
-
         if(product._id !== productId) {
             dispatch(getProductDetails(productId))
         } else {
@@ -52,11 +51,27 @@ const ProductEdit = () => {
             setTimeout(() => dispatch(resetMessage()), 5000)
         }
 
-    }, [navigate, dispatch, productId, product, isSuccess, errorMsg, message])
+        if(isUpdated) {
+            navigate('/admin/productlist')
+        }
+
+    }, [navigate, dispatch, productId, product, isSuccess, errorMsg, message, isUpdated])
 
     const onSubmit = (e) => {
         e.preventDefault()
 
+        const editedProduct = {
+            id: productId,
+            name,
+            image,
+            brand,
+            category,
+            description,
+            price,
+            countInStock
+        }
+
+        dispatch(updateProduct(editedProduct))
     }
 
     return (

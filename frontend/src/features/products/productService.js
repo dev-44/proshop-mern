@@ -39,11 +39,28 @@ const createProduct = async(product, token) => {
     return data
 }
 
+//Update product
+const updateProduct = async(product, token) => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    console.log('Product ID')
+    console.log(product.id)
+
+    const {data} = await axios.put(`/api/products/${product.id}`, product, config)
+    return data
+}
+
 const productService = {
     getProducts,
     getProductDetails,
     deleteProduct,
-    createProduct
+    createProduct,
+    updateProduct
 }
 
 export default productService
