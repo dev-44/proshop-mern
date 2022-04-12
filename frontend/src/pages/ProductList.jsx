@@ -50,6 +50,7 @@ const ProductList = () => {
         if(isUpdated) {
             setSuccessMessage('Product Updated with success')
             setTimeout(() => setSuccessMessage(''), 5000)
+            setTimeout(() => dispatch(resetMessage()), 5000)
         }
 
     }, [dispatch, isDeleted, isError, isCreated, isUpdated])
@@ -132,9 +133,9 @@ const ProductList = () => {
                             <td>{product.brand}</td>
                             <td>
                 
-                                    <Button variant='light' className='btn-sm' onClick={()=> editProduct(product._id)}>
-                                        <i className='fas fa-edit'></i>
-                                    </Button>
+                                <Button variant='light' className='btn-sm' onClick={()=> editProduct(product._id)}>
+                                    <i className='fas fa-edit'></i>
+                                </Button>
                                 
                                 
                                 <Button variant='danger' className='btn-sm' onClick={()=>preDeleteProduct(product._id)}>

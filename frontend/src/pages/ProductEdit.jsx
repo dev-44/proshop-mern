@@ -29,17 +29,14 @@ const ProductEdit = () => {
     const {product, isLoading, isError, isSuccess, message, isUpdated} = useSelector(state => state.product)
 
     useEffect(() => {
-        if(product._id !== productId) {
-            dispatch(getProductDetails(productId))
-        } else {
-            setName(product.name)
-            setPrice(product.price)
-            setImage(product.image)
-            setBrand(product.brand)
-            setCategory(product.category)
-            setCountInStock(product.countInStock)
-            setDescription(product.description)
-        }
+
+        setName(product.name)
+        setPrice(product.price)
+        setImage(product.image)
+        setBrand(product.brand)
+        setCategory(product.category)
+        setCountInStock(product.countInStock)
+        setDescription(product.description)
 
         if(errorMsg){
             setTimeout(() => {

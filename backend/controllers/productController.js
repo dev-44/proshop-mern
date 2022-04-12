@@ -81,9 +81,9 @@ const updateProduct = asyncHandler(async(req, res) => {
 
     const {name, price, description, image, brand, category, countInStock} = req.body
 
-    const product = await Product.findById(req.params.id)
+    var product = await Product.findById(req.params.id)
 
-    if(!product) {
+    if(product) {
         product.name = name
         product.price = price
         product.description = description
@@ -93,8 +93,9 @@ const updateProduct = asyncHandler(async(req, res) => {
         product.countInStock = countInStock
 
         try {
-            const updatedProduct = await product.save()
-            res.json(updatedProduct)
+            await product.save()
+            const products = await Product.find()
+            res.json(products)
         } catch (error) {
             console.log(error)
         }
