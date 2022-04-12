@@ -29,6 +29,7 @@ const ProductList = () => {
     },[])
 
     useEffect(() => {
+        
         if(isDeleted) {
             dispatch(getProducts())
             setSuccessMessage('Product deleted with success')
