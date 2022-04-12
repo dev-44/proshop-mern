@@ -17,6 +17,8 @@ import PlaceOrder from './pages/PlaceOrder'
 import Order from './pages/Order'
 import UsersList from './pages/UsersList'
 import ProductList from './pages/ProductList'
+import ProductEdit from './pages/ProductEdit'
+import ProductCreate from './pages/ProductCreate'
 
 function App() {
   return (
@@ -39,6 +41,8 @@ function App() {
             <Route path='/order/:id' element={<Order />} />
             <Route path='/admin/userslist' element={<UsersList />} />
             <Route path='/admin/productlist' element={<ProductList />} />
+            <Route path='/admin/product/:id' element={<ProductEdit />} />
+            <Route path='/admin/product/create' element={<ProductCreate />} />
 
             {/*}
             <Route path="/cart">

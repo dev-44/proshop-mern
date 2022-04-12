@@ -26,10 +26,24 @@ const deleteProduct = async(id, token) => {
     return data
 }
 
+//Create product
+const createProduct = async(product, token) => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const {data} = await axios.post(API_URL, product, config)   //In case of not sending data ('URL, {}, config)
+    return data
+}
+
 const productService = {
     getProducts,
     getProductDetails,
-    deleteProduct
+    deleteProduct,
+    createProduct
 }
 
 export default productService

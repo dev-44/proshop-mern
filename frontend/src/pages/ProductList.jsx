@@ -5,7 +5,7 @@ import {Table, Button, Modal, Row, Col} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { getProducts, deleteProduct, resetDeleted, resetMessage} from '../features/products/productSlice'
+import { getProducts, deleteProduct, resetDeleted, resetMessage, reset, createProduct} from '../features/products/productSlice'
 
 const ProductList = () => {
 
@@ -17,9 +17,10 @@ const ProductList = () => {
     const navigate = useNavigate()
 
     const {user} = useSelector(state => state.user)
-    const {products, isLoading, isSuccess, isError, message, isDeleted} = useSelector(state => state.product)
+    const {products, isLoading, isSuccess, isError, message, isDeleted, isCreated} = useSelector(state => state.product)
 
     useEffect(() => {
+        dispatch(reset())
         if ((user && user.isAdmin) ) {
             dispatch(getProducts())
         } else {
@@ -41,10 +42,10 @@ const ProductList = () => {
             setTimeout(() => dispatch(resetMessage()), 5000)
         }
 
-    }, [dispatch, isDeleted, isError])
+    }, [dispatch, isDeleted, isError, isCreated,])
 
     const createProductHandler = () => {
-
+        navigate('/admin/product/create')
     }
 
     const preDeleteProduct = (id) => {
