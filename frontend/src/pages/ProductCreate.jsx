@@ -24,6 +24,7 @@ const ProductCreate = () => {
     const [countInStock, setCountInStock] = useState(0)
     const [description, setDescription] = useState('')
     const [uploading, setUploading] = useState(false)
+    const [picture, setPicture] = useState()
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -55,6 +56,7 @@ const ProductCreate = () => {
             user: user._id,
             name,
             image,
+            picture,
             brand,
             category,
             description,
@@ -115,8 +117,11 @@ const ProductCreate = () => {
                                 <Form.Label>Image</Form.Label>
                                 <Form.Control type='text' placeholder='Enter Image url' value={image} onChange={(e) => setImage(e.target.value)}></Form.Control>
                                 
-                                <Form.Control type="file" id='image-file' label='Choose File' custom onChange={uploadFileHandler}/>
+                                <Form.Control type="file" id='image-file' label='Choose File' custom onChange={(e)=> setPicture(e.target.files[0])}/>
                                 {uploading && <Loader />}
+                                {/*
+                                <Form.Control type="file" id='image-file' label='Choose File' custom onChange={uploadFileHandler}/>
+                                {uploading && <Loader />} */}
                             </Form.Group>
 
                             <Form.Group controlId='brand'>
