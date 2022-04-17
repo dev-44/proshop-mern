@@ -28,9 +28,10 @@ const deleteProduct = async(id, token) => {
 
 //Create product
 const createProduct = async(product, token) => {
+
     const config = {
         headers: {
-            'Content-Type': 'multipart/form-data',
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
         }
     }
@@ -55,12 +56,37 @@ const updateProduct = async(product, token) => {
     return data
 }
 
+//Insert Image in the DB
+const createImage = async(image, token) => {
+    var config = {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const {data} = await axios.post('/api/upload', image, config)
+
+    var base64Flag = 'data:image/jpeg;base64,';
+    var imageStr = arrayBufferToBase64(data.img.data.data)
+
+    return base64Flag + imageStr
+}
+
+function arrayBufferToBase64(buffer) {
+    var binary = ''
+    var bytes = [].slice.call(new Uint8Array(buffer))  
+    bytes.forEach((b) => binary += String.fromCharCode(b))    
+    return window.btoa(binary)
+};
+
 const productService = {
     getProducts,
     getProductDetails,
     deleteProduct,
     createProduct,
-    updateProduct
+    updateProduct,
+    createImage
 }
 
 export default productService

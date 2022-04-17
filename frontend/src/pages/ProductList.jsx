@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
-import {Table, Button, Modal, Row, Col} from 'react-bootstrap'
+import {Table, Button, Modal, Row, Col, Card} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
@@ -17,7 +17,7 @@ const ProductList = () => {
     const navigate = useNavigate()
 
     const {user} = useSelector(state => state.user)
-    const {products, isLoading, isSuccess, isError, message, isDeleted, isCreated, isUpdated} = useSelector(state => state.product)
+    const {products, isLoading, isSuccess, isError, message, isDeleted, isCreated, isUpdated, image} = useSelector(state => state.product)
 
     useEffect(() => {
         dispatch(reset())
@@ -100,6 +100,8 @@ const ProductList = () => {
             <Col>
                 <h1>Products</h1>
             </Col>
+
+            <Card.Img src={image} variant='top' />
 
             <Col className='text-right'>
                 <Button className='my-3' onClick={createProductHandler}>

@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
-import { createProduct, resetMessage } from '../features/products/productSlice'
+import { createProduct, resetMessage, createImage } from '../features/products/productSlice'
 
 const ProductCreate = () => {
 
@@ -56,15 +56,20 @@ const ProductCreate = () => {
             user: user._id,
             name,
             image,
-            picture,
             brand,
             category,
             description,
             price,
             countInStock
         }
-
+ 
         dispatch(createProduct(newProduct))
+
+        const file = picture
+        const formData = new FormData()
+        formData.append('image', file)
+        dispatch(createImage(formData))
+
     }
 
     const uploadFileHandler = async(e) =>{
@@ -117,7 +122,7 @@ const ProductCreate = () => {
                                 <Form.Label>Image</Form.Label>
                                 <Form.Control type='text' placeholder='Enter Image url' value={image} onChange={(e) => setImage(e.target.value)}></Form.Control>
                                 
-                                <Form.Control type="file" id='image-file' label='Choose File' custom onChange={(e)=> setPicture(e.target.files[0])}/>
+                                <Form.Control type="file" label='Choose File' custom onChange={(e)=> setPicture(e.target.files[0])}/>
                                 {uploading && <Loader />}
                                 {/*
                                 <Form.Control type="file" id='image-file' label='Choose File' custom onChange={uploadFileHandler}/>

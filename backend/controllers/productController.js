@@ -2,8 +2,7 @@ import Product from '../models/productModel.js'
 import Order from '../models/orderModel.js'
 import asyncHandler from 'express-async-handler'
 import path from 'path'
-import fs from 'fs'
-import mongoose from 'mongoose'
+
 
 //This is a comment
 
@@ -38,13 +37,13 @@ const deleteProduct = asyncHandler(async(req, res) => {
     
     let items = []
     orders.map(order => order.orderItems.map(item => items.push(item)))
-    console.log(items)
-    console.log('-----------------------')
-    console.log(req.params.id)
+    //console.log(items)
+    //console.log('-----------------------')
+    //console.log(req.params.id)
     items.map(item => console.log(item.id.valueOf()))
     let match = items.filter(item => item.id.valueOf() === req.params.id)
-    console.log(match)
-    console.log(match.length)
+    //console.log(match)
+    //console.log(match.length)
 
     if(match.length > 0) {
         res.status(404)
@@ -60,18 +59,11 @@ const deleteProduct = asyncHandler(async(req, res) => {
 //@access           Private/Admin
 const createProduct = asyncHandler(async(req, res) => {
 
-    var img = fs.readFileSync(req.file.path);
-    var encode_img = img.toString('base64');
-    var final_img = {
-        contentType:req.file.mimetype,
-        image: Buffer.from(string[encode_img, 'base64']),
-        //image:new Buffer(encode_img,'base64')                     deprecated
-    }
+
     const product = new Product({
         user: req.user._id,
         name: req.body.name,
         image: req.body.image,
-        picture: final_img,
         brand: req.body.brand,
         category: req.body.category,
         description: req.body.description,
@@ -79,6 +71,7 @@ const createProduct = asyncHandler(async(req, res) => {
         countInStock: req.body.countInStock,
         //numReviews: req.body.numReviews,
     })
+
 
     try {
         const newProduct = await product.save()

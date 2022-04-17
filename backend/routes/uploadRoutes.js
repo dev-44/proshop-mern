@@ -1,8 +1,11 @@
-import path from 'path'
 import express from 'express'
-import multer from 'multer'
 const router = express.Router()
+import Image from '../models/imageModel.js'
+import path from 'path'
+import multer from 'multer'
 import {protect, isAdmin} from '../middleware/authMiddleware.js'
+import fs from 'fs'
+import mongoose from 'mongoose'
 
 const storage = multer.diskStorage({
 
@@ -36,8 +39,39 @@ const upload = multer({
   },
 })
 
-router.post('/', upload.single('image'), (req, res) => {
-  res.send(`/${req.file.path}`)
+router.post('/', upload.single('image'), async(req, res) => {
+  //res.send(`/${req.file.path}`)
+
+  var img = fs.readFileSync(req.file.path);
+  var encode_img = img.toString('base64')
+  
+  var final_img = {
+      contentType:req.file.mimetype,
+      data: Buffer.from(encode_img, 'base64')
+  }
+
+  console.log(final_img)
+
+  try {
+    const newImage = await Image.create({img: final_img})
+
+    if (newImage) {
+      console.log('image uploaded in the db!!')
+      
+      /*
+      res.contentType(req.file.mimetype)
+      console.log(newImage.img.data.buffer)
+      return res.status(201).send(newImage.img.data.buffer)
+      */
+
+      res.contentType('json')
+      //console.log(newImage)
+      res.send(newImage)
+    }
+
+  } catch (error) {
+    console.log(error)
+  }
 })
 
 export default router

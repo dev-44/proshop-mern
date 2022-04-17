@@ -10,7 +10,8 @@ const initialState = {
     message: '',
     isDeleted: false,
     isCreated: false,
-    isUpdated: false
+    isUpdated: false,
+    image: null
 }
 
 //Get All Products
@@ -47,6 +48,7 @@ export const deleteProduct = createAsyncThunk('product/delete', async(id, thunkA
 //Create Product
 export const createProduct = createAsyncThunk('product/create', async(productData, thunkAPI) => {
     try {
+        //console.log(productData)
         const token = thunkAPI.getState().user.user.token
         return await productService.createProduct(productData, token)
     } catch (error) {
@@ -65,6 +67,18 @@ export const updateProduct = createAsyncThunk('product/update', async(productDat
         return thunkAPI.rejectWithValue(message)
     }
 })
+
+//Insert Image
+export const createImage = createAsyncThunk('product/image/create', async(image, thunkAPI) => {
+    try {
+        const token = thunkAPI.getState().user.user.token
+        return await productService.createImage(image, token)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
 
 export const productSlice = createSlice({
     name: 'product',
@@ -144,6 +158,19 @@ export const productSlice = createSlice({
                 state.products = action.payload 
             })
             .addCase(updateProduct.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(createImage.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(createImage.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.image = action.payload
+            })
+            .addCase(createImage.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload
