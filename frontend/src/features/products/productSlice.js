@@ -17,12 +17,15 @@ const initialState = {
     isImage: false,
     image: false,
     reviewCreated: false,
+    pages: 0,
+    page: 0
 }
 
 //Get All Products
-export const getProducts = createAsyncThunk('products/getAll', async(_,thunkAPI) => {
+export const getProducts = createAsyncThunk('products/getAll', async(params,thunkAPI) => {
     try {
-        return await productService.getProducts()
+        const {keyword, pageNumber} = params
+        return await productService.getProducts(keyword, pageNumber)
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)
@@ -116,6 +119,7 @@ export const productSlice = createSlice({
             state.isImage = false
             state.reviewCreated = false
         },
+        resetReviewCreated: (state) => {state.reviewCreated = false},
     },
     extraReducers: (builder) => {
         builder
@@ -125,7 +129,9 @@ export const productSlice = createSlice({
             .addCase(getProducts.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.products = action.payload
+                state.products = action.payload.products
+                state.pages = action.payload.pages
+                state.page = action.payload.page
             })
             .addCase(getProducts.rejected, (state, action) => {
                 state.isLoading = false
@@ -205,5 +211,5 @@ export const productSlice = createSlice({
     }
 })
 
-export const {reset, resetDeleted, resetMessage} = productSlice.actions
+export const {reset, resetDeleted, resetMessage, resetReviewCreated} = productSlice.actions
 export default productSlice.reducer

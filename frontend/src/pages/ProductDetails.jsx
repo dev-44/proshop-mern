@@ -3,7 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Row, Col, Image, ListGroup, Card, Button, Form} from 'react-bootstrap'
 import Rating from '../components/Rating'
 import { useDispatch, useSelector } from 'react-redux'
-import { getProductDetails, createProductReview, resetMessage } from '../features/products/productSlice'
+import { getProductDetails, createProductReview, resetMessage, resetReviewCreated } from '../features/products/productSlice'
 import { addItem } from '../features/cart/cartSlice'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
@@ -44,13 +44,15 @@ const ProductDetails = () => {
         if(isError){
             setRating(0)
             setComment('')
-            setTimeout(() => dispatch(resetMessage(), 5000))
+            setTimeout(() => dispatch(resetMessage()), 5000)
         }
 
         if(reviewCreated) {
             alert('Review Submitted!')
             setRating(0)
             setComment('')
+            dispatch(getProductDetails(id))
+            dispatch(resetReviewCreated())
         }
 
     
@@ -70,7 +72,7 @@ const ProductDetails = () => {
     <>
         <Link to='/' className='btn btn-light my-3'>Go Back</Link>
 
-        {isLoading ? <Loader /> : product && (
+        {isLoading ? <Loader /> : Object.keys(product).length !== 0 && (
             <>
                 <Row>
                     <Col md={6}>
@@ -150,9 +152,9 @@ const ProductDetails = () => {
                     <Col md={6}>
                         <h2>Reviews</h2>
                         {isError && (<Message variant='danger'>{message}</Message>)}
-                        {(product && product.reviews.length === 0) && <Message>No reviews</Message>}
+                        {product.reviews.length === 0 && <Message>No reviews</Message>}
                         <ListGroup variant='flush'>
-                            {product && product.reviews.map(review => (
+                            {product.reviews.map(review => (
                                 <ListGroup.Item key={review._id}>
                                     <strong>{review.name}</strong>
                                     <Rating value={review.rating}/>

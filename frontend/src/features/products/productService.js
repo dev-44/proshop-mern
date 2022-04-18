@@ -3,8 +3,8 @@ import axios from 'axios'
 const API_URL = '/api/products'
 
 //Get All Products
-const getProducts = async() => {
-    const response = await axios.get(API_URL)
+const getProducts = async(keyword = '', pageNumber = '') => {
+    const response = await axios.get(`/api/products?keyword=${keyword}&pageNumber=${pageNumber}`)
     return response.data
 }
 

@@ -1,9 +1,10 @@
-import React from 'react'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { Row, Col } from "react-bootstrap"
 import Product from '../components/Product'   //Component
 import Loader from '../components/Loader'
 import Message from '../components/Message'
+import Paginate from '../components/Paginate'
 //import products from "../products"              //Json File
 //import axios from 'axios'
 
@@ -15,9 +16,13 @@ const Home = () => {
 
   const dispatch = useDispatch()
   const {user, isLoggedIn} = useSelector(state => state.user)
-  const {products, isLoading, isError, message, isSuccess} = useSelector((state) => state.product)
+  const {products, isLoading, isError, message, isSuccess, page, pages} = useSelector((state) => state.product)
 
   const [successMsg, setSuccessMsg] = useState('')
+
+  const params = useParams()
+  const keyword = params.keyword
+  const pageNumber = params.pageNumber || 1
   
   //const [products, setProducts] = useState([])
 
@@ -52,10 +57,10 @@ const Home = () => {
     fetchProducts()
     */
 
-    dispatch(getProducts())
+    dispatch(getProducts({keyword, pageNumber}))
    
 
-  }, [dispatch])
+  }, [dispatch, keyword, pageNumber])
 
   if(isLoading) {
     return <Loader />
@@ -77,6 +82,7 @@ const Home = () => {
               </Col> 
             ))}
         </Row>
+        <Paginate pages={pages} page={page} keyword={keyword ? keyword : ''}/>
     </>
   )
 }

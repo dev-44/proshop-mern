@@ -10,8 +10,19 @@ import path from 'path'
 //@route            GET api/products
 //@access           Public
 const getProducts = asyncHandler(async(req, res) => {
-    const products = await Product.find({}, '-picture')
-    res.json(products)
+
+    const pageSize = 3
+    const page = Number(req.query.pageNumber) || 1
+    const keyword = req.query.keyword ? {
+        name: {
+            $regex: req.query.keyword,
+            $options: 'i'
+        }
+    } : {}
+
+    const count = await Product.countDocuments({...keyword})
+    const products = await Product.find({...keyword}, '-picture').limit(pageSize).skip(pageSize * (page - 1))
+    res.json({products, page, pages: Math.ceil(count / pageSize)})
 })
 
 //@description      Get a single product

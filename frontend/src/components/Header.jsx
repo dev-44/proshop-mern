@@ -1,11 +1,13 @@
 import React from 'react'
-import { Nav, Navbar, Container, NavDropdown} from 'react-bootstrap'
+import {Routes, Route} from 'react-router-dom'
+import { Nav, Navbar, Container, NavDropdown, Col} from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import {FaShoppingCart, FaUser} from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 import {logout, reset} from '../features/users/userSlice'
 import { reset as resetAdmin } from '../features/admins/adminSlice'
+import SearchBox from './SearchBox'
 
 const Header = () => {
   const dispatch = useDispatch()
@@ -30,6 +32,9 @@ const Header = () => {
             </LinkContainer>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
+            <Col>
+              <SearchBox />
+            </Col>
             <Nav className='ms-auto'>
 
               <LinkContainer to='/cart'>

@@ -1,5 +1,5 @@
 function check(file){
-    if (file.type == 'image/jpeg' || file.type == 'image/png'){
+    if (file.type === 'image/jpeg' || file.type === 'image/png'){
         return true
     }
     else{

@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react'
-import {useNavigate} from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import {Table, Button, Modal, Row, Col, Card} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
+import Paginate from '../components/Paginate'
 import { getProducts, deleteProduct, resetDeleted, resetMessage, reset, createProduct, getProductDetails} from '../features/products/productSlice'
 
 const ProductList = () => {
@@ -15,9 +16,12 @@ const ProductList = () => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    
+    const params = useParams()
+    const pageNumber = params.pageNumber || 1
 
     const {user} = useSelector(state => state.user)
-    const {products, isLoading, isSuccess, isError, message, isDeleted, isCreated, isUpdated, image} = useSelector(state => state.product)
+    const {products, isLoading, isSuccess, isError, message, isDeleted, isCreated, isUpdated, page, pages} = useSelector(state => state.product)
 
     useEffect(() => {
         //dispatch(reset())
@@ -28,9 +32,11 @@ const ProductList = () => {
     },[])
 
     useEffect(() => {
+        var keyword = ''
+        dispatch(getProducts({keyword, pageNumber}))
         
         if(isDeleted) {
-            dispatch(getProducts())
+            dispatch(getProducts({keyword, pageNumber}))
             setSuccessMessage('Product deleted with success')
             setTimeout(() => setSuccessMessage(''), 5000)
             dispatch(resetDeleted())
@@ -51,7 +57,7 @@ const ProductList = () => {
             setTimeout(() => dispatch(resetMessage()), 5000)
         }
 
-    }, [dispatch, isDeleted, isError, isCreated, isUpdated])
+    }, [dispatch, isDeleted, isError, isCreated, isUpdated, pageNumber])
 
     const createProductHandler = () => {
         navigate('/admin/product/create')
@@ -111,6 +117,7 @@ const ProductList = () => {
         {(isError && message) && <Message variant='danger'>{message}</Message>}
 
         {isLoading  ? <Loader /> : (
+            <>
             <Table striped bordered hover responsive className='table-sm'>
                 <thead>
                     <tr>
@@ -146,6 +153,8 @@ const ProductList = () => {
                     ))}
                 </tbody>
             </Table>
+            <Paginate pages={pages} page={page} isAdmin={true}/>
+            </>
         )}
     </>
   )
