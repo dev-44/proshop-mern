@@ -23,9 +23,9 @@ const Product = ({product}) => {
   return (
       <>
       {(user && user.isAdmin) ? (
-                  <Card className='my-3 p-3 rounded'>
+                  <Card className='my-3 p-3 rounded position-relative' style={{ minHeight: '28rem', maxHeight: '28rem' }}>
                   <Link to={`/product/${product._id}`}>
-                      <Card.Img src={product.image ? product.image : null} variant='top' />
+                      <Card.Img src={product.image} variant='top' style={{minHeight: '12rem', maxHeight: '12rem'}} />
                   </Link>
       
                   <Card.Body>
@@ -43,13 +43,12 @@ const Product = ({product}) => {
                           ${product.price}
                       </Card.Text>
 
-
-                    <Button variant='light' className='' onClick={() => editProduct(product)}>
+                    <Button variant='light' className='position-absolute bottom-0 start-0 mx-2 my-2' onClick={() => editProduct(product)}>
                         <i className='fas fa-edit'></i>
                     </Button>
 
                     
-                    <Button variant='danger' className='text-right' onClick={()=>preDeleteProduct(product._id)} style={{float: 'right'}}>
+                    <Button variant='danger' className='position-absolute bottom-0 end-0 mx-2 my-2' onClick={()=>preDeleteProduct(product._id)} style={{float: 'right'}}>
                         <i className='fas fa-trash'></i>
                     </Button>
       

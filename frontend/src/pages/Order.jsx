@@ -19,6 +19,7 @@ const Order = () => {
     const orderId = useParams().id
     console.log('orderId: ' + orderId)
 
+    const {user} = useSelector(state => state.user)
     const {order, isLoading, isSuccess, isError, message, isPaid, isLoadingPay} = useSelector(state => state.order)
     const {orderItems, shippingAddress, paymentMethod, itemsPrice, shippingPrice, taxPrice, totalPrice} = order
 
@@ -156,7 +157,7 @@ const Order = () => {
                                 <Col>$ {totalPrice}</Col>
                             </Row>
                         </ListGroup.Item>
-                        {!order.isPaid  && (
+                        {(!order.isPaid  && !user.isAdmin) && (
                             <ListGroup.Item>
                                 {isLoadingPay && <Loader />}
                                 {!sdkReady ? <Loader /> : (

@@ -21,11 +21,9 @@ const ProductList = () => {
 
     useEffect(() => {
         //dispatch(reset())
-        if ((user && user.isAdmin) ) {
-            dispatch(getProducts())
-        } else {
+        if ((!user && !user.isAdmin) ) {
             navigate('/')
-        }
+        } 
         // eslint-disable-next-line
     },[])
 

@@ -37,16 +37,29 @@ const makeAdmin = async(id, token) => {
         }
     }
 
-    const dummy = {}
+    const {data} = await axios.put(`/api/users/${id}`, {}, config)
+    return data
+}
 
-    const {data} = await axios.put(`/api/users/${id}`, dummy, config)
+//Get All Orders
+const getOrders = async(token) => {
+
+    console.log(token)
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const {data} = await axios.get(`/api/orders`, config)
     return data
 }
 
 const adminService = {
     getUsers,
     deleteUser,
-    makeAdmin
+    makeAdmin,
+    getOrders
 }
 
 export default adminService
