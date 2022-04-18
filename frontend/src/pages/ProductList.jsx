@@ -21,7 +21,7 @@ const ProductList = () => {
 
     useEffect(() => {
         //dispatch(reset())
-        if ((user && user.isAdmin && !products) ) {
+        if ((user && user.isAdmin) ) {
             dispatch(getProducts())
         } else {
             navigate('/')
