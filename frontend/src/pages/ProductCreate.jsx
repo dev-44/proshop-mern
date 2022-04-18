@@ -1,3 +1,4 @@
+import React from 'react'
 import {useState, useEffect} from 'react'
 import axios from 'axios'
 import {Link, useNavigate, useParams} from 'react-router-dom'
@@ -7,6 +8,7 @@ import Message from '../components/Message'
 import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
 import { createProduct, resetMessage, createImage } from '../features/products/productSlice'
+import {Convert} from '../converter'
 
 const ProductCreate = () => {
 
@@ -18,7 +20,7 @@ const ProductCreate = () => {
 
     const [name, setName] = useState('')
     const [price, setPrice] = useState(0)
-    const [image, setImage] = useState('')
+    const [image, setImage] = useState()
     const [brand, setBrand] = useState('')
     const [category, setCategory] = useState('')
     const [countInStock, setCountInStock] = useState(0)
@@ -29,7 +31,7 @@ const ProductCreate = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const {product, isLoading, isError, isSuccess, message, isCreated} = useSelector(state => state.product)
+    const {product, isLoading, isError, isSuccess, message, isCreated, isImage} = useSelector(state => state.product)
     const {user} = useSelector(state => state.user)
 
     useEffect(() => {
@@ -44,18 +46,37 @@ const ProductCreate = () => {
             setTimeout(() => dispatch(resetMessage()), 5000)
         }
 
+        /*
+        if(isSuccess && isCreated) {
+            const file = picture
+            const formData = new FormData()
+            formData.append('image', file)
+            dispatch(createImage(formData))
+        }
+        */
+
         if(isCreated) {
             navigate('/admin/productlist')
+            dispatch(resetMessage())
         }
-    }, [navigate, dispatch, productId, product, errorMsg, message, isCreated])
 
-    const onSubmit = (e) => {
+    }, [navigate, dispatch, productId, product, errorMsg, message, isCreated, isSuccess,isImage])
+
+    const onSubmit = async (e) => {
         e.preventDefault()
+
+        const convertedImage = await Convert(image)
+
+        if(convertedImage) {
+            console.log(convertedImage);
+            } else{
+                console.log('The file is not in format of image/jpeg or image/png')
+            }
         
         const newProduct = {
             user: user._id,
             name,
-            image,
+            image: convertedImage,
             brand,
             category,
             description,
@@ -64,14 +85,9 @@ const ProductCreate = () => {
         }
  
         dispatch(createProduct(newProduct))
-
-        const file = picture
-        const formData = new FormData()
-        formData.append('image', file)
-        dispatch(createImage(formData))
-
     }
 
+    /*
     const uploadFileHandler = async(e) =>{
         const file = e.target.files[0]
         const formData = new FormData()
@@ -93,6 +109,7 @@ const ProductCreate = () => {
             setUploading(false)
         }
     }
+    */
 
     return (
         <>
@@ -120,14 +137,21 @@ const ProductCreate = () => {
 
                             <Form.Group controlId='image'>
                                 <Form.Label>Image</Form.Label>
+                                <Form.Control type='file' placeholder='Enter Image url' onChange={(e) => setImage(e.target.files[0])}></Form.Control>
+                            </Form.Group>
+
+                            {/*
+                            <Form.Group controlId='image'>
+                                <Form.Label>Image</Form.Label>
                                 <Form.Control type='text' placeholder='Enter Image url' value={image} onChange={(e) => setImage(e.target.value)}></Form.Control>
                                 
                                 <Form.Control type="file" label='Choose File' custom onChange={(e)=> setPicture(e.target.files[0])}/>
                                 {uploading && <Loader />}
-                                {/*
+                                
                                 <Form.Control type="file" id='image-file' label='Choose File' custom onChange={uploadFileHandler}/>
-                                {uploading && <Loader />} */}
+                                {uploading && <Loader />} 
                             </Form.Group>
+                            */}
 
                             <Form.Group controlId='brand'>
                                 <Form.Label>Brand</Form.Label>

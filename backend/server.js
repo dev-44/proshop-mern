@@ -17,8 +17,8 @@ connectDB()
 const app = express()
 
 //Middleware
-app.use(express.json())
-app.use(express.urlencoded({extended: false}))
+app.use(express.json({limit: '16mb', extended: true}))
+app.use(express.urlencoded({limit: '16mb', extended: true}))
 
 app.get('/', (req, res)=> {
     res.send('API is running')

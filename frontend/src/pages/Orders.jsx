@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import React, {useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { getUserOrders } from "../features/users/userSlice"

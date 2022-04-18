@@ -1,3 +1,4 @@
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Card, Button } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
@@ -24,7 +25,7 @@ const Product = ({product}) => {
       {(user && user.isAdmin) ? (
                   <Card className='my-3 p-3 rounded'>
                   <Link to={`/product/${product._id}`}>
-                      <Card.Img src={product.image} variant='top' />
+                      <Card.Img src={product.image ? product.image : null} variant='top' />
                   </Link>
       
                   <Card.Body>

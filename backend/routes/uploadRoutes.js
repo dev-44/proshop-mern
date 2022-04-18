@@ -1,6 +1,7 @@
 import express from 'express'
 const router = express.Router()
 import Image from '../models/imageModel.js'
+import Product from '../models/productModel.js'
 import path from 'path'
 import multer from 'multer'
 import {protect, isAdmin} from '../middleware/authMiddleware.js'
@@ -53,10 +54,19 @@ router.post('/', upload.single('image'), async(req, res) => {
   console.log(final_img)
 
   try {
-    const newImage = await Image.create({img: final_img})
+    const product = await Product.findOne({}).sort({ createdAt: 'desc' })
+    //const newImage = await Image.create({img: final_img})
 
-    if (newImage) {
+    if (product) {
+      console.log('Here is the last product')
+      console.log(product)
+      
+      product.picture = final_img
+      const productWithImage = await product.save()
+
       console.log('image uploaded in the db!!')
+      res.status(201).json(productWithImage)
+
       
       /*
       res.contentType(req.file.mimetype)
@@ -64,9 +74,8 @@ router.post('/', upload.single('image'), async(req, res) => {
       return res.status(201).send(newImage.img.data.buffer)
       */
 
-      res.contentType('json')
-      //console.log(newImage)
-      res.send(newImage)
+      //res.contentType('json')
+      //res.send(newImage)
     }
 
   } catch (error) {

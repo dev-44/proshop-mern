@@ -10,7 +10,7 @@ import path from 'path'
 //@route            GET api/products
 //@access           Public
 const getProducts = asyncHandler(async(req, res) => {
-    const products = await Product.find({})
+    const products = await Product.find({}, '-picture')
     res.json(products)
 })
 
@@ -78,6 +78,8 @@ const createProduct = asyncHandler(async(req, res) => {
         res.status(201).json(newProduct)
     } catch (error) {
         console.log(error)
+        res.status(404)
+        throw new Error('Cannot create the product')
     }
 })
 

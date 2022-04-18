@@ -1,4 +1,4 @@
-import { useState, useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Row, Col, Image, ListGroup, Card, Button, Form} from 'react-bootstrap'
 import Rating from '../components/Rating'
@@ -32,7 +32,7 @@ const ProductDetails = () => {
         */
 
         if(isError){
-            <Message variant='danger'>{message}</Message>
+            return <Message variant='danger'>{message}</Message>
         }
 
         dispatch(getProductDetails(id))

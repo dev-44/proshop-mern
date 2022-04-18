@@ -56,8 +56,9 @@ const updateProduct = async(product, token) => {
     return data
 }
 
+/*
 //Insert Image in the DB
-const createImage = async(image, token) => {
+const createImage = async(image, id, token) => {
     var config = {
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -66,9 +67,11 @@ const createImage = async(image, token) => {
     }
 
     const {data} = await axios.post('/api/upload', image, config)
+    console.log('This is data back from the backend')
+    console.log(data)
 
     var base64Flag = 'data:image/jpeg;base64,';
-    var imageStr = arrayBufferToBase64(data.img.data.data)
+    var imageStr = arrayBufferToBase64(data.picture.data.data)
 
     return base64Flag + imageStr
 }
@@ -79,14 +82,14 @@ function arrayBufferToBase64(buffer) {
     bytes.forEach((b) => binary += String.fromCharCode(b))    
     return window.btoa(binary)
 };
+*/
 
 const productService = {
     getProducts,
     getProductDetails,
     deleteProduct,
     createProduct,
-    updateProduct,
-    createImage
+    updateProduct
 }
 
 export default productService

@@ -1,8 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import productService from './productService'
 
+//Get products from localStorage
+const productsLS = JSON.parse(localStorage.getItem('products'))
+
 const initialState = {
-    products: [],
+    products: productsLS ? productsLS : [],
     product: {},
     isError: false,
     isSuccess: false,
@@ -11,7 +14,8 @@ const initialState = {
     isDeleted: false,
     isCreated: false,
     isUpdated: false,
-    image: null
+    isImage: false,
+    image: false
 }
 
 //Get All Products
@@ -48,7 +52,7 @@ export const deleteProduct = createAsyncThunk('product/delete', async(id, thunkA
 //Create Product
 export const createProduct = createAsyncThunk('product/create', async(productData, thunkAPI) => {
     try {
-        //console.log(productData)
+        console.log(productData)
         const token = thunkAPI.getState().user.user.token
         return await productService.createProduct(productData, token)
     } catch (error) {
@@ -58,6 +62,7 @@ export const createProduct = createAsyncThunk('product/create', async(productDat
 })
 
 //Update Product
+//Falta actualizar la imagen
 export const updateProduct = createAsyncThunk('product/update', async(productData, thunkAPI) => {
     try {
         const token = thunkAPI.getState().user.user.token
@@ -68,6 +73,7 @@ export const updateProduct = createAsyncThunk('product/update', async(productDat
     }
 })
 
+/*
 //Insert Image
 export const createImage = createAsyncThunk('product/image/create', async(image, thunkAPI) => {
     try {
@@ -78,6 +84,7 @@ export const createImage = createAsyncThunk('product/image/create', async(image,
         return thunkAPI.rejectWithValue(message)
     }
 })
+*/
 
 
 export const productSlice = createSlice({
@@ -91,6 +98,8 @@ export const productSlice = createSlice({
             state.isError = false
             state.isSuccess = false
             state.isUpdated = false
+            state.isCreated = false
+            state.isImage = false
         },
     },
     extraReducers: (builder) => {
@@ -128,6 +137,7 @@ export const productSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.isDeleted = true
+                localStorage.setItem('products', JSON.stringify(state.products))
             })
             .addCase(deleteProduct.rejected, (state, action) => {
                 state.isLoading = false
@@ -141,7 +151,8 @@ export const productSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.isCreated = true
-                state.products.push(action.payload) 
+                state.products.push(action.payload)
+                localStorage.setItem('products', JSON.stringify(state.products))
             })
             .addCase(createProduct.rejected, (state, action) => {
                 state.isLoading = false
@@ -155,26 +166,36 @@ export const productSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.isUpdated = true
-                state.products = action.payload 
+                state.products = action.payload
+                localStorage.setItem('products', JSON.stringify(state.products))
             })
             .addCase(updateProduct.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload
             })
+            /*
             .addCase(createImage.pending, (state) => {
                 state.isLoading = true
             })
             .addCase(createImage.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
+                state.isImage = true
                 state.image = action.payload
+                {
+                var product = state.products[state.products.length - 1]
+                product.image = action.payload
+                localStorage.setItem('products', JSON.stringify(state.products))
+                }
+                    
             })
             .addCase(createImage.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload
             })
+            */
     }
 })
 

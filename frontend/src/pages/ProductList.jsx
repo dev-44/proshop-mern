@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import {Table, Button, Modal, Row, Col, Card} from 'react-bootstrap'
@@ -20,8 +20,8 @@ const ProductList = () => {
     const {products, isLoading, isSuccess, isError, message, isDeleted, isCreated, isUpdated, image} = useSelector(state => state.product)
 
     useEffect(() => {
-        dispatch(reset())
-        if ((user && user.isAdmin) ) {
+        //dispatch(reset())
+        if ((user && user.isAdmin && !products) ) {
             dispatch(getProducts())
         } else {
             navigate('/')
@@ -101,7 +101,6 @@ const ProductList = () => {
                 <h1>Products</h1>
             </Col>
 
-            <Card.Img src={image} variant='top' />
 
             <Col className='text-right'>
                 <Button className='my-3' onClick={createProductHandler}>
