@@ -45,10 +45,25 @@ import axios from 'axios'
     return data
  }
 
+  //Deliver Order
+  const deliverOrder = async(id, token) => {
+
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const {data} = await axios.put(`/api/orders/${id}/deliver`, {}, config)
+    return data
+ }
+
 const orderService = {
     createOrder,
     getOrder,
-    payOrder
+    payOrder,
+    deliverOrder
 }
 
 export default orderService

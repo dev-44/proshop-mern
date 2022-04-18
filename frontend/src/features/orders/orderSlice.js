@@ -9,11 +9,12 @@ const initialState = {
     message: '',
     isPaid: false,
     isLoadingPay: false,
-    isPlaced: false
+    isPlaced: false,
+    isDelivered: false
 }
 
 //Create an Order
-export const createOrder = createAsyncThunk('orders/create', async(order, thunkAPI) => {
+export const createOrder = createAsyncThunk('order/create', async(order, thunkAPI) => {
     try {
         const user = thunkAPI.getState().user.user
         return await orderService.createOrder(order, user)
@@ -24,7 +25,7 @@ export const createOrder = createAsyncThunk('orders/create', async(order, thunkA
 })
 
 //Get Order Details
-export const getOrder = createAsyncThunk('orders/getSingleOrder', async(id, thunkAPI) => {
+export const getOrder = createAsyncThunk('order/getsingleorder', async(id, thunkAPI) => {
     try {
         const token = thunkAPI.getState().user.user.token
         return await orderService.getOrder(id, token)
@@ -35,11 +36,22 @@ export const getOrder = createAsyncThunk('orders/getSingleOrder', async(id, thun
 })
 
 //Pay Order
-export const payOrder = createAsyncThunk('orders/pay', async(paymentResult, thunkAPI) => {
+export const payOrder = createAsyncThunk('order/pay', async(paymentResult, thunkAPI) => {
     try {
         const orderId = thunkAPI.getState().order.order._id
         const token = thunkAPI.getState().user.user.token
         return await orderService.payOrder(orderId, paymentResult, token)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+//Mark Order as Delivered
+export const deliverOrder = createAsyncThunk('admin/order/deliver', async(id, thunkAPI) => {
+    try {
+        const token = thunkAPI.getState().user.user.token
+        return await orderService.deliverOrder(id, token)
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)
@@ -99,6 +111,21 @@ export const orderSlice = createSlice({
             
         })
         .addCase(payOrder.rejected, (state, action) => {
+            state.isLoadingPay = false
+            state.isError = true
+            state.message = action.payload
+        })
+        .addCase(deliverOrder.pending, (state) => {
+            state.isLoadingPay = true
+        })
+        .addCase(deliverOrder.fulfilled, (state, action) => {
+            state.isLoadingPay = false
+            state.isSuccess = true
+            state.isDelivered = true
+            state.order = action.payload
+            
+        })
+        .addCase(deliverOrder.rejected, (state, action) => {
             state.isLoadingPay = false
             state.isError = true
             state.message = action.payload

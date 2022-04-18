@@ -8,7 +8,7 @@ import Message from '../components/Message'
 import Loader from '../components/Loader'
 
 import {useDispatch, useSelector} from 'react-redux'
-import { getOrder, payOrder, reset} from '../features/orders/orderSlice'
+import { getOrder, payOrder, reset as resetOrder, deliverOrder} from '../features/orders/orderSlice'
 
 const Order = () => {
 
@@ -20,11 +20,13 @@ const Order = () => {
     console.log('orderId: ' + orderId)
 
     const {user} = useSelector(state => state.user)
-    const {order, isLoading, isSuccess, isError, message, isPaid, isLoadingPay} = useSelector(state => state.order)
+    const {isLoading: isLoadingDeliver} = useSelector(state => state.admin)
+    const {order, isLoading, isSuccess, isError, message, isPaid, isLoadingPay, isDelivered} = useSelector(state => state.order)
     const {orderItems, shippingAddress, paymentMethod, itemsPrice, shippingPrice, taxPrice, totalPrice} = order
 
     useEffect(() => {
-        dispatch(reset())
+        dispatch(resetOrder())
+        // eslint-disable-next-line
     }, [])
     
     useEffect(() => {
@@ -43,8 +45,8 @@ const Order = () => {
             document.body.appendChild(script)
         }
 
-        if(Object.keys(order).length === 0 || isPaid){
-            dispatch(reset())
+        if(Object.keys(order).length === 0 || isPaid || isDelivered){
+            dispatch(resetOrder())
             dispatch(getOrder(orderId))
         } else if (!order.isPaid) {
             if(!window.paypal) {
@@ -53,7 +55,7 @@ const Order = () => {
                 setSdkReady(true)
             }
         }
-    },[dispatch, orderId, isPaid, order])
+    },[dispatch, orderId, isPaid, order, isDelivered])
 
     //Calculate Prices
     const addDecimals = (num) => {
@@ -65,9 +67,17 @@ const Order = () => {
         dispatch(payOrder(paymentResult))
     }
 
+    const deliverHandler = () => {
+        dispatch(deliverOrder(order._id))
+    }
+
 
   return isLoading ? <Loader /> : isError ? <Message variant='danger'>{message}</Message> : isSuccess &&
   <>
+    <Link to='/admin/orderlist' className='btn btn-light my-3'>
+        Go Back
+    </Link>
+    
     <h1>ORDER {order._id.toUpperCase()}</h1>
     <Row>
             <Col md={8}>
@@ -165,6 +175,17 @@ const Order = () => {
                                 )}
                             </ListGroup.Item>
                         )}
+
+                        {isLoadingDeliver && <Loader />}
+                        {(user && user.isAdmin && order.isPaid && !order.isDelivered) && (
+                            <ListGroup.Item>
+                                <Button type='button' className='btn btn-block' onClick={deliverHandler}>
+                                    Mark as Delivered
+                                </Button>
+                            </ListGroup.Item>
+                        )} 
+                            
+                        
                     </ListGroup>
                 </Card>
             </Col>

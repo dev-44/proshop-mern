@@ -33,7 +33,7 @@ export const deleteUser = createAsyncThunk('admin/user/delete', async(id, thunkA
 })
 
 //Make user an Admin
-export const makeAdmin = createAsyncThunk('admin/user/update', async(id, thunkAPI) => {
+export const makeAdmin = createAsyncThunk('admin/user/authorization', async(id, thunkAPI) => {
     try {
         const token = thunkAPI.getState().user.user.token
         console.log(token)
@@ -55,6 +55,7 @@ export const getOrders = createAsyncThunk('admin/order/getall', async(_, thunkAP
         return thunkAPI.rejectWithValue(message)
     }
 })
+
 
 export const adminSlice = createSlice({
     name: 'admin',
