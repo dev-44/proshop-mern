@@ -6,6 +6,7 @@ import Rating from './Rating'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
+
 const Product = ({product}) => {
 
     const navigate = useNavigate()

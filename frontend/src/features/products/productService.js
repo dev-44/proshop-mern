@@ -49,11 +49,20 @@ const updateProduct = async(product, token) => {
         }
     }
 
-    console.log('Product ID')
-    console.log(product.id)
-
     const {data} = await axios.put(`/api/products/${product.id}`, product, config)
     return data
+}
+
+//Create Product Review
+const createProductReview = async(id, newReview, token) => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    await axios.post(`/api/products/${id}/reviews`, newReview, config)
 }
 
 /*
@@ -89,7 +98,8 @@ const productService = {
     getProductDetails,
     deleteProduct,
     createProduct,
-    updateProduct
+    updateProduct,
+    createProductReview,
 }
 
 export default productService

@@ -15,7 +15,8 @@ const initialState = {
     isCreated: false,
     isUpdated: false,
     isImage: false,
-    image: false
+    image: false,
+    reviewCreated: false,
 }
 
 //Get All Products
@@ -73,6 +74,19 @@ export const updateProduct = createAsyncThunk('product/update', async(productDat
     }
 })
 
+//Create a new Review
+export const createProductReview = createAsyncThunk('product/review/create', async(reviewData, thunkAPI) => {
+    try {
+        const {id, rating, comment} = reviewData
+        const newReview = {rating, comment}
+        const token = thunkAPI.getState().user.user.token
+        await productService.createProductReview(id, newReview, token)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
 /*
 //Insert Image
 export const createImage = createAsyncThunk('product/image/create', async(image, thunkAPI) => {
@@ -100,6 +114,7 @@ export const productSlice = createSlice({
             state.isUpdated = false
             state.isCreated = false
             state.isImage = false
+            state.reviewCreated = false
         },
     },
     extraReducers: (builder) => {
@@ -174,28 +189,19 @@ export const productSlice = createSlice({
                 state.isError = true
                 state.message = action.payload
             })
-            /*
-            .addCase(createImage.pending, (state) => {
+            .addCase(createProductReview.pending, (state) => {
                 state.isLoading = true
             })
-            .addCase(createImage.fulfilled, (state, action) => {
+            .addCase(createProductReview.fulfilled, (state) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.isImage = true
-                state.image = action.payload
-                {
-                var product = state.products[state.products.length - 1]
-                product.image = action.payload
-                localStorage.setItem('products', JSON.stringify(state.products))
-                }
-                    
+                state.reviewCreated = true
             })
-            .addCase(createImage.rejected, (state, action) => {
+            .addCase(createProductReview.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload
             })
-            */
     }
 })
 
