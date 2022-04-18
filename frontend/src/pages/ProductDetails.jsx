@@ -27,10 +27,6 @@ const ProductDetails = () => {
     //const [product, setProduct] = useState({})
 
     useEffect(() => {
-        dispatch(getProductDetails(id))
-    }, [])
-
-    useEffect(() => {
         /*
         const fetchProduct = async() => {
           const { data } = await axios.get(`/api/products/${params.id}`)
@@ -40,6 +36,10 @@ const ProductDetails = () => {
     
         fetchProduct()
         */
+
+        if(!product || product._id !== id) {
+            dispatch(getProductDetails(id))
+        }
 
         if(isError){
             setRating(0)
@@ -51,7 +51,6 @@ const ProductDetails = () => {
             alert('Review Submitted!')
             setRating(0)
             setComment('')
-            dispatch(getProductDetails(id))
         }
 
     
@@ -60,10 +59,6 @@ const ProductDetails = () => {
     const addToCartHandler = () => {
         dispatch(addItem({id, qty}))
         navigate(`/cart`)
-    }
-
-    if(isLoading) {
-        return <Loader />
     }
 
     const addReviewHandler = (e) => {
@@ -75,7 +70,7 @@ const ProductDetails = () => {
     <>
         <Link to='/' className='btn btn-light my-3'>Go Back</Link>
 
-        {isLoading ? <Loader /> : isSuccess && (
+        {isLoading ? <Loader /> : product && (
             <>
                 <Row>
                     <Col md={6}>
