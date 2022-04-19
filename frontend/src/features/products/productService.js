@@ -65,6 +65,12 @@ const createProductReview = async(id, newReview, token) => {
     await axios.post(`/api/products/${id}/reviews`, newReview, config)
 }
 
+//Create Product Review
+const getTopProducts = async() => {
+    const {data} = await axios.get('/api/products/top')
+    return data
+}
+
 /*
 //Insert Image in the DB
 const createImage = async(image, id, token) => {
@@ -100,6 +106,7 @@ const productService = {
     createProduct,
     updateProduct,
     createProductReview,
+    getTopProducts
 }
 
 export default productService

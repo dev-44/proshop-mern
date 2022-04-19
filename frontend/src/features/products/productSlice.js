@@ -7,6 +7,7 @@ const productsLS = JSON.parse(localStorage.getItem('products'))
 const initialState = {
     products: productsLS ? productsLS : [],
     product: {},
+    topRated: [],
     isError: false,
     isSuccess: false,
     isLoading: false,
@@ -84,6 +85,16 @@ export const createProductReview = createAsyncThunk('product/review/create', asy
         const newReview = {rating, comment}
         const token = thunkAPI.getState().user.user.token
         await productService.createProductReview(id, newReview, token)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+//Get Top Products for the Carousel
+export const getTopProducts = createAsyncThunk('product/top', async(_, thunkAPI) => {
+    try {
+        return await productService.getTopProducts()
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)
@@ -204,6 +215,19 @@ export const productSlice = createSlice({
                 state.reviewCreated = true
             })
             .addCase(createProductReview.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(getTopProducts.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(getTopProducts.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.topRated = action.payload
+            })
+            .addCase(getTopProducts.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload

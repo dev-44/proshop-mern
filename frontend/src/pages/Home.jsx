@@ -5,6 +5,7 @@ import Product from '../components/Product'   //Component
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
+import ProductCarousel from '../components/ProductCarousel'
 //import products from "../products"              //Json File
 //import axios from 'axios'
 
@@ -44,7 +45,7 @@ const Home = () => {
     */
     
    
-}, [dispatch, isSuccess, isLoggedIn])
+}, [isSuccess, isLoggedIn])
 
   useEffect(() => {
 
@@ -73,6 +74,7 @@ const Home = () => {
 
   return (
     <>
+      {!keyword && <ProductCarousel />}
       {successMsg && <Message variant='success'>{successMsg}</Message>}
       <h1>LATEST PRODUCTS</h1>
         <Row>
