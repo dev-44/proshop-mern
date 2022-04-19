@@ -257,13 +257,14 @@ const Shipping = () => {
         </div>
         )}
 
-        {shippingAddresses.length > 0 && !openForm ? 
+        {(shippingAddresses.length > 0 && !openForm) && 
             (<div className='mt-3 text-center'>Want to send to another address? <Link to='' onClick={() => {
                 setOpenForm(!openForm)
                 setChoose('')
                 clearForm()
-            }}>Add one</Link></div>) : 
-            (<div className='mt-3 text-center'><Link to='' onClick={() => {
+            }}>Add one</Link></div>) }
+
+        {(shippingAddresses.length > 0 && openForm) &&(<div className='mt-3 text-center'><Link to='' onClick={() => {
                 setOpenForm(!openForm) 
                 setChoose('')
                 clearForm()

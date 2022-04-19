@@ -136,6 +136,7 @@ export const userSlice = createSlice({
             .addCase(register.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
+                state.isLoggedSuccess = true
                 state.user = action.payload
             })
             .addCase(register.rejected, (state, action) => {

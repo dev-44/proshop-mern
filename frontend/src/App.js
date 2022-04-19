@@ -20,6 +20,7 @@ import ProductList from './pages/ProductList'
 import ProductEdit from './pages/ProductEdit'
 import ProductCreate from './pages/ProductCreate'
 import OrderList from './pages/OrderList'
+import NoContent from './pages/NoContent'
 
 function App() {
   return (
@@ -49,13 +50,7 @@ function App() {
             <Route path='/admin/product/:id' element={<ProductEdit />} />
             <Route path='/admin/product/create' element={<ProductCreate />} />
             <Route path='/admin/orderlist' element={<OrderList />} />
-            <Route path="*" element={
-                    <main style={{ padding: "1rem" }}>
-                      <p>There's nothing here!</p>
-                    </main>
-                  }
-            />
-
+            <Route path="*" element={<NoContent />}/>
 
 
             {/*}

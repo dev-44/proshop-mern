@@ -11,9 +11,11 @@ const ProductCarousel = () => {
     const dispatch = useDispatch()
     const {topRated, isLoadingCarousel, isError, message} = useSelector(state => state.product)
 
+    /*
     useEffect(() => {
         dispatch(getTopProducts())
-    }, [])
+    }, [dispatch])
+    */
 
 
   return isLoadingCarousel ? <Loader /> : isError ? <Message variant='danger'>{message}</Message> : (

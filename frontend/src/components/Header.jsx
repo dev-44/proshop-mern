@@ -1,6 +1,6 @@
 import React from 'react'
 import {Routes, Route} from 'react-router-dom'
-import { Nav, Navbar, Container, NavDropdown, Col} from 'react-bootstrap'
+import { Nav, Navbar, Container, NavDropdown, Col, Row} from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import {FaShoppingCart, FaUser} from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
@@ -30,13 +30,14 @@ const Header = () => {
             <LinkContainer to='/'>
               <Navbar.Brand>PROSHOP</Navbar.Brand>  
             </LinkContainer>
+
+
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Col>
-              <SearchBox />
-            </Col>
             <Nav className='ms-auto'>
 
+              <SearchBox/>  
+              
               <LinkContainer to='/cart'>
                 <Nav.Link ><FaShoppingCart /> CART</Nav.Link>
               </LinkContainer>
@@ -84,6 +85,8 @@ const Header = () => {
               )}
             </Nav>
           </Navbar.Collapse>
+
+
         </Container>
       </Navbar>
     </header>

@@ -13,7 +13,7 @@ import Meta from '../components/Meta'
 
 //Redux
 import {useSelector, useDispatch} from 'react-redux'
-import { getProducts, reset } from '../features/products/productSlice'
+import { getProducts, getTopProducts} from '../features/products/productSlice'
 
 const Home = () => {
 
@@ -59,7 +59,7 @@ const Home = () => {
     fetchProducts()
     */
 
-    console.log(keyword);
+    dispatch(getTopProducts())
     dispatch(getProducts({keyword, pageNumber}))
    
 

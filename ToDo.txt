@@ -2,3 +2,8 @@ LocalStorage
 --------------------
 Products?
 Cart se queda al cerrar sesion? Funciona si un solo usuario va a utilizar el dispositivo
+
+
+Products
+-----------------
+Stock

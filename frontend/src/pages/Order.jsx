@@ -80,7 +80,7 @@ const Order = () => {
         </Link>
     ) : (
         <Link to='/orders' className='btn btn-light my-3'>
-            Go Back
+            Go to My Orders
         </Link>
     )}
 
