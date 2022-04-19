@@ -9,14 +9,14 @@ import { getTopProducts } from '../features/products/productSlice'
 const ProductCarousel = () => {
 
     const dispatch = useDispatch()
-    const {topRated, isLoading, isError, message} = useSelector(state => state.product)
+    const {topRated, isLoadingCarousel, isError, message} = useSelector(state => state.product)
 
     useEffect(() => {
         dispatch(getTopProducts())
     }, [])
 
 
-  return isLoading ? <Loader /> : isError ? <Message variant='danger'>{message}</Message> : (
+  return isLoadingCarousel ? <Loader /> : isError ? <Message variant='danger'>{message}</Message> : (
       <Carousel pause='hover' className='bg-dark'>
           {topRated.map(product => (
               <Carousel.Item key={product._id}>

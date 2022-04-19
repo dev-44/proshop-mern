@@ -11,6 +11,7 @@ const initialState = {
     isError: false,
     isSuccess: false,
     isLoading: false,
+    isLoadingCarousel: false,
     message: '',
     isDeleted: false,
     isCreated: false,
@@ -220,15 +221,15 @@ export const productSlice = createSlice({
                 state.message = action.payload
             })
             .addCase(getTopProducts.pending, (state) => {
-                state.isLoading = true
+                state.isLoadingCarousel = true
             })
             .addCase(getTopProducts.fulfilled, (state, action) => {
-                state.isLoading = false
+                state.isLoadingCarousel = false
                 state.isSuccess = true
                 state.topRated = action.payload
             })
             .addCase(getTopProducts.rejected, (state, action) => {
-                state.isLoading = false
+                state.isLoadingCarousel = false
                 state.isError = true
                 state.message = action.payload
             })

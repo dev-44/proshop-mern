@@ -58,6 +58,7 @@ const Home = () => {
     fetchProducts()
     */
 
+    console.log(keyword);
     dispatch(getProducts({keyword, pageNumber}))
    
 
@@ -74,7 +75,7 @@ const Home = () => {
 
   return (
     <>
-      {!keyword && <ProductCarousel />}
+      <ProductCarousel />
       {successMsg && <Message variant='success'>{successMsg}</Message>}
       <h1>LATEST PRODUCTS</h1>
         <Row>
