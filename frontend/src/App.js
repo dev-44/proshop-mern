@@ -49,6 +49,12 @@ function App() {
             <Route path='/admin/product/:id' element={<ProductEdit />} />
             <Route path='/admin/product/create' element={<ProductCreate />} />
             <Route path='/admin/orderlist' element={<OrderList />} />
+            <Route path="*" element={
+                    <main style={{ padding: "1rem" }}>
+                      <p>There's nothing here!</p>
+                    </main>
+                  }
+            />
 
 
 

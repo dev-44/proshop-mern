@@ -18,6 +18,7 @@ const initialState = {
     isUpdated: false,
     isImage: false,
     image: false,
+    isLoadingReview: false,
     reviewCreated: false,
     pages: 0,
     page: 0
@@ -208,15 +209,15 @@ export const productSlice = createSlice({
                 state.message = action.payload
             })
             .addCase(createProductReview.pending, (state) => {
-                state.isLoading = true
+                state.isLoadingReview = true
             })
             .addCase(createProductReview.fulfilled, (state) => {
-                state.isLoading = false
+                state.isLoadingReview = false
                 state.isSuccess = true
                 state.reviewCreated = true
             })
             .addCase(createProductReview.rejected, (state, action) => {
-                state.isLoading = false
+                state.isLoadingReview = false
                 state.isError = true
                 state.message = action.payload
             })

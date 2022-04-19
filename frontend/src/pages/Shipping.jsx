@@ -41,6 +41,7 @@ const Shipping = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
+
         if (shippingAddresses.length === 0) {
             setIsEditing(false)
             setOpenForm(true)

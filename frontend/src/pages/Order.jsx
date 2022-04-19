@@ -74,9 +74,16 @@ const Order = () => {
 
   return isLoading ? <Loader /> : isError ? <Message variant='danger'>{message}</Message> : isSuccess &&
   <>
-    <Link to='/admin/orderlist' className='btn btn-light my-3'>
-        Go Back
-    </Link>
+    {user.isAdmin ? (
+        <Link to='/admin/orderlist' className='btn btn-light my-3'>
+            Go Back
+        </Link>
+    ) : (
+        <Link to='/orders' className='btn btn-light my-3'>
+            Go Back
+        </Link>
+    )}
+
     
     <h1>ORDER {order._id.toUpperCase()}</h1>
     <Row>
