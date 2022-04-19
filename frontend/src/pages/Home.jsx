@@ -6,6 +6,7 @@ import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
 import ProductCarousel from '../components/ProductCarousel'
+import { resetLoggedSuccess } from '../features/users/userSlice'
 //import products from "../products"              //Json File
 //import axios from 'axios'
 
@@ -16,7 +17,7 @@ import { getProducts, reset } from '../features/products/productSlice'
 const Home = () => {
 
   const dispatch = useDispatch()
-  const {user, isLoggedIn} = useSelector(state => state.user)
+  const {user, isLoggedSuccess} = useSelector(state => state.user)
   const {products, isLoading, isError, message, isSuccess, page, pages} = useSelector((state) => state.product)
 
   const [successMsg, setSuccessMsg] = useState('')
@@ -29,11 +30,10 @@ const Home = () => {
 
   useEffect (() => {
 
-    if(isLoggedIn){
+    if(isLoggedSuccess){
       setSuccessMsg(`Welcome ${user.name}`)
-      setTimeout(() => {
-        setSuccessMsg('')
-      }, 5000)
+      setTimeout(() => {dispatch(resetLoggedSuccess())}, 3000)
+      setTimeout(() => {setSuccessMsg('')}, 5000)
     }
     
     /*
@@ -45,7 +45,7 @@ const Home = () => {
     */
     
    
-}, [isSuccess, isLoggedIn])
+}, [dispatch, isSuccess, isLoggedSuccess])
 
   useEffect(() => {
 
@@ -75,8 +75,8 @@ const Home = () => {
 
   return (
     <>
-      <ProductCarousel />
       {successMsg && <Message variant='success'>{successMsg}</Message>}
+      {!params.keyword && <ProductCarousel />}
       <h1>LATEST PRODUCTS</h1>
         <Row>
             {products.map((product) => (

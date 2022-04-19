@@ -14,6 +14,7 @@ const ProductDetails = () => {
     const [qty, setQty] = useState(1)
     const [rating, setRating] = useState(0)
     const [comment, setComment] = useState('')
+    const [successMsg, setSuccessMsg] = useState('')
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -48,7 +49,8 @@ const ProductDetails = () => {
         }
 
         if(reviewCreated) {
-            alert('Review Submitted!')
+            setSuccessMsg('Review Submitted!')
+            setTimeout(() => {setSuccessMsg('')}, 3000)
             setRating(0)
             setComment('')
             dispatch(getProductDetails(id))
@@ -90,7 +92,7 @@ const ProductDetails = () => {
                             </ListGroup.Item>
 
                             <ListGroup.Item>
-                                <strong>Price: </strong>${product.price}
+                                <strong>Price: </strong>$ {product.price}
                             </ListGroup.Item>
 
                             <ListGroup.Item>
@@ -107,7 +109,7 @@ const ProductDetails = () => {
                                         Price:
                                     </Col>
                                     <Col>
-                                        <strong>{product.price}</strong>
+                                        <strong>$ {product.price}</strong>
                                     </Col>
                                 </Row>
                             </ListGroup.Item>
@@ -151,6 +153,7 @@ const ProductDetails = () => {
                 <Row>
                     <Col md={6}>
                         <h2>Reviews</h2>
+                        {successMsg && <Message variant='success'>{successMsg}</Message>}
                         {isError && (<Message variant='danger'>{message}</Message>)}
                         {product.reviews.length === 0 && <Message>No reviews</Message>}
                         <ListGroup variant='flush'>

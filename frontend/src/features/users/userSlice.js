@@ -11,7 +11,7 @@ const initialState = {
     isSuccess: false,
     isLoading: false,
     isMatch: false,
-    isLoggedIn: false,
+    isLoggedSuccess: false,
     isUpdated: false,
     message: ''
 }
@@ -125,7 +125,8 @@ export const userSlice = createSlice({
             state.message = ''
             state.isError = false
             state.isUpdated = false
-    }
+    },
+        resetLoggedSuccess: (state) => {state.isLoggedSuccess = false},
     },
     extraReducers: (builder) =>{
         builder
@@ -150,7 +151,7 @@ export const userSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.user = action.payload
-                state.isLoggedIn = true
+                state.isLoggedSuccess = true
             })
             .addCase(login.rejected, (state, action) => {
                 state.isLoading = false
@@ -177,7 +178,7 @@ export const userSlice = createSlice({
                 state.isSuccess = false
                 state.isLoading = false
                 state.isMatch = false
-                state.isLoggedIn = false
+                state.isLoggedSuccess = false
                 state.message = null
             })
             .addCase(checkPassword.pending, (state) => {
@@ -249,5 +250,5 @@ export const userSlice = createSlice({
     }
 })
 
-export const {reset, resetError} = userSlice.actions
+export const {reset, resetError, resetLoggedSuccess} = userSlice.actions
 export default userSlice.reducer
