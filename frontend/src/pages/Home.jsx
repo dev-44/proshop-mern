@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { Row, Col } from "react-bootstrap"
 import Product from '../components/Product'   //Component
 import Loader from '../components/Loader'
@@ -7,6 +7,7 @@ import Message from '../components/Message'
 import Paginate from '../components/Paginate'
 import ProductCarousel from '../components/ProductCarousel'
 import { resetLoggedSuccess } from '../features/users/userSlice'
+import Meta from '../components/Meta'
 //import products from "../products"              //Json File
 //import axios from 'axios'
 
@@ -75,8 +76,9 @@ const Home = () => {
 
   return (
     <>
+    <Meta />
       {successMsg && <Message variant='success'>{successMsg}</Message>}
-      {!params.keyword && <ProductCarousel />}
+      {!params.keyword ? <ProductCarousel /> : <Link to='/' className='btn btn-light'>Go Back</Link>}
       <h1>LATEST PRODUCTS</h1>
         <Row>
             {products.map((product) => (

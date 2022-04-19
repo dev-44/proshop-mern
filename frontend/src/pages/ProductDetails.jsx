@@ -7,6 +7,7 @@ import { getProductDetails, createProductReview, resetMessage, resetReviewCreate
 import { addItem } from '../features/cart/cartSlice'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
+import Meta from '../components/Meta'
 //import axios from 'axios'
 //import products from '../products'
 
@@ -72,10 +73,12 @@ const ProductDetails = () => {
 
   return (
     <>
+        
         <Link to='/' className='btn btn-light my-3'>Go Back</Link>
 
         {isLoading ? <Loader /> : Object.keys(product).length !== 0 && (
             <>
+                <Meta title={product.name}/>
                 <Row>
                     <Col md={6}>
                         <Image src={product.image} alt={product.name} fluid/>       {/*fluid: Fill only his container */}
