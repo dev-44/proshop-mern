@@ -6,4 +6,18 @@ Cart se queda al cerrar sesion? Funciona si un solo usuario va a utilizar el dis
 
 Products
 -----------------
-Stock
+Stock: OK
+Staging?
+
+
+TEST
+===========================================
+Rendimiento: no llamadas duplicadas
+Renderizados sincronizados - no pestañeos
+
+ProductList: OK
+
+RESPONSIVENES
+===========================================
+Header: OK
+Carousel: OK

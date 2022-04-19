@@ -26,21 +26,24 @@ const Header = () => {
   return (
     <header>
       <Navbar bg={!user ? 'primary' : user.isAdmin ? '' : 'primary'} style={(user && user.isAdmin) ? {backgroundColor: '#236968'} : {}} variant="dark" expand="md" collapseOnSelect>
-        <Container>
-            <LinkContainer to='/'>
-              <Navbar.Brand>PROSHOP</Navbar.Brand>  
-            </LinkContainer>
+        <Container >
 
+          <LinkContainer to='/'>
+            <Navbar.Brand>PROSHOP</Navbar.Brand>  
+          </LinkContainer>
+
+          
+          <SearchBox/>  
+          
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className='ms-auto'>
 
-              <SearchBox/>  
-              
               <LinkContainer to='/cart'>
                 <Nav.Link ><FaShoppingCart /> CART</Nav.Link>
               </LinkContainer>
+
               {(user && !user.isAdmin) ? (
                 <NavDropdown title={user.name} id='username'>
                   <LinkContainer to='/profile'>
@@ -83,6 +86,7 @@ const Header = () => {
 
               </NavDropdown>
               )}
+
             </Nav>
           </Navbar.Collapse>
 

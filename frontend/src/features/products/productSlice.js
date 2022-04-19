@@ -11,6 +11,7 @@ const initialState = {
     isError: false,
     isSuccess: false,
     isLoading: false,
+    isLoaded: false,
     isLoadingCarousel: false,
     message: '',
     isDeleted: false,
@@ -123,6 +124,16 @@ export const productSlice = createSlice({
     reducers: {
         reset: (state) => initialState,
         resetDeleted: (state) => {state.isDeleted = false},
+        resetError: (state) => {
+            state.isError = false
+            state.message = ''
+        },
+        resetCrud: (state) => {
+            state.isCreated = false
+            state.isUpdated = false
+            state.isDeleted = false
+            state.isLoaded = false
+        },
         resetMessage: (state) => {
             state.message = ''
             state.isError = false
@@ -145,6 +156,7 @@ export const productSlice = createSlice({
                 state.products = action.payload.products
                 state.pages = action.payload.pages
                 state.page = action.payload.page
+                state.isLoaded = true
             })
             .addCase(getProducts.rejected, (state, action) => {
                 state.isLoading = false
@@ -237,5 +249,5 @@ export const productSlice = createSlice({
     }
 })
 
-export const {reset, resetDeleted, resetMessage, resetReviewCreated} = productSlice.actions
+export const {reset, resetDeleted, resetMessage, resetReviewCreated, resetError, resetCrud} = productSlice.actions
 export default productSlice.reducer

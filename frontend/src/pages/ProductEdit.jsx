@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
-import { getProductDetails, resetMessage, updateProduct, reset } from '../features/products/productSlice'
+import { getProductDetails, resetMessage, updateProduct, reset, resetError } from '../features/products/productSlice'
 
 const ProductEdit = () => {
 
@@ -44,15 +44,15 @@ const ProductEdit = () => {
             }, 5000)
         }
 
-        if(message) {
-            setTimeout(() => dispatch(resetMessage()), 5000)
+        if(isError) {
+            setTimeout(() => dispatch(resetError()), 5000)
         }
 
         if(isUpdated) {
             navigate('/admin/productlist')
         }
 
-    }, [navigate, dispatch, productId, product, isSuccess, errorMsg, message, isUpdated])
+    }, [navigate, dispatch, productId, product, isSuccess, errorMsg, message, isUpdated, isError])
 
     const onSubmit = (e) => {
         e.preventDefault()

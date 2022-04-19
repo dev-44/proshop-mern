@@ -1,25 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import {useSelector, useDispatch} from 'react-redux'
 import { Row, Col } from "react-bootstrap"
 import Product from '../components/Product'   //Component
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
 import ProductCarousel from '../components/ProductCarousel'
-import { resetLoggedSuccess } from '../features/users/userSlice'
 import Meta from '../components/Meta'
-//import products from "../products"              //Json File
-//import axios from 'axios'
 
-//Redux
-import {useSelector, useDispatch} from 'react-redux'
-import { getProducts, getTopProducts} from '../features/products/productSlice'
+import { resetLoggedSuccess } from '../features/users/userSlice'
+import { getProducts, getTopProducts, reset} from '../features/products/productSlice'
 
 const Home = () => {
 
   const dispatch = useDispatch()
   const {user, isLoggedSuccess} = useSelector(state => state.user)
-  const {products, isLoading, isError, message, isSuccess, page, pages} = useSelector((state) => state.product)
+  const {products, isLoading, isError, message, isSuccess, page, pages, isLoaded} = useSelector((state) => state.product)
 
   const [successMsg, setSuccessMsg] = useState('')
 
@@ -31,10 +28,10 @@ const Home = () => {
 
   useEffect (() => {
 
-    if(isLoggedSuccess){
+    if(isLoggedSuccess && isLoaded){
       setSuccessMsg(`Welcome ${user.name}`)
-      setTimeout(() => {dispatch(resetLoggedSuccess())}, 3000)
-      setTimeout(() => {setSuccessMsg('')}, 5000)
+      setTimeout(() => {dispatch(resetLoggedSuccess())}, 5000)
+      setTimeout(() => {setSuccessMsg('')}, 8000)
     }
     
     /*
@@ -44,9 +41,8 @@ const Home = () => {
         }
     }
     */
-    
    
-}, [dispatch, isSuccess, isLoggedSuccess])
+}, [dispatch, isSuccess, isLoggedSuccess, isLoaded])
 
   useEffect(() => {
 

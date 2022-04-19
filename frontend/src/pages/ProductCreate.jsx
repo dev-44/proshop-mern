@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
-import { createProduct, resetMessage, createImage } from '../features/products/productSlice'
+import { createProduct, resetMessage, resetError } from '../features/products/productSlice'
 import {Convert} from '../converter'
 
 const ProductCreate = () => {
@@ -42,8 +42,8 @@ const ProductCreate = () => {
             }, 5000)
         }
 
-        if(message) {
-            setTimeout(() => dispatch(resetMessage()), 5000)
+        if(isError) {
+            setTimeout(() => dispatch(resetError()), 5000)
         }
 
         /*
@@ -57,10 +57,9 @@ const ProductCreate = () => {
 
         if(isCreated) {
             navigate('/admin/productlist')
-            dispatch(resetMessage())
         }
 
-    }, [navigate, dispatch, productId, product, errorMsg, message, isCreated, isSuccess,isImage])
+    }, [navigate, dispatch, productId, product, errorMsg, , isCreated, isSuccess, isError])
 
     const onSubmit = async (e) => {
         e.preventDefault()

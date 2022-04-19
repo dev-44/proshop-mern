@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import Paginate from '../components/Paginate'
-import { getProducts, deleteProduct, resetDeleted, resetMessage, reset, createProduct, getProductDetails} from '../features/products/productSlice'
+import { getProducts, deleteProduct, resetDeleted, resetMessage, getProductDetails, resetError, resetCrud} from '../features/products/productSlice'
 
 const ProductList = () => {
 
@@ -21,10 +21,10 @@ const ProductList = () => {
     const pageNumber = params.pageNumber || 1
 
     const {user} = useSelector(state => state.user)
-    const {products, isLoading, isSuccess, isError, message, isDeleted, isCreated, isUpdated, page, pages} = useSelector(state => state.product)
+    const {products, isLoading, isSuccess, isError, message, isDeleted, isCreated, isUpdated, page, pages, isLoaded} = useSelector(state => state.product)
 
     useEffect(() => {
-        //dispatch(reset())
+
         if ((!user && !user.isAdmin) ) {
             navigate('/')
         } 
@@ -33,31 +33,47 @@ const ProductList = () => {
 
     useEffect(() => {
         var keyword = ''
-        dispatch(getProducts({keyword, pageNumber}))
-        
-        if(isDeleted) {
+
+        if(params.pageNumber) {
+            console.log('Call 1');
             dispatch(getProducts({keyword, pageNumber}))
-            setSuccessMessage('Product deleted with success')
-            setTimeout(() => setSuccessMessage(''), 5000)
-            dispatch(resetDeleted())
         }
+    }, [params.pageNumber])
+
+    useEffect(() => {
+
+        var keyword = ''
 
         if(isError) {
-            setTimeout(() => dispatch(resetMessage()), 5000)
+            setTimeout(() => dispatch(resetError()), 5000)
         }
 
-        if(isCreated) {
+        if(isCreated && isLoaded) {
             setSuccessMessage('Product created with success')
             setTimeout(() => setSuccessMessage(''), 5000)
+            dispatch(resetCrud())
+            console.log('Call 2');
+            dispatch(getProducts({keyword, pageNumber}))
         }
 
-        if(isUpdated) {
+        if(isUpdated && isLoaded) {
             setSuccessMessage('Product Updated with success')
             setTimeout(() => setSuccessMessage(''), 5000)
-            setTimeout(() => dispatch(resetMessage()), 5000)
+            dispatch(resetCrud())
+            console.log('Call 3');
+            dispatch(getProducts({keyword, pageNumber}))
+        }
+        
+        if(isDeleted && isLoaded) {
+            setSuccessMessage('Product deleted with success')
+            setTimeout(() => setSuccessMessage(''), 5000)
+            dispatch(resetCrud())
+            console.log('Call 4');
+            dispatch(getProducts({keyword, pageNumber}))
         }
 
-    }, [dispatch, isDeleted, isError, isCreated, isUpdated, pageNumber])
+
+    }, [dispatch, isDeleted, isError, isCreated, isUpdated, isLoaded])
 
     const createProductHandler = () => {
         navigate('/admin/product/create')
@@ -75,6 +91,7 @@ const ProductList = () => {
     }
 
     const editProduct = (id) => {
+        dispatch(resetError())
         dispatch(getProductDetails(id))
         navigate(`/admin/product/${id}`)
     }
@@ -100,24 +117,25 @@ const ProductList = () => {
             </Modal.Footer>
         </Modal>
 
-        <Row className='align-items-center'>
+        <Row className=''>
             <Col>
                 <h1>Products</h1>
             </Col>
 
 
-            <Col className='text-right'>
+            <Col className='ms-auto'>
                 <Button className='my-3' onClick={createProductHandler}>
                     <i className='fas fa-plus'></i> Create Product 
                 </Button>
             </Col>
         </Row>
 
-        {(successMessage) && <Message variant='success'>{successMessage}</Message>}
-        {(isError && message) && <Message variant='danger'>{message}</Message>}
+
 
         {isLoading  ? <Loader /> : (
             <>
+            {(successMessage) && <Message variant='success'>{successMessage}</Message>}
+            {(isError && message) && <Message variant='danger'>{message}</Message>}
             <Table striped bordered hover responsive className='table-sm'>
                 <thead>
                     <tr>
