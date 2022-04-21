@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import { Link, useParams, useSearchParams, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap'
 import { changeQty, removeItem } from '../features/cart/cartSlice'
 import Loader from '../components/Loader'

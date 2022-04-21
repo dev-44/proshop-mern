@@ -9,6 +9,10 @@ Products
 Stock: OK
 Staging?
 
+Register & Login
+-------------------
+Visualizar contraseña: OK
+
 
 TEST
 ===========================================

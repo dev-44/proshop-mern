@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {Link, useNavigate, useLocation} from 'react-router-dom'
-import {Form, Button, Row, Col} from 'react-bootstrap'
+import {Form, Button, Row, Col, InputGroup} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
@@ -13,6 +13,8 @@ const Login = () => {
         email: '',
         password: ''
     })
+
+    const [showPsw, setShowPsw] = useState(false)
 
     const {email, password} = formData
 
@@ -68,8 +70,13 @@ const Login = () => {
                 </Form.Group>
 
                 <Form.Group controlId='password'>
-                    <Form.Label>Password Address</Form.Label>
-                    <Form.Control type='password' placeholder='Enter Password' value={password} onChange={onChange}></Form.Control>
+                    <Form.Label>Password</Form.Label>
+                    <InputGroup>
+                        <Form.Control type={showPsw ? 'text' : 'password'} placeholder='Enter Password' value={password} onChange={onChange}></Form.Control>
+                        <InputGroup.Text>
+                            <i onClick={() => setShowPsw(!showPsw)} className={!showPsw ? 'fas fa-eye' : 'fas fa-eye-slash'} ></i>
+                        </InputGroup.Text>
+                    </InputGroup>                   
                 </Form.Group>
 
                 <Button className='mt-3' type='submit' variant='primary'>Sign In</Button>

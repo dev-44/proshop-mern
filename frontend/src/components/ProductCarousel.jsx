@@ -1,14 +1,12 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Carousel, Image } from 'react-bootstrap'
 import Loader from './Loader'
 import Message from './Message'
-import { getTopProducts } from '../features/products/productSlice'
 
 const ProductCarousel = () => {
 
-    const dispatch = useDispatch()
     const {topRated, isLoadingCarousel, isError, message} = useSelector(state => state.product)
 
     /*

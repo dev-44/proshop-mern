@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
-import {Form, Button, Row, Col} from 'react-bootstrap'
+import {Form, Button, Row, Col, InputGroup} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
@@ -17,6 +17,7 @@ const Register = () => {
     })
 
     const[errorMsg, setErrorMsg] = useState('')
+    const [showPsw, setShowPsw] = useState(false)
 
     const {name, email, password, password2} = formData
 
@@ -91,7 +92,12 @@ const Register = () => {
 
                 <Form.Group controlId='password'>
                     <Form.Label>Password</Form.Label>
-                    <Form.Control type='password' placeholder='Enter Password' value={password} onChange={onChange}></Form.Control>
+                    <InputGroup>
+                        <Form.Control type={showPsw ? 'text' : 'password'} placeholder='Enter Password' value={password} onChange={onChange}></Form.Control>
+                        <InputGroup.Text>
+                            <i onClick={() => setShowPsw(!showPsw)} className={!showPsw ? 'fas fa-eye' : 'fas fa-eye-slash'} ></i>
+                        </InputGroup.Text>
+                    </InputGroup>                   
                 </Form.Group>
 
                 <Form.Group controlId='password2'>
