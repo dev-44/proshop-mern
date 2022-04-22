@@ -31,18 +31,17 @@ const ProductList = () => {
             navigate('/')
         }
 
-        var keyword = ''
-        console.log('Call on Load');
-        dispatch(getProducts({keyword, pageNumber}))
         // eslint-disable-next-line
     },[])
 
     useEffect(() => {
         var keyword = ''
 
+        //Every time click on one page
         if(params.pageNumber) {
-            console.log('Call 1');
+            console.log('Call 1')
             dispatch(getProducts({keyword, pageNumber}))
+            setTimeout(() => {dispatch(resetCrud())}, 2000)
         }
     }, [params.pageNumber])
 
@@ -54,12 +53,9 @@ const ProductList = () => {
             setTimeout(() => dispatch(resetError()), 5000)
         }
 
-        if(isCreated && isLoaded) {
-            setSuccessMessage('Product created with success')
-            setTimeout(() => setSuccessMessage(''), 5000)
-            dispatch(resetCrud())
-            console.log('Call 2');
-            dispatch(getProducts({keyword, pageNumber}))
+        if(isCreated) {
+            setSuccessMessage('Product Created with success')
+            setTimeout(() => setSuccessMessage(''), 3000)
         }
 
         if(isUpdated) {
@@ -70,18 +66,45 @@ const ProductList = () => {
                 setSuccessMessage('Product Updated with success')
                 setTimeout(() => setSuccessMessage(''), 5000)
                 dispatch(resetCrud())
-            }
-            
-        }
-        
-        if(isDeleted && isLoaded) {
-            setSuccessMessage('Product deleted with success')
-            setTimeout(() => setSuccessMessage(''), 5000)
-            dispatch(resetCrud())
-            console.log('Call 4');
-            dispatch(getProducts({keyword, pageNumber}))
+            }    
         }
 
+        const handleDelete = async() => {
+            var keyword = ''
+            await dispatch(getProducts({keyword, pages}))
+            setSuccessMessage('Product deleted with success')
+            setTimeout(() => setSuccessMessage(''), 3000)
+            console.log('Pages:' + pages)
+            if (pages === 1) {
+              console.log('Camino 1')
+              navigate('/admin/productlist')
+            } else {
+                console.log('Camino 2')
+              navigate(`/admin/productlist/${pages}`)
+            }
+        }
+
+        if(isDeleted) {
+            handleDelete()
+        }
+
+        /*
+        if(isDeleted) {
+            dispatch(getProducts({keyword, pages}))
+            .then(() => {
+                setSuccessMessage('Product deleted with success')
+                setTimeout(() => setSuccessMessage(''), 3000)
+                console.log('Pages:' + pages)
+                if (pages === 1) {
+                  console.log('Camino 1')
+                  navigate('/admin/productlist')
+                } else {
+                    console.log('Camino 2')
+                  navigate(`/admin/productlist/${pages}`)
+                }
+            })
+        }
+        */
 
     }, [dispatch, isDeleted, isError, isCreated, isUpdated, isLoaded])
 

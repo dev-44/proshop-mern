@@ -1,17 +1,14 @@
 import Product from '../models/productModel.js'
 import Order from '../models/orderModel.js'
 import asyncHandler from 'express-async-handler'
-import path from 'path'
 
-
-//This is a comment
 
 //@description      Fetch all products
 //@route            GET api/products
 //@access           Public
 const getProducts = asyncHandler(async(req, res) => {
 
-    const pageSize = 10
+    const pageSize = 5
     const page = Number(req.query.pageNumber) || 1
     const keyword = req.query.keyword ? {
         name: {

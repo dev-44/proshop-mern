@@ -16,7 +16,7 @@ const ChangePassword = () => {
     const [errorMsg, setErrorMsg] = useState('')
 
     const dispatch = useDispatch()
-    const {user, isLoading, isError, isSuccess, message, isMatch} = useSelector(state => state.user)
+    const {user, isLoading, message, isMatch} = useSelector(state => state.user)
 
     const {_id, name, email, token} = user
 

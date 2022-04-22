@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk, createReducer } from "@reduxjs/toolkit"
 import productService from './productService'
 
 //Get products from localStorage
@@ -11,7 +11,6 @@ const initialState = {
     isError: false,
     isSuccess: false,
     isLoading: false,
-    isLoaded: false,
     isLoadingCarousel: false,
     message: '',
     isDeleted: false,
@@ -30,7 +29,7 @@ const initialState = {
 export const getProducts = createAsyncThunk('products/get-all', async(params,thunkAPI) => {
     try {
         const {keyword, pageNumber} = params
-        return await productService.getProducts(keyword, pageNumber)
+        return await productService.getProducts(keyword, pageNumber) 
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)
@@ -61,7 +60,6 @@ export const deleteProduct = createAsyncThunk('product/delete', async(id, thunkA
 //Create Product
 export const createProduct = createAsyncThunk('product/create', async(productData, thunkAPI) => {
     try {
-        console.log(productData)
         const token = thunkAPI.getState().user.user.token
         return await productService.createProduct(productData, token)
     } catch (error) {
@@ -133,7 +131,6 @@ export const productSlice = createSlice({
             state.isCreated = false
             state.isUpdated = false
             state.isDeleted = false
-            state.isLoaded = false
         },
         resetMessage: (state) => {
             state.message = ''
@@ -158,7 +155,6 @@ export const productSlice = createSlice({
                 state.pages = action.payload.pages
                 state.page = action.payload.page
                 state.pageSize = action.payload.pageSize
-                state.isLoaded = true
             })
             .addCase(getProducts.rejected, (state, action) => {
                 state.isLoading = false
@@ -185,7 +181,6 @@ export const productSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.isDeleted = true
-                localStorage.setItem('products', JSON.stringify(state.products))
             })
             .addCase(deleteProduct.rejected, (state, action) => {
                 state.isLoading = false
@@ -200,7 +195,7 @@ export const productSlice = createSlice({
                 state.isSuccess = true
                 state.isCreated = true
                 state.products.push(action.payload)
-                localStorage.setItem('products', JSON.stringify(state.products))
+                
             })
             .addCase(createProduct.rejected, (state, action) => {
                 state.isLoading = false
@@ -215,7 +210,6 @@ export const productSlice = createSlice({
                 state.isSuccess = true
                 state.isUpdated = true
                 state.products = action.payload
-                localStorage.setItem('products', JSON.stringify(state.products))
             })
             .addCase(updateProduct.rejected, (state, action) => {
                 state.isLoading = false

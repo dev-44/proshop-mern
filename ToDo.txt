@@ -48,7 +48,9 @@ MEJORAS
 -Despues de Editar desde ProductList volver a la pagina donde esta
 el producto editado y señalarlo con un fondo verde por un tiempo: OK
 -Despues de Editar desde Home va a ProductDetails: OK
--Despues de Eliminar desde Home vuelve a la ultima pagina disponible: casi OK -arreglar el URL
+-Despues de Eliminar desde Home vuelve a la ultima pagina disponible: OK
+-Despues de Crear un producto, regresar a la ultima pagina que es donde
+estará el producto:
 -Solo permitir hacer review si se compro el producto.
 -Preguntas Frecuentes.
 -Consultas sobre un producto (tipo review) con la posibilidad de que el admin responda.

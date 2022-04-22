@@ -7,16 +7,17 @@ import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
-import { createProduct, resetMessage, resetError } from '../features/products/productSlice'
+import { createProduct, getProducts, resetCrud, resetError } from '../features/products/productSlice'
 import {Convert} from '../converter'
 
 const ProductCreate = () => {
 
     const params = useParams()
     const productId = params.id
+    const pageNumber = params.pageNumber || 1
 
     const [errorMsg, setErrorMsg] = useState('')
-    const [successMsg, setSuccessMsg] = useState('')
+    const [successMessage, setSuccessMessage] = useState('')
 
     const [name, setName] = useState('')
     const [price, setPrice] = useState(0)
@@ -31,7 +32,7 @@ const ProductCreate = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const {product, isLoading, isError, isSuccess, message, isCreated, isImage} = useSelector(state => state.product)
+    const {product, isLoading, isError, isSuccess, message, isCreated, isLoaded, pages} = useSelector(state => state.product)
     const {user} = useSelector(state => state.user)
 
     useEffect(() => {
@@ -55,9 +56,37 @@ const ProductCreate = () => {
         }
         */
 
-        if(isCreated) {
+        const handleCration = async() => {
+            var keyword = ''
+            await dispatch(getProducts({keyword, pageNumber}))
+            console.log('Resolved')
+            console.log('Pages: ' + pages)
             navigate('/admin/productlist')
         }
+
+        if(isCreated) {
+            handleCration()
+        }
+
+        /*
+        if(isCreated) {
+            var keyword = ''
+
+            dispatch(getProducts({keyword, pageNumber}))
+                .then(() => {
+                    console.log('Resolved')
+                    console.log('Pages: ' + pages)
+
+                    if (pages === 1) {
+                        console.log('Camino 1');
+                        navigate('/admin/productlist')
+                      } else {
+                          console.log('Camino 2');
+                        navigate(`/admin/productlist/${pages}`)
+                      }
+                })
+        }
+        */
 
     }, [navigate, dispatch, productId, product, errorMsg, , isCreated, isSuccess, isError])
 
@@ -67,10 +96,10 @@ const ProductCreate = () => {
         const convertedImage = await Convert(image)
 
         if(convertedImage) {
-            console.log(convertedImage);
-            } else{
-                console.log('The file is not in format of image/jpeg or image/png')
-            }
+            console.log('Image converted');
+        } else{
+            console.log('The file is not in format of image/jpeg or image/png')
+        }
         
         const newProduct = {
             user: user._id,
@@ -119,7 +148,7 @@ const ProductCreate = () => {
                 <h1 className='text-center'>ADD A NEW PRODUCT</h1>
                 {message && <Message variant='danger'>{message}</Message>}
                 {errorMsg && <Message variant='danger'>{errorMsg}</Message>}
-                {successMsg && <Message variant='success'>{successMsg}</Message>}
+                {successMessage && <Message variant='success'>{successMessage}</Message>}
                 {isLoading ? <Loader/> : (
                     <FormContainer>
                             <Form onSubmit={onSubmit}>

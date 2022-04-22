@@ -37,18 +37,23 @@ const Home = () => {
       setTimeout(() => {setSuccessMessage('')}, 8000)
     }
 
-    if(isDeleted && isLoaded) {
+    if(isDeleted) {
       setSuccessMessage('Product deleted with success')
       setTimeout(() => setSuccessMessage(''), 5000)
-      dispatch(resetCrud())
       dispatch(getProducts({keyword, pages}))
+    }
+
+    if(isDeleted & isLoaded) {
+      console.log('Pages:' + pages)
       if (pages === 1) {
+        console.log('Call to /')
         navigate('/')
       } else {
         navigate(`/page/${pages}`)
       }
-
+      setTimeout(() => {dispatch(resetCrud())}, 1000)
     }
+
     
     /*
     return () => {              //Clear/Unmount.Return a function
@@ -73,9 +78,9 @@ const Home = () => {
 
     dispatch(getTopProducts())
     dispatch(getProducts({keyword, pageNumber}))
-   
+    setTimeout(() => {dispatch(resetCrud())}, 2000)
 
-  }, [dispatch, keyword, pageNumber])
+  }, [keyword, pageNumber])
 
   if(isLoading) {
     return <Loader />
