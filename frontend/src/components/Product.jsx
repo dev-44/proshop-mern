@@ -5,20 +5,20 @@ import { LinkContainer } from 'react-router-bootstrap'
 import Rating from './Rating'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import Home from '../pages/Home'
 
-
-const Product = ({product}) => {
+const Product = ({product, preDeleteProduct}) => {
 
     const navigate = useNavigate()
 
     const {user} = useSelector((state) => state.user)
 
-    const preDeleteProduct = (id) => {
-        console.log(id)
+    const preDelete = (id) => {
+        preDeleteProduct(id)
     }
 
     const editProduct = (product) => {
-        navigate(`/admin/product/${product._id}`)
+        navigate(`/admin/product/${product._id}?redirect=details`)
     }
     
   return (
@@ -49,7 +49,7 @@ const Product = ({product}) => {
                     </Button>
 
                     
-                    <Button variant='danger' className='position-absolute bottom-0 end-0 mx-2 my-2' onClick={()=>preDeleteProduct(product._id)} style={{float: 'right'}}>
+                    <Button variant='danger' className='position-absolute bottom-0 end-0 mx-2 my-2' onClick={()=>preDelete(product._id)} style={{float: 'right'}}>
                         <i className='fas fa-trash'></i>
                     </Button>
       

@@ -20,8 +20,54 @@ Rendimiento: no llamadas duplicadas
 Renderizados sincronizados - no pestañeos
 
 ProductList: OK
+ProductEdit:
+ProductCreate:
 
 RESPONSIVENES
 ===========================================
 Header: OK
 Carousel: OK
+
+NUEVAS FUNCIONES
+===========================================
+Editar product desde Home: OK
+Eliminar product desde Home: OK
+Subir Multiples Imagenes:
+Editar Imagenes:
+Filtar por Categorias:
+Filtrar por Rango de Precios:
+Notificacion para el admin en caso de nueva orden
+Notificacion en caso de stock minimo.
+Boton de "Notificarme cuando haya disponibilidad del producto" para el cliente.
+Vista correspondiente para el admin
+Google maps para agregar direcciones
+
+
+MEJORAS
+=========================================
+-Despues de Editar desde ProductList volver a la pagina donde esta
+el producto editado y señalarlo con un fondo verde por un tiempo: OK
+-Despues de Editar desde Home va a ProductDetails: OK
+-Despues de Eliminar desde Home vuelve a la ultima pagina disponible: casi OK -arreglar el URL
+-Solo permitir hacer review si se compro el producto.
+-Preguntas Frecuentes.
+-Consultas sobre un producto (tipo review) con la posibilidad de que el admin responda.
+-Grafico de reviews.
+
+BUGS
+==========================================
+-Si se elimina un usuario el apartado de pedido sale sin nombre. (ver como se hace en review)
+
+PENDIENTES
+===================================
+-Pedir el num de telefono al registrarse (obligatorio)
+-Colocar iconos de redes sociales al pie de la pagina con links.
+-Pagina de contactos de la tienda con informacion de cuenta bancaria.
+-Total vendido en el mes/año
+
+
+PAQUETE APARTE
+========================================
+-En una tarjeta, multiples productos (amazon)
+-Compras o productos similares. Recomendaciones
+-Notificarle al cliente cuando se repone el stock de su producto deseado.

@@ -11,7 +11,7 @@ const initialState = {
 }
 
 //Get all users
-export const getUsers = createAsyncThunk('admin/user/getAll', async(_, thunkAPI) => {
+export const getUsers = createAsyncThunk('admin/user/get-all', async(_, thunkAPI) => {
     try {
         const token = thunkAPI.getState().user.user.token
         return await adminService.getUsers(token)
@@ -45,7 +45,7 @@ export const makeAdmin = createAsyncThunk('admin/user/authorization', async(id, 
 })
 
 //Get All Orders
-export const getOrders = createAsyncThunk('admin/order/getall', async(_, thunkAPI) => {
+export const getOrders = createAsyncThunk('admin/orders/get-all', async(_, thunkAPI) => {
     try {
         const token = thunkAPI.getState().user.user.token
         console.log(token)

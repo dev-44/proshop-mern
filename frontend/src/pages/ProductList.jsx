@@ -6,13 +6,14 @@ import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import Paginate from '../components/Paginate'
-import { getProducts, deleteProduct, resetDeleted, resetMessage, getProductDetails, resetError, resetCrud} from '../features/products/productSlice'
+import { getProducts, deleteProduct, getProductDetails, resetError, resetCrud} from '../features/products/productSlice'
 
 const ProductList = () => {
 
     const [openModal, setOpenModal] = useState(false)
     const [productToRemove, setProductToRemove] = useState('')
     const [successMessage, setSuccessMessage] = useState('')
+    const [focus, setFocus] = useState('')
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -20,14 +21,19 @@ const ProductList = () => {
     const params = useParams()
     const pageNumber = params.pageNumber || 1
 
+
     const {user} = useSelector(state => state.user)
-    const {products, isLoading, isSuccess, isError, message, isDeleted, isCreated, isUpdated, page, pages, isLoaded} = useSelector(state => state.product)
+    const {products, isLoading, isSuccess, isError, message, isDeleted, isCreated, isUpdated, page, pages, isLoaded, product} = useSelector(state => state.product)
 
     useEffect(() => {
 
         if ((!user && !user.isAdmin) ) {
             navigate('/')
-        } 
+        }
+
+        var keyword = ''
+        console.log('Call on Load');
+        dispatch(getProducts({keyword, pageNumber}))
         // eslint-disable-next-line
     },[])
 
@@ -56,12 +62,16 @@ const ProductList = () => {
             dispatch(getProducts({keyword, pageNumber}))
         }
 
-        if(isUpdated && isLoaded) {
-            setSuccessMessage('Product Updated with success')
-            setTimeout(() => setSuccessMessage(''), 5000)
-            dispatch(resetCrud())
-            console.log('Call 3');
-            dispatch(getProducts({keyword, pageNumber}))
+        if(isUpdated) {
+            setFocus(product._id)
+            setTimeout(() => setFocus(''), 7000)
+            //dispatch(getProducts({keyword, pageNumber}))
+            if(isLoaded) {
+                setSuccessMessage('Product Updated with success')
+                setTimeout(() => setSuccessMessage(''), 5000)
+                dispatch(resetCrud())
+            }
+            
         }
         
         if(isDeleted && isLoaded) {
@@ -92,8 +102,7 @@ const ProductList = () => {
 
     const editProduct = (id) => {
         dispatch(resetError())
-        dispatch(getProductDetails(id))
-        navigate(`/admin/product/${id}`)
+        navigate(`/admin/product/${id}?redirect=productlist&page=${pageNumber}`)
     }
 
     //Modals
@@ -106,7 +115,7 @@ const ProductList = () => {
             <Modal.Header closeButton>
                 <Modal.Title>Attention</Modal.Title>
             </Modal.Header>
-            <Modal.Body>Are you sure you want to delete this User?</Modal.Body>
+            <Modal.Body>Are you sure you want to delete this Product?</Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleCloseModal}>
                     Close
@@ -134,8 +143,6 @@ const ProductList = () => {
 
         {isLoading  ? <Loader /> : (
             <>
-            {(successMessage) && <Message variant='success'>{successMessage}</Message>}
-            {(isError && message) && <Message variant='danger'>{message}</Message>}
             <Table striped bordered hover responsive className='table-sm'>
                 <thead>
                     <tr>
@@ -148,21 +155,21 @@ const ProductList = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {products.map((product) => (
-                        <tr key={product._id}>
-                            <td>{product._id}</td>
-                            <td>{product.name}</td>
-                            <td>$ {product.price}</td>
-                            <td>{product.category}</td>
-                            <td>{product.brand}</td>
+                    {products.map((item) => (
+                        <tr key={item._id} style={{backgroundColor: focus === item._id ? '#18bc9c' : ''}}>
+                            <td>{item._id}</td>
+                            <td>{item.name}</td>
+                            <td>$ {item.price}</td>
+                            <td>{item.category}</td>
+                            <td>{item.brand}</td>
                             <td>
                 
-                                <Button variant='light' className='btn-sm' onClick={()=> editProduct(product._id)}>
+                                <Button variant='light' className='btn-sm' onClick={()=> editProduct(item._id)}>
                                     <i className='fas fa-edit'></i>
                                 </Button>
                                 
                                 
-                                <Button variant='danger' className='btn-sm' onClick={()=>preDeleteProduct(product._id)}>
+                                <Button variant='danger' className='btn-sm' onClick={()=>preDeleteProduct(item._id)}>
                                     <i className='fas fa-trash'></i>
                                 </Button>
 
@@ -172,6 +179,8 @@ const ProductList = () => {
                 </tbody>
             </Table>
             <Paginate pages={pages} page={page} isAdmin={true}/>
+            {(successMessage) && <Message variant='success'>{successMessage}</Message>}
+            {(isError && message) && <Message variant='danger'>{message}</Message>}
             </>
         )}
     </>

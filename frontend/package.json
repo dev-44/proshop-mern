@@ -10,9 +10,9 @@
     "axios": "^0.26.1",
     "http-proxy-middleware": "^2.0.4",
     "mongo-image-converter": "^1.0.2",
-    "react": "^17.0.2",
+    "react": "^17.0.0",
     "react-bootstrap": "^2.2.1",
-    "react-dom": "^17.0.2",
+    "react-dom": "^17.0.0",
     "react-helmet": "^6.1.0",
     "react-icons": "^4.3.1",
     "react-paypal-button-v2": "^2.6.3",
@@ -41,5 +41,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint": "^5.6.0",
+    "eslint-plugin-react": "^7.29.4"
   }
 }

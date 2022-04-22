@@ -11,7 +11,7 @@ import path from 'path'
 //@access           Public
 const getProducts = asyncHandler(async(req, res) => {
 
-    const pageSize = 8
+    const pageSize = 10
     const page = Number(req.query.pageNumber) || 1
     const keyword = req.query.keyword ? {
         name: {
@@ -22,7 +22,7 @@ const getProducts = asyncHandler(async(req, res) => {
 
     const count = await Product.countDocuments({...keyword})
     const products = await Product.find({...keyword}, '-picture').limit(pageSize).skip(pageSize * (page - 1))
-    res.json({products, page, pages: Math.ceil(count / pageSize)})
+    res.json({products, page, pages: Math.ceil(count / pageSize), pageSize})
 })
 
 //@description      Get a single product

@@ -29,6 +29,10 @@ const ProductDetails = () => {
     //const [product, setProduct] = useState({})
 
     useEffect(() => {
+        dispatch(getProductDetails(id))
+    }, [])
+
+    useEffect(() => {
         /*
         const fetchProduct = async() => {
           const { data } = await axios.get(`/api/products/${params.id}`)
@@ -74,7 +78,8 @@ const ProductDetails = () => {
   return (
     <>
         
-        <Link to='/' className='btn btn-light my-3'>Go Back</Link>
+        <Link to='/' className='btn btn-light my-3 mx-3'>Go Home <i className='fas fa-home'></i></Link>
+        <Link to='/admin/productlist' className='btn btn-light my-3'>Go to Products Table <i className='fas fa-table'></i></Link>
 
         {isLoading ? <Loader /> : Object.keys(product).length !== 0 && (
             <>

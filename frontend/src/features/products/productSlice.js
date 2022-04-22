@@ -22,11 +22,12 @@ const initialState = {
     isLoadingReview: false,
     reviewCreated: false,
     pages: 0,
-    page: 0
+    page: 0,
+    pageSize: 0
 }
 
 //Get All Products
-export const getProducts = createAsyncThunk('products/getAll', async(params,thunkAPI) => {
+export const getProducts = createAsyncThunk('products/get-all', async(params,thunkAPI) => {
     try {
         const {keyword, pageNumber} = params
         return await productService.getProducts(keyword, pageNumber)
@@ -95,7 +96,7 @@ export const createProductReview = createAsyncThunk('product/review/create', asy
 })
 
 //Get Top Products for the Carousel
-export const getTopProducts = createAsyncThunk('product/top', async(_, thunkAPI) => {
+export const getTopProducts = createAsyncThunk('products/top', async(_, thunkAPI) => {
     try {
         return await productService.getTopProducts()
     } catch (error) {
@@ -156,6 +157,7 @@ export const productSlice = createSlice({
                 state.products = action.payload.products
                 state.pages = action.payload.pages
                 state.page = action.payload.page
+                state.pageSize = action.payload.pageSize
                 state.isLoaded = true
             })
             .addCase(getProducts.rejected, (state, action) => {

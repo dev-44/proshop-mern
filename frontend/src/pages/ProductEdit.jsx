@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react'
-import {Link, useNavigate, useParams} from 'react-router-dom'
+import {Link, useNavigate, useParams, useLocation, useSearchParams} from 'react-router-dom'
 import {Form, Button, Row, Col} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
-import { getProductDetails, resetMessage, updateProduct, reset, resetError } from '../features/products/productSlice'
+import { getProductDetails, updateProduct, resetError, resetCrud } from '../features/products/productSlice'
 
 const ProductEdit = () => {
 
@@ -23,13 +23,25 @@ const ProductEdit = () => {
     const [countInStock, setCountInStock] = useState(0)
     const [description, setDescription] = useState('')
 
-
-    const dispatch = useDispatch()
+    const [searchParams] = useSearchParams()
     const navigate = useNavigate()
-    const {product, isLoading, isError, isSuccess, message, isUpdated} = useSelector(state => state.product)
+    const location = useLocation()
+
+    //const redirect = location.search.split('=',)[1]
+    const redirect = searchParams.get('redirect')
+    const pageNumber = searchParams.get('page')
+    
+    const dispatch = useDispatch()
+    const {product, isLoading, isError, message, isUpdated} = useSelector(state => state.product)
 
     useEffect(() => {
+        dispatch(getProductDetails(productId))
 
+
+
+    }, [productId])
+
+    useEffect(() => {
         setName(product.name)
         setPrice(product.price)
         setImage(product.image)
@@ -37,11 +49,12 @@ const ProductEdit = () => {
         setCategory(product.category)
         setCountInStock(product.countInStock)
         setDescription(product.description)
+    }, [product])
+
+    useEffect(() => {
 
         if(errorMsg){
-            setTimeout(() => {
-                setErrorMsg('')
-            }, 5000)
+            setTimeout(() => {setErrorMsg('')}, 5000)
         }
 
         if(isError) {
@@ -49,10 +62,18 @@ const ProductEdit = () => {
         }
 
         if(isUpdated) {
-            navigate('/admin/productlist')
+            
+            if(redirect === 'details') {
+                navigate(`/product/${productId}`)
+                dispatch(resetCrud())
+            }
+
+            if(redirect === 'productlist') {
+                navigate(`/admin/productlist/${pageNumber}`)
+            }
         }
 
-    }, [navigate, dispatch, productId, product, isSuccess, errorMsg, message, isUpdated, isError])
+    }, [dispatch, errorMsg, isUpdated, isError])
 
     const onSubmit = (e) => {
         e.preventDefault()
