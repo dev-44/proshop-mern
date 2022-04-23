@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { Row, Col, Image, ListGroup, Card, Button, Form} from 'react-bootstrap'
 import Rating from '../components/Rating'
 import { useDispatch, useSelector } from 'react-redux'
@@ -16,6 +16,10 @@ const ProductDetails = () => {
     const [rating, setRating] = useState(0)
     const [comment, setComment] = useState('')
     const [successMsg, setSuccessMsg] = useState('')
+    const [url, setUrl] = useState('')
+
+    const [searchParams] = useSearchParams()
+    const redirect = searchParams.get('redirect')
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -30,6 +34,14 @@ const ProductDetails = () => {
 
     useEffect(() => {
         dispatch(getProductDetails(id))
+
+        if (redirect === 'productlist') {
+            setUrl('/admin/productlist')
+        }
+
+        if(redirect === 'home') {
+            setUrl('/')
+        }
     }, [])
 
     useEffect(() => {
@@ -77,9 +89,11 @@ const ProductDetails = () => {
 
   return (
     <>
-        
+        <Link to={url} className='btn btn-light my-3 mx-3'>Go Back <i className='fas fa-arrow-left'></i></Link>
+        {/*
         <Link to='/' className='btn btn-light my-3 mx-3'>Go Home <i className='fas fa-home'></i></Link>
         <Link to='/admin/productlist' className='btn btn-light my-3'>Go to Products Table <i className='fas fa-table'></i></Link>
+        */}
 
         {isLoading ? <Loader /> : Object.keys(product).length !== 0 && (
             <>

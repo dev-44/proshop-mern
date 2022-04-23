@@ -47,6 +47,9 @@ const ProductCreate = () => {
             setTimeout(() => dispatch(resetError()), 5000)
         }
 
+        if(isCreated) {
+            navigate('/admin/productlist')
+        }
         /*
         if(isSuccess && isCreated) {
             const file = picture
@@ -56,39 +59,8 @@ const ProductCreate = () => {
         }
         */
 
-        const handleCration = async() => {
-            var keyword = ''
-            await dispatch(getProducts({keyword, pageNumber}))
-            console.log('Resolved')
-            console.log('Pages: ' + pages)
-            navigate('/admin/productlist')
-        }
+    }, [navigate, dispatch, productId, product, errorMsg, , isCreated, isSuccess, isError, isLoaded])
 
-        if(isCreated) {
-            handleCration()
-        }
-
-        /*
-        if(isCreated) {
-            var keyword = ''
-
-            dispatch(getProducts({keyword, pageNumber}))
-                .then(() => {
-                    console.log('Resolved')
-                    console.log('Pages: ' + pages)
-
-                    if (pages === 1) {
-                        console.log('Camino 1');
-                        navigate('/admin/productlist')
-                      } else {
-                          console.log('Camino 2');
-                        navigate(`/admin/productlist/${pages}`)
-                      }
-                })
-        }
-        */
-
-    }, [navigate, dispatch, productId, product, errorMsg, , isCreated, isSuccess, isError])
 
     const onSubmit = async (e) => {
         e.preventDefault()

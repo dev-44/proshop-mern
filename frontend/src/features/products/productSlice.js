@@ -20,16 +20,14 @@ const initialState = {
     image: false,
     isLoadingReview: false,
     reviewCreated: false,
-    pages: 0,
-    page: 0,
-    pageSize: 0
 }
 
 //Get All Products
-export const getProducts = createAsyncThunk('products/get-all', async(params,thunkAPI) => {
+export const getProducts = createAsyncThunk('products/get-all', async(_,thunkAPI) => {
     try {
-        const {keyword, pageNumber} = params
-        return await productService.getProducts(keyword, pageNumber) 
+        //const {keyword, pageNumber} = params
+        //return await productService.getProducts(keyword, pageNumber)
+        return await productService.getProducts()
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)
@@ -131,6 +129,7 @@ export const productSlice = createSlice({
             state.isCreated = false
             state.isUpdated = false
             state.isDeleted = false
+            state.isLoaded = false
         },
         resetMessage: (state) => {
             state.message = ''
@@ -151,10 +150,11 @@ export const productSlice = createSlice({
             .addCase(getProducts.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.products = action.payload.products
-                state.pages = action.payload.pages
-                state.page = action.payload.page
-                state.pageSize = action.payload.pageSize
+                state.products = action.payload
+                //state.products = action.payload.products
+                //state.pages = action.payload.pages
+                //state.page = action.payload.page
+                //state.pageSize = action.payload.pageSize
             })
             .addCase(getProducts.rejected, (state, action) => {
                 state.isLoading = false
@@ -181,6 +181,7 @@ export const productSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.isDeleted = true
+                state.products = action.payload
             })
             .addCase(deleteProduct.rejected, (state, action) => {
                 state.isLoading = false
@@ -194,7 +195,8 @@ export const productSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.isCreated = true
-                state.products.push(action.payload)
+                state.products = action.payload
+                //state.products.push(action.payload)
                 
             })
             .addCase(createProduct.rejected, (state, action) => {
@@ -209,7 +211,7 @@ export const productSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.isUpdated = true
-                state.products = action.payload
+                state.product = action.payload
             })
             .addCase(updateProduct.rejected, (state, action) => {
                 state.isLoading = false

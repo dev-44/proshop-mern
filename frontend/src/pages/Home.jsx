@@ -65,6 +65,7 @@ const Home = () => {
    
 }, [dispatch, isSuccess, isLoggedSuccess, isLoaded, isDeleted])
 
+
   useEffect(() => {
 
     /* MOVE TO REDUX
@@ -77,10 +78,12 @@ const Home = () => {
     */
 
     dispatch(getTopProducts())
-    dispatch(getProducts({keyword, pageNumber}))
+    //dispatch(getProducts({keyword, pageNumber}))
+    dispatch(getProducts())
     setTimeout(() => {dispatch(resetCrud())}, 2000)
 
-  }, [keyword, pageNumber])
+  }, [])
+  
 
   if(isLoading) {
     return <Loader />

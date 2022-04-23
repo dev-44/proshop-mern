@@ -8,6 +8,16 @@ import asyncHandler from 'express-async-handler'
 //@access           Public
 const getProducts = asyncHandler(async(req, res) => {
 
+    try {
+        const products = await Product.find({})
+        res.status(200).json(products)
+    } catch (error) {
+        console.log(error)
+        res.status(404)
+    }
+
+    //PAGINATION FROM THE DATABASE
+    /*
     const pageSize = 5
     const page = Number(req.query.pageNumber) || 1
     const keyword = req.query.keyword ? {
@@ -20,6 +30,7 @@ const getProducts = asyncHandler(async(req, res) => {
     const count = await Product.countDocuments({...keyword})
     const products = await Product.find({...keyword}, '-picture').limit(pageSize).skip(pageSize * (page - 1))
     res.json({products, page, pages: Math.ceil(count / pageSize), pageSize})
+    */
 })
 
 //@description      Get a single product
@@ -58,7 +69,9 @@ const deleteProduct = asyncHandler(async(req, res) => {
         throw new Error('Exists orders with that product. Cant Delete')
     } else {
         await product.remove()
-        res.json({message: 'Product removed'})
+        const products = await Product.find({})
+        res.status(200).json(products)
+        //res.json({message: 'Product removed'})
     }
 })
 
@@ -80,10 +93,10 @@ const createProduct = asyncHandler(async(req, res) => {
         //numReviews: req.body.numReviews,
     })
 
-
     try {
-        const newProduct = await product.save()
-        res.status(201).json(newProduct)
+        await product.save()
+        const products = await Product.find({})
+        res.status(201).json(products)
     } catch (error) {
         console.log(error)
         res.status(404)
@@ -110,9 +123,9 @@ const updateProduct = asyncHandler(async(req, res) => {
         product.countInStock = countInStock
 
         try {
-            await product.save()
-            const products = await Product.find()
-            res.json(products)
+            const productUpdated = await product.save()
+            //const products = await Product.find()
+            res.status(204).json(productUpdated)
         } catch (error) {
             console.log(error)
         }

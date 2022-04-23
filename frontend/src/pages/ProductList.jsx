@@ -1,50 +1,97 @@
 import React, {useEffect, useState} from 'react'
-import {useNavigate, useParams} from 'react-router-dom'
-import { LinkContainer } from 'react-router-bootstrap'
-import {Table, Button, Modal, Row, Col, Card} from 'react-bootstrap'
+import {useNavigate, useParams, useSearchParams, Link} from 'react-router-dom'
+import {Table, Button, Modal, Row, Col, Card, Form, InputGroup} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import Paginate from '../components/Paginate'
-import { getProducts, deleteProduct, getProductDetails, resetError, resetCrud} from '../features/products/productSlice'
+import Pagination from '../components/Pagination'
+import { getProducts, deleteProduct, resetError, resetCrud} from '../features/products/productSlice'
 
 const ProductList = () => {
+
+    //Pagination
+    const [loading, setLoading] = useState(false)
+    const [currentPage, setCurrentPage] = useState(1)
+    const [postsPerPage] = useState(5)
 
     const [openModal, setOpenModal] = useState(false)
     const [productToRemove, setProductToRemove] = useState('')
     const [successMessage, setSuccessMessage] = useState('')
     const [focus, setFocus] = useState('')
 
+    const [idFilter, setIdFilter] = useState('')
+    const [nameFilter, setNameFilter] = useState('')
+    const [minPriceFilter, setMinPriceFilter] = useState()
+    const [maxPriceFilter, setMaxPriceFilter] = useState()
+    const [categoryFilter, setCategoryFilter] = useState('')
+    const [brandFilter, setBrandFilter] = useState('')
+
     const dispatch = useDispatch()
     const navigate = useNavigate()
+
+    const [searchParams] = useSearchParams()
+    const pageNumber = searchParams.get('page') || 1
     
-    const params = useParams()
-    const pageNumber = params.pageNumber || 1
+    //Pagination from DB
+    //const params = useParams()
+    //const pageNumber = params.pageNumber || 1
 
 
     const {user} = useSelector(state => state.user)
-    const {products, isLoading, isSuccess, isError, message, isDeleted, isCreated, isUpdated, page, pages, isLoaded, product} = useSelector(state => state.product)
+    const {products, isLoading, isError, message, isDeleted, isCreated, isUpdated, page, pages, isLoaded, product} = useSelector(state => state.product)
+
+    // Get current posts
+    const indexOfLastPost = currentPage * postsPerPage
+    const indexOfFirstPost = indexOfLastPost - postsPerPage
+    let currentPosts = products.slice(indexOfFirstPost, indexOfLastPost)
+    var filteredPosts = products
+    var categories = []
+    var brands = []
+    var dataTable
+    populateCategories(products)
+    populateBrands(products)
 
     useEffect(() => {
 
         if ((!user && !user.isAdmin) ) {
             navigate('/')
         }
+        dispatch(getProducts())
 
+        if(pageNumber !== 1 ) {
+            setCurrentPage(pageNumber)
+            //navigate('/admin/productlist')
+        }
+
+        if(isUpdated) {
+            setFocus(product._id)
+            setTimeout(() => setFocus(''), 5000)
+            dispatch(resetCrud())
+        }
         // eslint-disable-next-line
     },[])
 
     useEffect(() => {
+        if(isDeleted) {
+            dispatch(getProducts())
+            dispatch(resetCrud())
+        }
+    }, [isDeleted])
+
+    /*
+    useEffect(() => {
         var keyword = ''
 
         //Every time click on one page
-        if(params.pageNumber) {
+        if(params.pageNumber && !isCreated) {
             console.log('Call 1')
             dispatch(getProducts({keyword, pageNumber}))
-            setTimeout(() => {dispatch(resetCrud())}, 2000)
+            setTimeout(() => {dispatch(resetCrud())}, 5000)
         }
     }, [params.pageNumber])
+    */
 
+    /*
     useEffect(() => {
 
         var keyword = ''
@@ -53,10 +100,10 @@ const ProductList = () => {
             setTimeout(() => dispatch(resetError()), 5000)
         }
 
-        if(isCreated) {
-            setSuccessMessage('Product Created with success')
-            setTimeout(() => setSuccessMessage(''), 3000)
-        }
+        if(isCreated || isDeleted) {
+            console.log('isCreated or isDeleted');
+            dispatch(getProducts({keyword, pageNumber}))
+        }   
 
         if(isUpdated) {
             setFocus(product._id)
@@ -69,44 +116,33 @@ const ProductList = () => {
             }    
         }
 
-        const handleDelete = async() => {
-            var keyword = ''
-            await dispatch(getProducts({keyword, pages}))
-            setSuccessMessage('Product deleted with success')
-            setTimeout(() => setSuccessMessage(''), 3000)
-            console.log('Pages:' + pages)
-            if (pages === 1) {
-              console.log('Camino 1')
-              navigate('/admin/productlist')
-            } else {
-                console.log('Camino 2')
-              navigate(`/admin/productlist/${pages}`)
+
+        if(isLoaded) {
+            console.log('Is Loaded')
+            if(isDeleted) {
+                setSuccessMessage('Product Deleted with success')
+                setTimeout(() => setSuccessMessage(''), 5000)
             }
+
+            if(isCreated) {
+                setSuccessMessage('Product Created with success')
+                setTimeout(() => setSuccessMessage(''), 5000)
+            }
+
+            if (pages === 1) {
+                console.log('camino 1')
+                navigate('/admin/productlist')
+            } else {
+                console.log('camino 2')
+                navigate(`/admin/productlist/${pages}`)
+            }
+            setTimeout(() => dispatch(resetCrud()), 5000)
         }
 
-        if(isDeleted) {
-            handleDelete()
-        }
-
-        /*
-        if(isDeleted) {
-            dispatch(getProducts({keyword, pages}))
-            .then(() => {
-                setSuccessMessage('Product deleted with success')
-                setTimeout(() => setSuccessMessage(''), 3000)
-                console.log('Pages:' + pages)
-                if (pages === 1) {
-                  console.log('Camino 1')
-                  navigate('/admin/productlist')
-                } else {
-                    console.log('Camino 2')
-                  navigate(`/admin/productlist/${pages}`)
-                }
-            })
-        }
-        */
 
     }, [dispatch, isDeleted, isError, isCreated, isUpdated, isLoaded])
+    */
+
 
     const createProductHandler = () => {
         navigate('/admin/product/create')
@@ -125,12 +161,65 @@ const ProductList = () => {
 
     const editProduct = (id) => {
         dispatch(resetError())
-        navigate(`/admin/product/${id}?redirect=productlist&page=${pageNumber}`)
+        navigate(`/admin/product/${id}?redirect=productlist&page=${currentPage}`)
+        //navigate(`/admin/product/${id}?redirect=productlist&page=${pageNumber}`)
     }
 
     //Modals
     const handleOpenModal = () => setOpenModal(true)
     const handleCloseModal = () => setOpenModal(false)
+
+    // Change page
+    const paginate = (pageNumber) => setCurrentPage(pageNumber)
+
+    //Search Filters
+
+    if(idFilter) {
+        filteredPosts = filteredPosts.filter(item => item._id.toLowerCase().includes(idFilter.toLowerCase()))
+    }
+
+    if (nameFilter) {
+        filteredPosts = filteredPosts.filter(item => item.name.toLowerCase().includes(nameFilter.toLowerCase()))
+    }
+
+    if(minPriceFilter) {
+        filteredPosts = filteredPosts.filter(item => Number(item.price) >= Number(minPriceFilter))
+    }
+
+    if(maxPriceFilter) {
+        filteredPosts = filteredPosts.filter(item => Number(item.price) <= Number(maxPriceFilter))
+    }
+
+    if (categoryFilter) {
+        filteredPosts = filteredPosts.filter(item => item.category === categoryFilter)
+    }
+
+    if (brandFilter) {
+        filteredPosts = filteredPosts.filter(item => item.brand === brandFilter)
+    }
+
+
+    if(!idFilter && !nameFilter && !minPriceFilter && !maxPriceFilter && !categoryFilter && !brandFilter) {
+        dataTable = currentPosts
+    } else {
+        dataTable = filteredPosts
+    }
+
+    function populateCategories(products) {
+        products.map(function(item) {
+            if (!categories.includes(item.category)) {
+                categories.push(item.category)
+            }
+        })
+    }
+
+    function populateBrands(products) {
+        products.map(function(item) {
+            if (!brands.includes(item.brand)) {
+                brands.push(item.brand)
+            }
+        })
+    }
 
   return (
     <>
@@ -166,7 +255,7 @@ const ProductList = () => {
 
         {isLoading  ? <Loader /> : (
             <>
-            <Table striped bordered hover responsive className='table-sm'>
+            <Table striped bordered hover responsive className='table-sm' >
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -178,6 +267,57 @@ const ProductList = () => {
                     </tr>
                 </thead>
                 <tbody>
+                    <tr>    {/* SEARCH FILTERS*/}
+                        <td>
+                            <Form.Control type='text' value={idFilter} onChange={(e) => setIdFilter(e.target.value)} placeholder='Search by ID' className='mr-sm-2 ml-sm-5'></Form.Control>
+                        </td>
+                        <td>
+                            <Form.Control type='text' value={nameFilter} onChange={(e) => setNameFilter(e.target.value)} placeholder='Search by Name' className='mr-sm-2 ml-sm-5'></Form.Control>
+                        </td>
+                        <td>
+                            <InputGroup>
+                                <Form.Control as='input' htmlSize={6} type='number' value={minPriceFilter} onChange={(e) => setMinPriceFilter(e.target.value)} placeholder='Min Price' className='mr-sm-2 ml-sm-5'  />
+                                <Form.Control as='input' htmlSize={6} type='number' value={maxPriceFilter} onChange={(e) => setMaxPriceFilter(e.target.value)} placeholder='Max Price' className='mr-sm-2 ml-sm-5'/> 
+                            </InputGroup>
+                        </td>
+                        <td>
+                            <Form.Select onChange={(e) => setCategoryFilter(e.target.value)}>
+                                <option value=''>Select the Category</option>
+                                {categories.map((item, index) => <option key={index} value={item}>{item}</option>)}
+                            </Form.Select>
+                        </td>
+                        <td>
+                            <Form.Select onChange={(e) => setBrandFilter(e.target.value)}>
+                                <option value=''>Select the Brand</option>
+                                {brands.map((item, index) => <option key={index} value={item}>{item}</option>)}
+                            </Form.Select>
+                        </td>
+                    </tr>
+                        {/* DATA */}
+                    {dataTable.map((item) => (
+                            <tr key={item._id} style={{backgroundColor: focus === item._id ? '#18bc9c' : ''}}>
+                                <td>{item._id}</td>
+                                <td>
+                                <Link to={`/product/${item._id}?redirect=productlist`}>{item.name}</Link>
+                                </td>
+                                <td style={{textAlign: 'center'}}>$ {item.price}</td>
+                                <td>{item.category}</td>
+                                <td>{item.brand}</td>
+                                <td>
+                    
+                                    <Button variant='light' className='btn-sm' onClick={()=> editProduct(item._id)}>
+                                        <i className='fas fa-edit'></i>
+                                    </Button>
+                                    
+                                    
+                                    <Button variant='danger' className='btn-sm' onClick={()=>preDeleteProduct(item._id)}>
+                                        <i className='fas fa-trash'></i>
+                                    </Button>
+
+                                </td>
+                            </tr>
+                        ))}
+                    {/*}
                     {products.map((item) => (
                         <tr key={item._id} style={{backgroundColor: focus === item._id ? '#18bc9c' : ''}}>
                             <td>{item._id}</td>
@@ -199,9 +339,12 @@ const ProductList = () => {
                             </td>
                         </tr>
                     ))}
+                    */}
                 </tbody>
             </Table>
-            <Paginate pages={pages} page={page} isAdmin={true}/>
+            {dataTable === currentPosts && <Pagination postsPerPage={postsPerPage} totalPosts={products.length} paginate={paginate} currentPage={currentPage} />}
+
+            {/*<Paginate pages={pages} page={page} isAdmin={true}/>*/}
             {(successMessage) && <Message variant='success'>{successMessage}</Message>}
             {(isError && message) && <Message variant='danger'>{message}</Message>}
             </>

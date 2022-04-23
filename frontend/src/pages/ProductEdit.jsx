@@ -69,7 +69,8 @@ const ProductEdit = () => {
             }
 
             if(redirect === 'productlist') {
-                navigate(`/admin/productlist/${pageNumber}`)
+                navigate(`/admin/productlist?page=${pageNumber}`)
+                //navigate(`/admin/productlist/${pageNumber}`)
             }
         }
 

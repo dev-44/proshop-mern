@@ -79,6 +79,10 @@ h3 {
   margin: 0 auto;
 }
 
+.max-min-group {
+  width: 50%;
+}
+
 @media screen and (max-width: 810px) {
     .carousel-caption h3 {
       font-size: 2.5vw;
