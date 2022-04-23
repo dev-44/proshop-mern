@@ -58,15 +58,11 @@ const ProductList = () => {
         }
         dispatch(getProducts())
 
-        if(pageNumber !== 1 ) {
-            setCurrentPage(pageNumber)
-            //navigate('/admin/productlist')
-        }
-
-        if(isUpdated) {
+        if(isUpdated && pageNumber) {
             setFocus(product._id)
-            setTimeout(() => setFocus(''), 5000)
+            setTimeout(() => setFocus(''), 12000)
             dispatch(resetCrud())
+            paginate(pageNumber)
         }
         // eslint-disable-next-line
     },[])
@@ -295,10 +291,10 @@ const ProductList = () => {
                     </tr>
                         {/* DATA */}
                     {dataTable.map((item) => (
-                            <tr key={item._id} style={{backgroundColor: focus === item._id ? '#18bc9c' : ''}}>
+                            <tr key={item._id} style={{backgroundColor: focus === item._id ? '#18bc9c' : ''}} >
                                 <td>{item._id}</td>
                                 <td>
-                                <Link to={`/product/${item._id}?redirect=productlist`}>{item.name}</Link>
+                                <Link to={`/product/${item._id}?redirect=productlist`} style={{color: focus === item._id && 'black'}}>{item.name}</Link>
                                 </td>
                                 <td style={{textAlign: 'center'}}>$ {item.price}</td>
                                 <td>{item.category}</td>

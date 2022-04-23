@@ -125,7 +125,7 @@ const updateProduct = asyncHandler(async(req, res) => {
         try {
             const productUpdated = await product.save()
             //const products = await Product.find()
-            res.status(204).json(productUpdated)
+            res.json(productUpdated)
         } catch (error) {
             console.log(error)
         }

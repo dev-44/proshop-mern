@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 
 const Pagination = ({ postsPerPage, totalPosts, paginate, currentPage }) => {
 
-    const {isCreated, isDeleted} = useSelector(state => state.product)
+  const {isCreated, isDeleted, isUpdated} = useSelector(state => state.product)
 
   const pageNumbers = [];
 
@@ -17,12 +17,16 @@ const Pagination = ({ postsPerPage, totalPosts, paginate, currentPage }) => {
       paginate(pageNumbers[length - 1])
   }
 
+  if(isUpdated) {
+    paginate(currentPage)
+  }
+
 
   return pageNumbers.length > 1 && (
     <nav>
       <ul className='pagination justify-content-center'>
         {pageNumbers.map(number => (
-          <li key={number} className={currentPage === number ? 'page-item active' : 'page-item'} aria-current="page">
+          <li key={number} className={Number(currentPage) === number ? 'page-item active' : 'page-item'} aria-current="page">
             <Link to='' onClick={() => paginate(number)} className='page-link'>
               {number}
             </Link>
