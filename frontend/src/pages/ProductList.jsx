@@ -61,8 +61,12 @@ const ProductList = () => {
         if(isUpdated && pageNumber) {
             setFocus(product._id)
             setTimeout(() => setFocus(''), 12000)
-            dispatch(resetCrud())
             paginate(pageNumber)
+            if(isLoaded) {
+                setSuccessMessage('Product Updated with Success!')
+                setTimeout(() => setSuccessMessage(''), 5000)
+            }
+            dispatch(resetCrud())
         }
         // eslint-disable-next-line
     },[])
@@ -70,9 +74,23 @@ const ProductList = () => {
     useEffect(() => {
         if(isDeleted) {
             dispatch(getProducts())
+
+            if(isLoaded) {
+                setSuccessMessage('Product Deleted with Success!')
+                setTimeout(() => setSuccessMessage(''), 5000)
+            }
             dispatch(resetCrud())
         }
-    }, [isDeleted])
+
+        if(isCreated) {
+            if(isLoaded) {
+                setSuccessMessage('Product Created with Success!')
+                setTimeout(() => setSuccessMessage(''), 5000)
+            }
+            dispatch(resetCrud())
+        }
+
+    }, [isDeleted, isUpdated])
 
     /*
     useEffect(() => {

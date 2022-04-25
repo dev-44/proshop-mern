@@ -20,6 +20,7 @@ const initialState = {
     image: false,
     isLoadingReview: false,
     reviewCreated: false,
+    isLoaded: false
 }
 
 //Get All Products
@@ -151,6 +152,7 @@ export const productSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.products = action.payload
+                state.isLoaded = true
                 //state.products = action.payload.products
                 //state.pages = action.payload.pages
                 //state.page = action.payload.page

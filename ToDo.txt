@@ -59,6 +59,7 @@ estará el producto:
 BUGS
 ==========================================
 -Si se elimina un usuario el apartado de pedido sale sin nombre. (ver como se hace en review)
+-Despues de agregar un producto la paginacion no funciono (posiblemente falte ejecutar resetCrud()) OK
 
 PENDIENTES
 ===================================
