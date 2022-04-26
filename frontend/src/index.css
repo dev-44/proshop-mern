@@ -67,17 +67,18 @@ h3 {
 
 .carousel img {
   height: 350px;
+  width: 350px;
   padding: 40px;
   margin: 40px;
   border-radius: 50%;
   margin-left: auto;
   margin-right: auto;
   display: block;
-  width: 350px;
 }
 .carousel a {
   margin: 0 auto;
 }
+
 
 .max-min-group {
   width: 50%;

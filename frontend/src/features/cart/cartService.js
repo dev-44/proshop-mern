@@ -10,7 +10,7 @@ const addItem = async (id, qty, cartItems) => {
     let item = {
         name: data.name,
         qty,
-        image: data.image,
+        image: data.images[0],
         price: data.price,
         countInStock: data.countInStock,
         id: data._id,

@@ -14,10 +14,10 @@ const ProductCarousel = ({images}) => {
     }
  
   return (
-      <Carousel fade pause='hover' className='bg-dark' activeIndex={index} onSelect={handleSelect}>
+      <Carousel fade variant="dark" pause='hover' activeIndex={index} onSelect={handleSelect} touch>
           {images.map((image, index) => (
               <Carousel.Item key={index}>
-                <Image src={image} fluid />
+                <Image src={image} style={{borderRadius: '0%', margin: '1.5rem', padding: '1.2rem', marginLeft: 'auto', marginRight: 'auto'}} fluid />
               </Carousel.Item>
           ))}
       </Carousel>

@@ -6,6 +6,7 @@ import Rating from './Rating'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import Home from '../pages/Home'
+import ProductCarousel from './ProductCarousel'
 
 const Product = ({product, preDeleteProduct}) => {
 
@@ -25,8 +26,9 @@ const Product = ({product, preDeleteProduct}) => {
       <>
       {(user && user.isAdmin) ? (
                   <Card className='my-3 p-3 rounded position-relative' style={{ minHeight: '28rem', maxHeight: '28rem' }}>
-                  <Link to={`/product/${product._id}`}>
-                      <Card.Img src={product.image} variant='top' style={{minHeight: '12rem', maxHeight: '12rem'}} />
+                  <Link to={`/product/${product._id}?redirect=home`}>
+                      <Card.Img src={product.images[0]} variant='top' style={{minHeight: '12rem', maxHeight: '12rem'}} />
+                      {/* <ProductCarousel images={product.images} style={{minHeight: '12rem', maxHeight: '12rem'}} /> */}
                   </Link>
       
                   <Card.Body>
@@ -62,7 +64,7 @@ const Product = ({product, preDeleteProduct}) => {
                   </Link>
       
                   <Card.Body>
-                      <Link to={`/product/${product._id}`}>
+                      <Link to={`/product/${product._id}?redirect=home`}>
                           <Card.Title as='div'>
                               <strong>{product.name}</strong>
                           </Card.Title>

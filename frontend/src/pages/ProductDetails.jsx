@@ -108,8 +108,8 @@ const ProductDetails = () => {
                     </Col> 
                     */}
 
-                    <Col m={6}>
-                        <ProductCarousel image={product.images} />
+                    <Col m={8}>
+                        <ProductCarousel images={product.images} />
                     </Col>
                     <Col md={3}>
                         <ListGroup variant='flush'>                                 {/*variant='flush' Takes away the spacing or takes away the border*/}
