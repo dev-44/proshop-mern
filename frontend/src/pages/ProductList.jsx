@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useCallback} from 'react'
 import {useNavigate, useParams, useSearchParams, Link} from 'react-router-dom'
 import {Table, Button, Modal, Row, Col, Card, Form, InputGroup} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
@@ -31,6 +31,7 @@ const ProductList = () => {
 
     const [searchParams] = useSearchParams()
     const pageNumber = searchParams.get('page') || 1
+
     
     //Pagination from DB
     //const params = useParams()
@@ -47,7 +48,7 @@ const ProductList = () => {
     var filteredPosts = products
     var categories = []
     var brands = []
-    var dataTable
+    var dataTable = []
     populateCategories(products)
     populateBrands(products)
 
@@ -187,7 +188,6 @@ const ProductList = () => {
     const paginate = (pageNumber) => setCurrentPage(pageNumber)
 
     //Search Filters
-
     if(idFilter) {
         filteredPosts = filteredPosts.filter(item => item._id.toLowerCase().includes(idFilter.toLowerCase()))
     }
@@ -235,6 +235,35 @@ const ProductList = () => {
         })
     }
 
+    //Sorting
+    function sortDesc() {
+        
+        // array temporal contiene objetos con posición y valor de ordenamiento
+        var mapped = dataTable.map(function(item, index) {
+            return { index, value: item.name.toLowerCase() };
+          })
+        
+        
+        // ordenando el array mapeado que contiene los valores reducidos
+        mapped.sort(function(a, b) {
+            if (a.value > b.value) {
+            return 1
+            }
+            if (a.value < b.value) {
+            return -1
+            }
+            return 0
+        })
+
+        // contenedor para el orden resultante
+        dataTable = mapped.map(function(item){
+            return dataTable[item.index]
+        })
+
+        console.log(dataTable)
+        
+    }
+
   return (
     <>
         <Modal show={openModal} onHide={handleCloseModal}>
@@ -273,7 +302,7 @@ const ProductList = () => {
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Name</th>
+                        <th>NAME <Link to=''><i className='fas fa-arrow-up' onClick={() => sortDesc()}></i></Link></th>
                         <th>PRICE</th>
                         <th>CATEGORY</th>
                         <th>BRAND</th>
