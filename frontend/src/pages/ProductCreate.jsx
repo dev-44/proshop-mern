@@ -2,7 +2,7 @@ import React from 'react'
 import {useState, useEffect} from 'react'
 import axios from 'axios'
 import {Link, useNavigate, useParams} from 'react-router-dom'
-import {Form, Button} from 'react-bootstrap'
+import {Form, Button, Image} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
@@ -21,13 +21,14 @@ const ProductCreate = () => {
 
     const [name, setName] = useState('')
     const [price, setPrice] = useState(0)
-    const [image, setImage] = useState()
+    //const [image, setImage] = useState()
+    const [images, setImages] = useState()
     const [brand, setBrand] = useState('')
     const [category, setCategory] = useState('')
     const [countInStock, setCountInStock] = useState(0)
     const [description, setDescription] = useState('')
-    const [uploading, setUploading] = useState(false)
-    const [picture, setPicture] = useState()
+
+    const [previewImages, setPreviewImages] = useState()
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -64,19 +65,31 @@ const ProductCreate = () => {
 
     const onSubmit = async (e) => {
         e.preventDefault()
+        
+        const files = Array.from(images)
+        console.log(files)
+        setPreviewImages(files)
+        var convertedImages = []
+        
+        for (var i=0; i<files.length; i++) {
+            var element = files[i]
+            var elementConverted = await Convert(element)
+            convertedImages.push(elementConverted)
+        }
+        
+        //const convertedImage = await Convert(image)
 
-        const convertedImage = await Convert(image)
-
-        if(convertedImage) {
-            console.log('Image converted');
+        if(convertedImages) {
+            console.log('Images converted')
+            console.log(convertedImages)
         } else{
             console.log('The file is not in format of image/jpeg or image/png')
         }
-        
+         
         const newProduct = {
             user: user._id,
             name,
-            image: convertedImage,
+            images: convertedImages,
             brand,
             category,
             description,
@@ -136,9 +149,17 @@ const ProductCreate = () => {
                             </Form.Group>
 
                             <Form.Group controlId='image'>
+                                <Form.Label>Image/s</Form.Label>
+                                <Form.Control type='file' multiple placeholder='Select the images to upload' onChange={(e) => setImages(e.target.files)}></Form.Control>
+                                <div className="form-group multi-preview">{previewImages && previewImages.map(url => (<Image src={url} alt="..." />))}</div>
+                            </Form.Group>
+
+                            {/*}
+                            <Form.Group controlId='image'>
                                 <Form.Label>Image</Form.Label>
                                 <Form.Control type='file' placeholder='Enter Image url' onChange={(e) => setImage(e.target.files[0])}></Form.Control>
                             </Form.Group>
+                            */}
 
                             {/*
                             <Form.Group controlId='image'>

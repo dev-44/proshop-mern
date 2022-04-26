@@ -80,11 +80,10 @@ const deleteProduct = asyncHandler(async(req, res) => {
 //@access           Private/Admin
 const createProduct = asyncHandler(async(req, res) => {
 
-
     const product = new Product({
         user: req.user._id,
         name: req.body.name,
-        image: req.body.image,
+        images: req.body.images,
         brand: req.body.brand,
         category: req.body.category,
         description: req.body.description,
