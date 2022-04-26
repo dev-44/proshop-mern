@@ -6,7 +6,7 @@ import Product from '../components/Product'   //Component
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
-import ProductCarousel from '../components/ProductCarousel'
+import HomeCarousel from '../components/HomeCarousel'
 import Meta from '../components/Meta'
 
 import { resetLoggedSuccess } from '../features/users/userSlice'
@@ -128,7 +128,7 @@ const Home = () => {
 
     <Meta />
       {successMessage && <Message variant='success'>{successMessage}</Message>}
-      {!params.keyword ? <ProductCarousel /> : <Link to='/' className='btn btn-light'>Go Back</Link>}
+      {!params.keyword ? <HomeCarousel /> : <Link to='/' className='btn btn-light'>Go Back</Link>}
       <h1>LATEST PRODUCTS</h1>
         <Row>
             {products.map((product) => (

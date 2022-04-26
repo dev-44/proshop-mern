@@ -68,7 +68,6 @@ const ProductCreate = () => {
         
         const files = Array.from(images)
         console.log(files)
-        setPreviewImages(files)
         var convertedImages = []
         
         for (var i=0; i<files.length; i++) {
@@ -98,6 +97,15 @@ const ProductCreate = () => {
         }
  
         dispatch(createProduct(newProduct))
+    }
+
+    const handleUploadFiles = (e) => {
+        var fileArray = []
+        var ObjImgs = (e.target.files)
+        for (let i = 0; i < ObjImgs.length; i++) {
+            fileArray.push(URL.createObjectURL(ObjImgs[i]))
+        }
+        setPreviewImages(fileArray)
     }
 
     /*
@@ -150,8 +158,11 @@ const ProductCreate = () => {
 
                             <Form.Group controlId='image'>
                                 <Form.Label>Image/s</Form.Label>
-                                <Form.Control type='file' multiple placeholder='Select the images to upload' onChange={(e) => setImages(e.target.files)}></Form.Control>
-                                <div className="form-group multi-preview">{previewImages && previewImages.map(url => (<Image src={url} alt="..." />))}</div>
+                                <Form.Control type='file' multiple placeholder='Select the images to upload' onChange={(e) => {
+                                    setImages(e.target.files)
+                                    handleUploadFiles(e)
+                                    }}></Form.Control>
+                                <div className="form-group multi-preview">{previewImages && previewImages.map(img => (<Image style={{width: '140px', padding: '5px'}} src={img} alt="..." />))}</div>
                             </Form.Group>
 
                             {/*}

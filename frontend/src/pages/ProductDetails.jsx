@@ -8,6 +8,7 @@ import { addItem } from '../features/cart/cartSlice'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Meta from '../components/Meta'
+import ProductCarousel from '../components/ProductCarousel'
 //import axios from 'axios'
 //import products from '../products'
 
@@ -99,9 +100,17 @@ const ProductDetails = () => {
             <>
                 <Meta title={product.name}/>
                 <Row>
+                    
+                    {/*fluid: Fill only his container */}
+                    {/*}
                     <Col md={6}>
-                        <Image src={product.image} alt={product.name} fluid/>       {/*fluid: Fill only his container */}
+                        <Image src={product.image} alt={product.name} fluid/>       
                     </Col> 
+                    */}
+
+                    <Col m={6}>
+                        <ProductCarousel image={product.images} />
+                    </Col>
                     <Col md={3}>
                         <ListGroup variant='flush'>                                 {/*variant='flush' Takes away the spacing or takes away the border*/}
 
