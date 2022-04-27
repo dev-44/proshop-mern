@@ -110,6 +110,7 @@ const ProductDetails = () => {
 
                     <Col m={8}>
                         <ProductCarousel images={product.images} />
+                        <div className="form-group multi-preview">{product.images.map(img => (<Image style={{width: '100px', padding: '5px'}} src={img} alt="..." />))}</div>
                     </Col>
                     <Col md={3}>
                         <ListGroup variant='flush'>                                 {/*variant='flush' Takes away the spacing or takes away the border*/}
