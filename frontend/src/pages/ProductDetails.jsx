@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { Row, Col, Image, ListGroup, Card, Button, Form} from 'react-bootstrap'
 import Rating from '../components/Rating'
@@ -9,6 +9,7 @@ import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Meta from '../components/Meta'
 import ProductCarousel from '../components/ProductCarousel'
+import ImageViewer from 'react-simple-image-viewer';
 //import axios from 'axios'
 //import products from '../products'
 
@@ -18,6 +19,13 @@ const ProductDetails = () => {
     const [comment, setComment] = useState('')
     const [successMsg, setSuccessMsg] = useState('')
     const [url, setUrl] = useState('')
+
+    //Set Image on the carousel
+    const [indexSelected, setIndexSelected] = useState(0)
+
+    //ImageViewer
+    const [currentImage, setCurrentImage] = useState(0);
+    const [isViewerOpen, setIsViewerOpen] = useState(false);
 
     const [searchParams] = useSearchParams()
     const redirect = searchParams.get('redirect')
@@ -43,6 +51,7 @@ const ProductDetails = () => {
         if(redirect === 'home') {
             setUrl('/')
         }
+
     }, [])
 
     useEffect(() => {
@@ -88,6 +97,21 @@ const ProductDetails = () => {
         dispatch(createProductReview({id, rating, comment}))
     }
 
+    //ImageViewer
+    const openImageViewer = useCallback((index) => {
+        setCurrentImage(index)
+        setIsViewerOpen(true)
+      }, [])
+    
+      const closeImageViewer = () => {
+        setCurrentImage(0)
+        setIsViewerOpen(false)
+      }
+
+      const sincronize = (index) => {
+        setIndexSelected(index)
+      }
+
   return (
     <>
         <Link to={url} className='btn btn-light my-3 mx-3'>Go Back <i className='fas fa-arrow-left'></i></Link>
@@ -107,10 +131,22 @@ const ProductDetails = () => {
                         <Image src={product.image} alt={product.name} fluid/>       
                     </Col> 
                     */}
+                          {isViewerOpen && (
+                                <ImageViewer
+                                src={ product.images }
+                                currentIndex={ currentImage }
+                                onClose={ closeImageViewer }
+                                disableScroll={ true }
+                                closeOnClickOutside={ true }
+                                backgroundStyle={{
+                                    backgroundColor: "rgba(0,0,0,0.9)"
+                                  }}
+                                />
+                            )}
 
                     <Col m={8}>
-                        <ProductCarousel images={product.images} />
-                        <div className="form-group multi-preview">{product.images.map(img => (<Image style={{width: '100px', padding: '5px'}} src={img} alt="..." />))}</div>
+                        <ProductCarousel images={product.images} indexPar={indexSelected} openImageViewer={openImageViewer} sincronize={sincronize} />
+                        <div className="form-group multi-preview">{product.images.map((img, index) => (<Image onClick={() => setIndexSelected(index)} key={index} style={{width: '100px', padding: '5px', opacity: indexSelected !== index && '0.4'}} src={img} alt="..." />))}</div>
                     </Col>
                     <Col md={3}>
                         <ListGroup variant='flush'>                                 {/*variant='flush' Takes away the spacing or takes away the border*/}
