@@ -28,8 +28,12 @@ const ProductList = () => {
 
     const [currentPosts, setCurrentPosts] = useState([])
     const [dataTable, setDataTable] = useState([])
-    const [isSort, setIsSort] = useState(false)
     const [isFiltered, setIsFiltered] = useState(false)
+    const [isSortNameAsc, setIsSortNameAsc] = useState(false)
+    const [isSortNameDesc, setIsSortNameDesc] = useState(false)
+    const [isSortPriceAsc, setIsSortPriceAsc] = useState(false)
+    const [isSortPriceDesc, setIsSortPriceDesc] = useState(false)
+    const [isSort, setIsSort] = useState(false)
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -238,7 +242,11 @@ const ProductList = () => {
     const handleCloseModal = () => setOpenModal(false)
 
     // Change page
-    const paginate = (pageNumber) => setCurrentPage(pageNumber)
+    const paginate = (pageNumber) => {
+        setCurrentPage(pageNumber)
+        setIsSortNameAsc(false)
+        setIsSortNameDesc(false)
+    }
 
     //Search Filters
     /*
@@ -291,31 +299,163 @@ const ProductList = () => {
     }
 
     //Sorting
-    function sortDesc() {
-        
-        // array temporal contiene objetos con posición y valor de ordenamiento
-        var mapped = dataTable.map(function(item, index) {
-            return { index, value: item.name.toLowerCase() };
-          })
-        
-        
-        // ordenando el array mapeado que contiene los valores reducidos
-        mapped.sort(function(a, b) {
-            if (a.value > b.value) {
-            return 1
-            }
-            if (a.value < b.value) {
-            return -1
-            }
-            return 0
-        })
+    function sortNameAsc() {
+        if(isSortNameDesc) {
+            setIsSortNameDesc(false)
+        }
 
-        // contenedor para el orden resultante
-        setDataTable(mapped.map(function(item){
-            return dataTable[item.index]
-        }))
+        if(!isSortNameAsc) {
+            // array temporal contiene objetos con posición y valor de ordenamiento
+            var mapped = dataTable.map(function(item, index) {
+                return { index, value: item.name.toLowerCase() };
+            })
 
-        setIsSort(true)
+            console.log(mapped)
+            
+            // ordenando el array mapeado que contiene los valores reducidos
+            mapped.sort(function(a, b) {
+                if (a.value > b.value) {
+                return 1
+                }
+                if (a.value < b.value) {
+                return -1
+                }
+                return 0
+            })
+    
+            // contenedor para el orden resultante
+            setDataTable(mapped.map(function(item){
+                return dataTable[item.index]
+            }))
+
+            setIsSort(true)
+
+        } else {
+            setDataTable(currentPosts)
+            setIsSort(false)
+        }
+
+        setIsSortNameAsc(!isSortNameAsc)
+    }
+
+    function sortNameDesc() {
+        if(isSortNameAsc) {
+            setIsSortNameAsc(false)
+        }
+
+        if(!isSortNameDesc) {
+            // array temporal contiene objetos con posición y valor de ordenamiento
+            var mapped = dataTable.map(function(item, index) {
+                return { index, value: item.name.toLowerCase() };
+            })
+
+            console.log(mapped)
+            
+            // ordenando el array mapeado que contiene los valores reducidos
+            mapped.sort(function(a, b) {
+                if (a.value > b.value) {
+                return 1
+                }
+                if (a.value < b.value) {
+                return -1
+                }
+                return 0
+            })
+    
+            // contenedor para el orden resultante
+            var auxArray = mapped.map(function(item){
+                return dataTable[item.index]
+            })
+
+            setDataTable(auxArray.reverse())
+            setIsSort(true)
+        } else {
+            setDataTable(currentPosts)
+            setIsSort(false)
+        }
+
+        setIsSortNameDesc(!isSortNameDesc)
+    }
+
+    function sortPriceAsc() {
+        if(isSortPriceDesc) {
+            setIsSortPriceDesc(false)
+        }
+
+        if(!isSortPriceAsc) {
+            // array temporal contiene objetos con posición y valor de ordenamiento
+            var mapped = dataTable.map(function(item, index) {
+                return { index, value: item.price}
+            })
+
+            console.log(mapped)
+            
+            // ordenando el array mapeado que contiene los valores reducidos
+            mapped.sort(function(a, b) {
+                if (a.value > b.value) {
+                return 1
+                }
+                if (a.value < b.value) {
+                return -1
+                }
+                return 0
+            })
+    
+            // contenedor para el orden resultante
+            var auxArray = mapped.map(function(item){
+                return dataTable[item.index]
+            })
+
+            auxArray = auxArray.reverse()
+
+            setDataTable(auxArray)
+            setIsSort(true)
+        } else {
+            setDataTable(currentPosts)
+            setIsSort(false)
+        }
+
+        setIsSortPriceAsc(!isSortPriceAsc)
+    }
+
+    function sortPriceDesc() {
+        if(isSortPriceAsc) {
+            setIsSortPriceAsc(false)
+        }
+
+        if(!isSortPriceDesc) {
+
+            // array temporal contiene objetos con posición y valor de ordenamiento
+            var mapped = dataTable.map(function(item, index) {
+                return { index, value: item.price}
+            })
+
+            console.log(mapped)
+            
+            // ordenando el array mapeado que contiene los valores reducidos
+            mapped.sort(function(a, b) {
+                if (a.value > b.value) {
+                return 1
+                }
+                if (a.value < b.value) {
+                return -1
+                }
+                return 0
+            })
+    
+            // contenedor para el orden resultante
+            var auxArray = mapped.map(function(item){
+                return dataTable[item.index]
+            })
+
+            setDataTable(auxArray)
+            setIsSort(true)
+        } else {
+            setDataTable(currentPosts)
+            setIsSort(false)
+        }
+
+        setIsSortPriceDesc(!isSortPriceDesc)
     }
 
   return (
@@ -356,8 +496,16 @@ const ProductList = () => {
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>NAME <Link to=''><i className='fas fa-arrow-up' onClick={() => sortDesc()}></i></Link></th>
-                        <th>PRICE</th>
+                        <th>
+                            NAME 
+                            <Link to=''><i className='fas fa-arrow-up' onClick={() => sortNameAsc()} style={{color: isSortNameAsc ? '#18bc9c' : '#000000'}}></i></Link>
+                            <Link to=''><i className='fas fa-arrow-down' onClick={() => sortNameDesc()} style={{color: isSortNameDesc ? '#18bc9c' : '#000000'}}></i></Link>
+                        </th>
+                        <th>
+                            PRICE
+                            <Link to=''><i className='fas fa-arrow-up' onClick={() => sortPriceAsc()} style={{color: isSortPriceAsc ? '#18bc9c' : '#000000'}}></i></Link>
+                            <Link to=''><i className='fas fa-arrow-down' onClick={() => sortPriceDesc()} style={{color: isSortPriceDesc ? '#18bc9c' : '#000000'}}></i></Link>
+                        </th>
                         <th>CATEGORY</th>
                         <th>BRAND</th>
                         <th></th>
@@ -391,7 +539,7 @@ const ProductList = () => {
                         </td>
                     </tr>
                         {/* DATA */}
-                    {dataTable && dataTable.map((item) => (
+                    {dataTable.length > 0 ? dataTable.map((item) => (
                             <tr key={item._id} style={{backgroundColor: focus === item._id ? '#18bc9c' : ''}} >
                                 <td>{item._id}</td>
                                 <td>
@@ -413,7 +561,7 @@ const ProductList = () => {
 
                                 </td>
                             </tr>
-                        ))}
+                        )) : (<h5 style={{color: 'red', marginTop: '3px'}}>No results</h5>)}
                     {/*}
                     {products.map((item) => (
                         <tr key={item._id} style={{backgroundColor: focus === item._id ? '#18bc9c' : ''}}>
