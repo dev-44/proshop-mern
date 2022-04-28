@@ -32,14 +32,30 @@ NUEVAS FUNCIONES
 ===========================================
 Editar product desde Home: OK
 Eliminar product desde Home: OK
-Subir Multiples Imagenes:
+Subir Multiples Imagenes: OK
 Editar Imagenes:
-Filtar por Categorias:
+
+ProductList
+-----------------------------------
+Filtrar por Id: OK
+Filtrar por Nombre: OK
+Filtrar por Rango de Precios: OK
+Filtar por Categorias: OK
+Filtrar por Marca: OK
+Ordenar por Nombre, asc y desc: OK
+Ordernar por Precio, asc y desc: OK
+Agregar Columna de Stock y marcar en rojo ante un stock mínimo
+
+Home------------------------------
+Filtrar por Nombre:
 Filtrar por Rango de Precios:
+Filtar por Categorias:
+Filtrar por Marca:
+Ordenar por Nombre, asc y desc:
+Ordernar por Precio, asc y desc:
+
 Notificacion para el admin en caso de nueva orden
 Notificacion en caso de stock minimo.
-Boton de "Notificarme cuando haya disponibilidad del producto" para el cliente.
-Vista correspondiente para el admin
 Google maps para agregar direcciones
 
 
@@ -74,3 +90,4 @@ PAQUETE APARTE
 -En una tarjeta, multiples productos (amazon)
 -Compras o productos similares. Recomendaciones
 -Notificarle al cliente cuando se repone el stock de su producto deseado.
+    Boton de "Notificarme cuando haya disponibilidad del producto" para el cliente.

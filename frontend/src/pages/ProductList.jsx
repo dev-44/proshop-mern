@@ -310,8 +310,6 @@ const ProductList = () => {
                 return { index, value: item.name.toLowerCase() };
             })
 
-            console.log(mapped)
-            
             // ordenando el array mapeado que contiene los valores reducidos
             mapped.sort(function(a, b) {
                 if (a.value > b.value) {
@@ -348,8 +346,6 @@ const ProductList = () => {
             var mapped = dataTable.map(function(item, index) {
                 return { index, value: item.name.toLowerCase() };
             })
-
-            console.log(mapped)
             
             // ordenando el array mapeado que contiene los valores reducidos
             mapped.sort(function(a, b) {
@@ -387,8 +383,6 @@ const ProductList = () => {
             var mapped = dataTable.map(function(item, index) {
                 return { index, value: item.price}
             })
-
-            console.log(mapped)
             
             // ordenando el array mapeado que contiene los valores reducidos
             mapped.sort(function(a, b) {
@@ -429,8 +423,6 @@ const ProductList = () => {
             var mapped = dataTable.map(function(item, index) {
                 return { index, value: item.price}
             })
-
-            console.log(mapped)
             
             // ordenando el array mapeado que contiene los valores reducidos
             mapped.sort(function(a, b) {
