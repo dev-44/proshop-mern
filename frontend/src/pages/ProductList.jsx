@@ -10,7 +10,6 @@ import { getProducts, deleteProduct, resetError, resetCrud} from '../features/pr
 const ProductList = () => {
 
     //Pagination
-    const [loading, setLoading] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [postsPerPage] = useState(5)
 
@@ -19,12 +18,18 @@ const ProductList = () => {
     const [successMessage, setSuccessMessage] = useState('')
     const [focus, setFocus] = useState('')
 
+    //Filters
     const [idFilter, setIdFilter] = useState('')
     const [nameFilter, setNameFilter] = useState('')
     const [minPriceFilter, setMinPriceFilter] = useState()
     const [maxPriceFilter, setMaxPriceFilter] = useState()
     const [categoryFilter, setCategoryFilter] = useState('')
     const [brandFilter, setBrandFilter] = useState('')
+
+    const [currentPosts, setCurrentPosts] = useState([])
+    const [dataTable, setDataTable] = useState([])
+    const [isSort, setIsSort] = useState(false)
+    const [isFiltered, setIsFiltered] = useState(false)
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -42,13 +47,15 @@ const ProductList = () => {
     const {products, isLoading, isError, message, isDeleted, isCreated, isUpdated, page, pages, isLoaded, product} = useSelector(state => state.product)
 
     // Get current posts
+    /*
     const indexOfLastPost = currentPage * postsPerPage
     const indexOfFirstPost = indexOfLastPost - postsPerPage
     let currentPosts = products.slice(indexOfFirstPost, indexOfLastPost)
     var filteredPosts = products
+    */
     var categories = []
     var brands = []
-    var dataTable = []
+    //var dataTable = []
     populateCategories(products)
     populateBrands(products)
 
@@ -73,6 +80,14 @@ const ProductList = () => {
     },[])
 
     useEffect(() => {
+        const indexOfLastPost = currentPage * postsPerPage
+        const indexOfFirstPost = indexOfLastPost - postsPerPage
+        var slice = products.slice(indexOfFirstPost, indexOfLastPost)
+        setCurrentPosts(slice)
+        setDataTable(slice)
+    }, [products, currentPage])
+
+    useEffect(() => {
         if(isDeleted) {
             dispatch(getProducts())
 
@@ -92,6 +107,44 @@ const ProductList = () => {
         }
 
     }, [isDeleted, isUpdated])
+
+
+    useEffect(() => {
+
+        var filteredPosts = products
+        if(idFilter) {
+            filteredPosts = filteredPosts.filter(item => item._id.toLowerCase().includes(idFilter.toLowerCase()))
+        }
+
+        if (nameFilter) {
+            filteredPosts = filteredPosts.filter(item => item.name.toLowerCase().includes(nameFilter.toLowerCase()))
+        }
+    
+        if(minPriceFilter) {
+            filteredPosts = filteredPosts.filter(item => Number(item.price) >= Number(minPriceFilter))
+        }
+    
+        if(maxPriceFilter) {
+            filteredPosts = filteredPosts.filter(item => Number(item.price) <= Number(maxPriceFilter))
+        }
+    
+        if (categoryFilter) {
+            filteredPosts = filteredPosts.filter(item => item.category === categoryFilter)
+        }
+    
+        if (brandFilter) {
+            filteredPosts = filteredPosts.filter(item => item.brand === brandFilter)
+        }
+        
+        if(!idFilter && !nameFilter && !minPriceFilter && !maxPriceFilter && !categoryFilter && !brandFilter) {
+            setDataTable(currentPosts)
+            setIsFiltered(false)
+        } else {
+            setDataTable(filteredPosts)
+            setIsFiltered(true)
+        }
+    }, [idFilter, nameFilter, minPriceFilter, maxPriceFilter, categoryFilter, brandFilter])
+
 
     /*
     useEffect(() => {
@@ -188,6 +241,7 @@ const ProductList = () => {
     const paginate = (pageNumber) => setCurrentPage(pageNumber)
 
     //Search Filters
+    /*
     if(idFilter) {
         filteredPosts = filteredPosts.filter(item => item._id.toLowerCase().includes(idFilter.toLowerCase()))
     }
@@ -218,6 +272,7 @@ const ProductList = () => {
     } else {
         dataTable = filteredPosts
     }
+    */
 
     function populateCategories(products) {
         products.map(function(item) {
@@ -256,12 +311,11 @@ const ProductList = () => {
         })
 
         // contenedor para el orden resultante
-        dataTable = mapped.map(function(item){
+        setDataTable(mapped.map(function(item){
             return dataTable[item.index]
-        })
+        }))
 
-        console.log(dataTable)
-        
+        setIsSort(true)
     }
 
   return (
@@ -337,7 +391,7 @@ const ProductList = () => {
                         </td>
                     </tr>
                         {/* DATA */}
-                    {dataTable.map((item) => (
+                    {dataTable && dataTable.map((item) => (
                             <tr key={item._id} style={{backgroundColor: focus === item._id ? '#18bc9c' : ''}} >
                                 <td>{item._id}</td>
                                 <td>
@@ -385,7 +439,7 @@ const ProductList = () => {
                     */}
                 </tbody>
             </Table>
-            {dataTable === currentPosts && <Pagination postsPerPage={postsPerPage} totalPosts={products.length} paginate={paginate} currentPage={currentPage} />}
+            {((dataTable === currentPosts) || (isSort && !isFiltered))  && <Pagination postsPerPage={postsPerPage} totalPosts={products.length} paginate={paginate} currentPage={currentPage} />}
 
             {/*<Paginate pages={pages} page={page} isAdmin={true}/>*/}
             {(successMessage) && <Message variant='success'>{successMessage}</Message>}

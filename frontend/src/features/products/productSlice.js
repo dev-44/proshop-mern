@@ -2,10 +2,10 @@ import { createSlice, createAsyncThunk, createReducer } from "@reduxjs/toolkit"
 import productService from './productService'
 
 //Get products from localStorage
-const productsLS = JSON.parse(localStorage.getItem('products'))
+//const productsLS = JSON.parse(localStorage.getItem('products'))
 
 const initialState = {
-    products: productsLS ? productsLS : [],
+    products: [],
     product: {},
     topRated: [],
     isError: false,
