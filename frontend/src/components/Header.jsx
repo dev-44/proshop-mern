@@ -1,8 +1,7 @@
-import React from 'react'
-import {Routes, Route} from 'react-router-dom'
-import { Nav, Navbar, Container, NavDropdown, Col, Row} from 'react-bootstrap'
+import React, { useState } from 'react'
+import { Nav, Navbar, Container, NavDropdown, Button} from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
-import {FaShoppingCart, FaUser} from 'react-icons/fa'
+import {FaShoppingCart, FaUser, FaGlas} from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 import {logout, reset} from '../features/users/userSlice'
@@ -10,6 +9,7 @@ import { reset as resetAdmin } from '../features/admins/adminSlice'
 import SearchBox from './SearchBox'
 
 const Header = () => {
+
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.user)
   const navigate = useNavigate()
@@ -32,8 +32,7 @@ const Header = () => {
             <Navbar.Brand>PROSHOP</Navbar.Brand>  
           </LinkContainer>
 
-          
-          <SearchBox/>  
+          <SearchBox />
           
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />

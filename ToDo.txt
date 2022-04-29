@@ -58,6 +58,10 @@ Notificacion para el admin en caso de nueva orden
 Notificacion en caso de stock minimo.
 Google maps para agregar direcciones
 
+--CUESTION LOGICA--
+Si se ingresa un filter y luego un sort, se ordenaran todos los productos con ambos criterios: OK
+Si se borra el filter se reinicia todo y el sort no hace efecto por más que se mantenga activo:
+Si se utiliza solo un sort sin filtros ordena solo los resultados de la pagina.
 
 MEJORAS
 =========================================

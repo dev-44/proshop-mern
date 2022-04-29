@@ -25,6 +25,8 @@ const SearchBox = () => {
             <Col xs={9} sm={9} md={8} lg={8}>
                 <Form.Control type='text' name='q' value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder='Search Products' className='mr-sm-2 ml-sm-5'></Form.Control>
             </Col>
+
+
             <Col xs={2} sm={2} md={3} lg={3} >
                 <Button type='submit' variant='outline-success' className='p-2 ms-auto'>Search</Button>
             </Col>

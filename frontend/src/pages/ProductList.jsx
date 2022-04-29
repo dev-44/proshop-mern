@@ -490,13 +490,13 @@ const ProductList = () => {
                         <th>ID</th>
                         <th>
                             NAME 
-                            <Link to=''><i className='fas fa-arrow-up' onClick={() => sortNameAsc()} style={{color: isSortNameAsc ? '#18bc9c' : '#000000'}}></i></Link>
-                            <Link to=''><i className='fas fa-arrow-down' onClick={() => sortNameDesc()} style={{color: isSortNameDesc ? '#18bc9c' : '#000000'}}></i></Link>
+                            <i className='fas fa-arrow-up ms-2' onClick={() => sortNameAsc()} style={{color: isSortNameAsc ? '#18bc9c' : '#000000', cursor: 'pointer'}}></i>
+                            <i className='fas fa-arrow-down ms-1' onClick={() => sortNameDesc()} style={{color: isSortNameDesc ? '#18bc9c' : '#000000', cursor: 'pointer'}}></i>
                         </th>
                         <th>
                             PRICE
-                            <Link to=''><i className='fas fa-arrow-up' onClick={() => sortPriceAsc()} style={{color: isSortPriceAsc ? '#18bc9c' : '#000000'}}></i></Link>
-                            <Link to=''><i className='fas fa-arrow-down' onClick={() => sortPriceDesc()} style={{color: isSortPriceDesc ? '#18bc9c' : '#000000'}}></i></Link>
+                            <i className='fas fa-arrow-up ms-2' onClick={() => sortPriceAsc()} style={{color: isSortPriceAsc ? '#18bc9c' : '#000000', cursor: 'pointer'}}></i>
+                            <i className='fas fa-arrow-down ms-1' onClick={() => sortPriceDesc()} style={{color: isSortPriceDesc ? '#18bc9c' : '#000000'}}></i>
                         </th>
                         <th>CATEGORY</th>
                         <th>BRAND</th>
@@ -513,7 +513,7 @@ const ProductList = () => {
                         </td>
                         <td>
                             <InputGroup>
-                                <Form.Control as='input' htmlSize={6} type='number' value={minPriceFilter} onChange={(e) => setMinPriceFilter(e.target.value)} placeholder='Min Price' className='mr-sm-2 ml-sm-5'  />
+                                <Form.Control as='input' htmlSize={6} type='number' value={minPriceFilter} onChange={(e) => setMinPriceFilter(e.target.value)} placeholder='Min Price' className='mr-sm-2 ml-sm-5'/>
                                 <Form.Control as='input' htmlSize={6} type='number' value={maxPriceFilter} onChange={(e) => setMaxPriceFilter(e.target.value)} placeholder='Max Price' className='mr-sm-2 ml-sm-5'/> 
                             </InputGroup>
                         </td>
