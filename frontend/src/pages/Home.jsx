@@ -152,15 +152,52 @@ const Home = () => {
     if (brandFilter) {
         filteredPosts = filteredPosts.filter(item => item.brand === brandFilter)
     }
+
+    if (isSortNameAsc) {
+        if(isSortNameDesc) {
+          setIsSortNameDesc(false)
+      }
+
+      if(!isSortNameAsc) {
+          // array temporal contiene objetos con posición y valor de ordenamiento
+          var mapped = filteredPosts.map(function(item, index) {
+              return { index, value: item.name.toLowerCase() };
+          })
+
+          // ordenando el array mapeado que contiene los valores reducidos
+          mapped.sort(function(a, b) {
+              if (a.value > b.value) {
+              return 1
+              }
+              if (a.value < b.value) {
+              return -1
+              }
+              return 0
+          })
+
+          // contenedor para el orden resultante
+          filteredPosts = (mapped.map(function(item){
+              return filteredPosts[item.index]
+          }))
+
+          setIsSort(true)
+
+      } else {
+          setIsSort(false)
+      }
+
+      setIsSortNameAsc(!isSortNameAsc)
+    }
     
-    if(!idFilter && !nameFilter && !minPriceFilter && !maxPriceFilter && !categoryFilter && !brandFilter) {
+    if(!idFilter && !nameFilter && !minPriceFilter && !maxPriceFilter && !categoryFilter && !brandFilter && !isSort) {
         setDataTable(currentPosts)
         setIsFiltered(false)
     } else {
         setDataTable(filteredPosts)
         setIsFiltered(true)
     }
-  }, [idFilter, nameFilter, minPriceFilter, maxPriceFilter, categoryFilter, brandFilter])
+  }, [idFilter, nameFilter, minPriceFilter, maxPriceFilter, categoryFilter, brandFilter, isSort])
+
   
 
   if(isLoading) {
@@ -211,7 +248,10 @@ function populateBrands(products) {
 }
 
 //Sorting
+
 function sortNameAsc() {
+  setIsSortNameAsc(!isSortNameAsc)
+  /*
     if(isSortNameDesc) {
         setIsSortNameDesc(false)
     }
@@ -246,7 +286,10 @@ function sortNameAsc() {
     }
 
     setIsSortNameAsc(!isSortNameAsc)
+    */
 }
+
+
 
 function sortNameDesc() {
     if(isSortNameAsc) {
