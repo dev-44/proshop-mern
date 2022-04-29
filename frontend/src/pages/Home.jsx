@@ -154,11 +154,11 @@ const Home = () => {
     }
 
     if (isSortNameAsc) {
+        console.log('Call to order name asc')
         if(isSortNameDesc) {
           setIsSortNameDesc(false)
-      }
+        }
 
-      if(!isSortNameAsc) {
           // array temporal contiene objetos con posición y valor de ordenamiento
           var mapped = filteredPosts.map(function(item, index) {
               return { index, value: item.name.toLowerCase() };
@@ -181,22 +181,17 @@ const Home = () => {
           }))
 
           setIsSort(true)
-
-      } else {
-          setIsSort(false)
-      }
-
-      setIsSortNameAsc(!isSortNameAsc)
     }
     
     if(!idFilter && !nameFilter && !minPriceFilter && !maxPriceFilter && !categoryFilter && !brandFilter && !isSort) {
         setDataTable(currentPosts)
         setIsFiltered(false)
+        setIsSort(false)
     } else {
         setDataTable(filteredPosts)
         setIsFiltered(true)
     }
-  }, [idFilter, nameFilter, minPriceFilter, maxPriceFilter, categoryFilter, brandFilter, isSort])
+  }, [idFilter, nameFilter, minPriceFilter, maxPriceFilter, categoryFilter, brandFilter, isSortNameAsc])
 
   
 
