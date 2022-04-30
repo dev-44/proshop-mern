@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {Link, useNavigate, useParams, useLocation, useSearchParams} from 'react-router-dom'
-import {Form, Button, Row, Col} from 'react-bootstrap'
+import {Form, Button, Image} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
@@ -17,11 +17,13 @@ const ProductEdit = () => {
 
     const [name, setName] = useState('')
     const [price, setPrice] = useState(0)
-    const [image, setImage] = useState('')
+    const [images, setImages] = useState('')
     const [brand, setBrand] = useState('')
     const [category, setCategory] = useState('')
     const [countInStock, setCountInStock] = useState(0)
     const [description, setDescription] = useState('')
+
+    const [previewImages, setPreviewImages] = useState()
 
     const [searchParams] = useSearchParams()
     const navigate = useNavigate()
@@ -44,7 +46,8 @@ const ProductEdit = () => {
     useEffect(() => {
         setName(product.name)
         setPrice(product.price)
-        setImage(product.image)
+        setImages(product.images)
+        setPreviewImages(product.images)
         setBrand(product.brand)
         setCategory(product.category)
         setCountInStock(product.countInStock)
@@ -82,7 +85,7 @@ const ProductEdit = () => {
         const editedProduct = {
             id: productId,
             name,
-            image,
+            images,
             brand,
             category,
             description,
@@ -91,6 +94,10 @@ const ProductEdit = () => {
         }
 
         dispatch(updateProduct(editedProduct))
+    }
+
+    const handleUploadFiles = () => {
+
     }
 
     return (
@@ -118,10 +125,30 @@ const ProductEdit = () => {
                                 <Form.Control type='number' placeholder='Enter Price' value={price} onChange={(e) => setPrice(e.target.value)}></Form.Control>
                             </Form.Group>
 
-                            <Form.Group controlId='image'>
+                            <Form.Group controlId='images'>
+                                <Form.Label>Image/s</Form.Label>
+                                <Form.Control type='file' multiple placeholder='Select the images to upload' onChange={(e) => {
+                                    setImages(e.target.files)
+                                    handleUploadFiles(e)
+                                    }}>
+                                </Form.Control>
+                                <div className="form-group multi-preview">{previewImages && previewImages.map(img => (
+                                        <div className='image-container'>
+                                            <Image className='preview-image' style={{width: '140px', padding: '5px', cursor: 'pointer'}} src={img} alt="..." />
+                                            <div className='overlay'>
+                                                <Button className='btn-sm' style={{backgroundColor: 'transparent', borderStyle: 'none'}}>
+                                                    <i className='fas fa-edit'></i>   
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </Form.Group>
+
+                        {/* <Form.Group controlId='image'>
                                 <Form.Label>Image</Form.Label>
                                 <Form.Control type='text' placeholder='Enter Image url' value={image} onChange={(e) => setImage(e.target.value)}></Form.Control>
-                            </Form.Group>
+                            </Form.Group> */}
 
                             <Form.Group controlId='brand'>
                                 <Form.Label>Brand</Form.Label>

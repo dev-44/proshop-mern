@@ -156,7 +156,7 @@ const ProductCreate = () => {
                                 <Form.Control type='number' placeholder='Enter Price' value={price} onChange={(e) => setPrice(e.target.value)}></Form.Control>
                             </Form.Group>
 
-                            <Form.Group controlId='image'>
+                            <Form.Group controlId='images'>
                                 <Form.Label>Image/s</Form.Label>
                                 <Form.Control type='file' multiple placeholder='Select the images to upload' onChange={(e) => {
                                     setImages(e.target.files)
