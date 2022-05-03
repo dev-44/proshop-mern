@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import {useSelector, useDispatch} from 'react-redux'
 import { Row, Col, Modal, Button, InputGroup, Form } from "react-bootstrap"
@@ -8,6 +8,8 @@ import Message from '../components/Message'
 import Pagination from '../components/Pagination'
 import HomeCarousel from '../components/HomeCarousel'
 import Meta from '../components/Meta'
+
+import HomeContext from '../context/HomeContext'
 
 import { resetLoggedSuccess } from '../features/users/userSlice'
 import { getProducts, getTopProducts, deleteProduct, resetCrud} from '../features/products/productSlice'
@@ -23,22 +25,23 @@ const Home = () => {
   const [successMessage, setSuccessMessage] = useState('')
 
   //Filters
-  const [idFilter, setIdFilter] = useState('')
   const [nameFilter, setNameFilter] = useState('')
   const [minPriceFilter, setMinPriceFilter] = useState()
   const [maxPriceFilter, setMaxPriceFilter] = useState()
   const [categoryFilter, setCategoryFilter] = useState('')
   const [brandFilter, setBrandFilter] = useState('')
 
-  const [currentPosts, setCurrentPosts] = useState([])
-  const [dataTable, setDataTable] = useState([])
-  const [isFiltered, setIsFiltered] = useState(false)
   const [isSortNameAsc, setIsSortNameAsc] = useState(false)
   const [isSortNameDesc, setIsSortNameDesc] = useState(false)
   const [isSortPriceAsc, setIsSortPriceAsc] = useState(false)
   const [isSortPriceDesc, setIsSortPriceDesc] = useState(false)
+
+  const [isFiltered, setIsFiltered] = useState(false)
   const [isSort, setIsSort] = useState(false)
   const [isSearchAndSortOpen, setIsSearchAndSortOpen] = useState(false)
+
+  const [totalData, setTotalData] = useState([])
+  const [dataPage, setDataPage] = useState([])
 
   const dispatch = useDispatch()
   const {user, isLoggedSuccess} = useSelector(state => state.user)
@@ -53,8 +56,8 @@ const Home = () => {
   
   //const [products, setProducts] = useState([])
 
-  const [searchParams] = useSearchParams()
-  const pageNumber = searchParams.get('page') || 1
+  //const [searchParams] = useSearchParams()
+  //const pageNumber = searchParams.get('page') || 1
 
   var categories = []
   var brands = []
@@ -88,6 +91,14 @@ const Home = () => {
       setTimeout(() => {dispatch(resetCrud())}, 1000)
     }
 
+    if(isLoaded) {
+      const indexOfLastPost = currentPage * postsPerPage
+      const indexOfFirstPost = indexOfLastPost - postsPerPage
+      var slice = products.slice(indexOfFirstPost, indexOfLastPost)
+      setTotalData(products)
+      setDataPage(slice)
+    }
+
     /*
     return () => {              //Clear/Unmount.Return a function
         if(isSuccess) {
@@ -96,104 +107,135 @@ const Home = () => {
     }
     */
 
-}, [dispatch, isSuccess, isLoggedSuccess, isLoaded, isDeleted])
+  }, [dispatch, isSuccess, isLoggedSuccess, isLoaded, isDeleted])
 
 
   useEffect(() => {
-
-    /* MOVE TO REDUX
-    const fetchProducts = async() => {
-      const { data } = await axios.get('/api/products')
-      setProducts(data)
-    }
-
-    fetchProducts()
-    */
 
     dispatch(getTopProducts())
     //dispatch(getProducts({keyword, pageNumber}))
     dispatch(getProducts())
     setTimeout(() => {dispatch(resetCrud())}, 2000)
-  
   }, [])
 
-    //Search, Filter and Sort
-    useEffect(() => {
-      const indexOfLastPost = currentPage * postsPerPage
-      const indexOfFirstPost = indexOfLastPost - postsPerPage
-      var slice = products.slice(indexOfFirstPost, indexOfLastPost)
-      setCurrentPosts(slice)
-      setDataTable(slice)
-  }, [products, currentPage])
   
+  //Filtering
   useEffect(() => {
-
+               
     var filteredPosts = products
-    if(idFilter) {
-        filteredPosts = filteredPosts.filter(item => item._id.toLowerCase().includes(idFilter.toLowerCase()))
-    }
 
     if (nameFilter) {
-        filteredPosts = filteredPosts.filter(item => item.name.toLowerCase().includes(nameFilter.toLowerCase()))
+      filteredPosts = filteredPosts.filter(item => item.name.toLowerCase().includes(nameFilter.toLowerCase()))
     }
 
     if(minPriceFilter) {
-        filteredPosts = filteredPosts.filter(item => Number(item.price) >= Number(minPriceFilter))
+      filteredPosts = filteredPosts.filter(item => Number(item.price) >= Number(minPriceFilter))
     }
 
     if(maxPriceFilter) {
-        filteredPosts = filteredPosts.filter(item => Number(item.price) <= Number(maxPriceFilter))
+      filteredPosts = filteredPosts.filter(item => Number(item.price) <= Number(maxPriceFilter))
     }
 
     if (categoryFilter) {
-        filteredPosts = filteredPosts.filter(item => item.category === categoryFilter)
+      filteredPosts = filteredPosts.filter(item => item.category === categoryFilter)
     }
 
     if (brandFilter) {
-        filteredPosts = filteredPosts.filter(item => item.brand === brandFilter)
-    }
-
-    if (isSortNameAsc) {
-        console.log('Call to order name asc')
-        if(isSortNameDesc) {
-          setIsSortNameDesc(false)
-        }
-
-          // array temporal contiene objetos con posición y valor de ordenamiento
-          var mapped = filteredPosts.map(function(item, index) {
-              return { index, value: item.name.toLowerCase() };
-          })
-
-          // ordenando el array mapeado que contiene los valores reducidos
-          mapped.sort(function(a, b) {
-              if (a.value > b.value) {
-              return 1
-              }
-              if (a.value < b.value) {
-              return -1
-              }
-              return 0
-          })
-
-          // contenedor para el orden resultante
-          filteredPosts = (mapped.map(function(item){
-              return filteredPosts[item.index]
-          }))
-
-          setIsSort(true)
+      filteredPosts = filteredPosts.filter(item => item.brand === brandFilter)
     }
     
-    if(!idFilter && !nameFilter && !minPriceFilter && !maxPriceFilter && !categoryFilter && !brandFilter && !isSort) {
-        setDataTable(currentPosts)
-        setIsFiltered(false)
-        setIsSort(false)
+    if(!nameFilter && !minPriceFilter && !maxPriceFilter && !categoryFilter && !brandFilter) {
+      console.log('NO Filter')
+      setIsFiltered(false)
+      
+      var indexOfLastPost = currentPage * postsPerPage
+      var indexOfFirstPost = indexOfLastPost - postsPerPage
+      var slice = products.slice(indexOfFirstPost, indexOfLastPost)
+      console.log('Takes the slice of products')
+      setTotalData(products)
+      setDataPage(slice)
     } else {
-        setDataTable(filteredPosts)
-        setIsFiltered(true)
-    }
-  }, [idFilter, nameFilter, minPriceFilter, maxPriceFilter, categoryFilter, brandFilter, isSortNameAsc])
+      console.log('Filter')
 
-  
+      var indexOfLastPost = currentPage * postsPerPage
+      var indexOfFirstPost = indexOfLastPost - postsPerPage
+      if (filteredPosts.length > postsPerPage) {
+        console.log('Takes the slice of TotalData')
+        var slice = filteredPosts.slice(indexOfFirstPost, indexOfLastPost)
+        setDataPage(slice)
+      } else {
+        console.log('Takes the ALL totalData')
+        setDataPage(filteredPosts)
+      }
+
+      setTotalData(filteredPosts)
+      setIsFiltered(true)
+    }
+
+  }, [nameFilter, minPriceFilter, maxPriceFilter, categoryFilter, brandFilter])
+
+  //Change Page
+  useEffect(() => {
+
+      console.log('Change of Page');
+      const indexOfLastPost = currentPage * postsPerPage
+      const indexOfFirstPost = indexOfLastPost - postsPerPage
+      var slice = totalData.slice(indexOfFirstPost, indexOfLastPost)
+      setDataPage(slice)
+
+    
+  }, [currentPage])
+
+
+  /*    
+  //Sorting
+  useEffect(() => {
+
+    //console.log('Lets sort')
+    if (isSortNameAsc) {
+
+      if(isSortNameDesc) {
+        setIsSortNameDesc(false)
+      }
+
+      // array temporal contiene objetos con posición y valor de ordenamiento
+      var mapped = totalData.map(function(item, index) {
+          return { index, value: item.name.toLowerCase() };
+      })
+
+      // ordenando el array mapeado que contiene los valores reducidos
+      mapped.sort(function(a, b) {
+          if (a.value > b.value) {
+          return 1
+          }
+          if (a.value < b.value) {
+          return -1
+          }
+          return 0
+      })
+
+      // contenedor para el orden resultante
+      var aux = (mapped.map(function(item){
+          return totalData[item.index]
+      }))
+
+      console.log(aux)
+      setTotalData(aux)
+    }
+
+    if(!isSortNameAsc && !isSortNameDesc && !isSortPriceAsc && !isSortPriceDesc) {
+      setIsSort(false)
+    } else {
+      setIsSort(true)
+    }
+
+  }, [isSortNameAsc, isSortNameDesc, isSortPriceAsc, isSortPriceDesc, nameFilter, minPriceFilter, maxPriceFilter, categoryFilter, brandFilter])
+  */
+
+  const display = () => {
+
+  }
+
 
   if(isLoading) {
     return <Loader />
@@ -222,8 +264,6 @@ const Home = () => {
   // Change page
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber)
-    setIsSortNameAsc(false)
-    setIsSortNameDesc(false)
   }
 
   function populateCategories(products) {
@@ -232,176 +272,196 @@ const Home = () => {
             categories.push(item.category)
         }
     })
-}
+  }
 
-function populateBrands(products) {
+  function populateBrands(products) {
     products.map(function(item) {
         if (!brands.includes(item.brand)) {
             brands.push(item.brand)
         }
     })
-}
+  }
 
-//Sorting
 
-function sortNameAsc() {
-  setIsSortNameAsc(!isSortNameAsc)
-  /*
-    if(isSortNameDesc) {
-        setIsSortNameDesc(false)
-    }
-
-    if(!isSortNameAsc) {
-        // array temporal contiene objetos con posición y valor de ordenamiento
-        var mapped = dataTable.map(function(item, index) {
-            return { index, value: item.name.toLowerCase() };
-        })
-
-        // ordenando el array mapeado que contiene los valores reducidos
-        mapped.sort(function(a, b) {
-            if (a.value > b.value) {
-            return 1
-            }
-            if (a.value < b.value) {
-            return -1
-            }
-            return 0
-        })
-
-        // contenedor para el orden resultante
-        setDataTable(mapped.map(function(item){
-            return dataTable[item.index]
-        }))
-
-        setIsSort(true)
-
-    } else {
-        setDataTable(currentPosts)
-        setIsSort(false)
-    }
-
+  //Sorting
+  const sortNameAsc = () => {
     setIsSortNameAsc(!isSortNameAsc)
-    */
-}
+  }
 
-
-
-function sortNameDesc() {
-    if(isSortNameAsc) {
-        setIsSortNameAsc(false)
-    }
-
-    if(!isSortNameDesc) {
-        // array temporal contiene objetos con posición y valor de ordenamiento
-        var mapped = dataTable.map(function(item, index) {
-            return { index, value: item.name.toLowerCase() };
-        })
-        
-        // ordenando el array mapeado que contiene los valores reducidos
-        mapped.sort(function(a, b) {
-            if (a.value > b.value) {
-            return 1
-            }
-            if (a.value < b.value) {
-            return -1
-            }
-            return 0
-        })
-
-        // contenedor para el orden resultante
-        var auxArray = mapped.map(function(item){
-            return dataTable[item.index]
-        })
-
-        setDataTable(auxArray.reverse())
-        setIsSort(true)
-    } else {
-        setDataTable(currentPosts)
-        setIsSort(false)
-    }
-
+  const sortNameDesc = () => {
     setIsSortNameDesc(!isSortNameDesc)
-}
+  }
 
-function sortPriceAsc() {
-    if(isSortPriceDesc) {
-        setIsSortPriceDesc(false)
-    }
-
-    if(!isSortPriceAsc) {
-        // array temporal contiene objetos con posición y valor de ordenamiento
-        var mapped = dataTable.map(function(item, index) {
-            return { index, value: item.price}
-        })
-        
-        // ordenando el array mapeado que contiene los valores reducidos
-        mapped.sort(function(a, b) {
-            if (a.value > b.value) {
-            return 1
-            }
-            if (a.value < b.value) {
-            return -1
-            }
-            return 0
-        })
-
-        // contenedor para el orden resultante
-        var auxArray = mapped.map(function(item){
-            return dataTable[item.index]
-        })
-
-        auxArray = auxArray.reverse()
-
-        setDataTable(auxArray)
-        setIsSort(true)
-    } else {
-        setDataTable(currentPosts)
-        setIsSort(false)
-    }
-
+  const sortPriceAsc = () => {
     setIsSortPriceAsc(!isSortPriceAsc)
-}
+  }
 
-function sortPriceDesc() {
-    if(isSortPriceAsc) {
-        setIsSortPriceAsc(false)
-    }
-
-    if(!isSortPriceDesc) {
-
-        // array temporal contiene objetos con posición y valor de ordenamiento
-        var mapped = dataTable.map(function(item, index) {
-            return { index, value: item.price}
-        })
-        
-        // ordenando el array mapeado que contiene los valores reducidos
-        mapped.sort(function(a, b) {
-            if (a.value > b.value) {
-            return 1
-            }
-            if (a.value < b.value) {
-            return -1
-            }
-            return 0
-        })
-
-        // contenedor para el orden resultante
-        var auxArray = mapped.map(function(item){
-            return dataTable[item.index]
-        })
-
-        setDataTable(auxArray)
-        setIsSort(true)
-    } else {
-        setDataTable(currentPosts)
-        setIsSort(false)
-    }
-
+  const sortPriceDesc = () => {
     setIsSortPriceDesc(!isSortPriceDesc)
-}
+  }
+  
+
+  /*
+  function sortNameAsc() {
+    setIsSortNameAsc(!isSortNameAsc)
+    console.log('Click')
+      if(isSortNameDesc) {
+          setIsSortNameDesc(false)
+      }
+
+      if(!isSortNameAsc) {
+          // array temporal contiene objetos con posición y valor de ordenamiento
+          var mapped = dataTable.map(function(item, index) {
+              return { index, value: item.name.toLowerCase() };
+          })
+
+          // ordenando el array mapeado que contiene los valores reducidos
+          mapped.sort(function(a, b) {
+              if (a.value > b.value) {
+              return 1
+              }
+              if (a.value < b.value) {
+              return -1
+              }
+              return 0
+          })
+
+          // contenedor para el orden resultante
+          setDataTable(mapped.map(function(item){
+              return dataTable[item.index]
+          }))
+
+          //setIsSort(true)
+
+      } else {
+          setDataTable(currentPosts)
+          //setIsSort(false)
+      }
+
+      setIsSortNameAsc(!isSortNameAsc)
+
+  }
+
+
+
+  function sortNameDesc() {
+      if(isSortNameAsc) {
+          setIsSortNameAsc(false)
+      }
+
+      if(!isSortNameDesc) {
+          // array temporal contiene objetos con posición y valor de ordenamiento
+          var mapped = dataTable.map(function(item, index) {
+              return { index, value: item.name.toLowerCase() };
+          })
+          
+          // ordenando el array mapeado que contiene los valores reducidos
+          mapped.sort(function(a, b) {
+              if (a.value > b.value) {
+              return 1
+              }
+              if (a.value < b.value) {
+              return -1
+              }
+              return 0
+          })
+
+          // contenedor para el orden resultante
+          var auxArray = mapped.map(function(item){
+              return dataTable[item.index]
+          })
+
+          setDataTable(auxArray.reverse())
+          //setIsSort(true)
+      } else {
+          setDataTable(currentPosts)
+          //setIsSort(false)
+      }
+
+      setIsSortNameDesc(!isSortNameDesc)
+  }
+
+  function sortPriceAsc() {
+      if(isSortPriceDesc) {
+          setIsSortPriceDesc(false)
+      }
+
+      if(!isSortPriceAsc) {
+          // array temporal contiene objetos con posición y valor de ordenamiento
+          var mapped = dataTable.map(function(item, index) {
+              return { index, value: item.price}
+          })
+          
+          // ordenando el array mapeado que contiene los valores reducidos
+          mapped.sort(function(a, b) {
+              if (a.value > b.value) {
+              return 1
+              }
+              if (a.value < b.value) {
+              return -1
+              }
+              return 0
+          })
+
+          // contenedor para el orden resultante
+          var auxArray = mapped.map(function(item){
+              return dataTable[item.index]
+          })
+
+          auxArray = auxArray.reverse()
+
+          setDataTable(auxArray)
+          //setIsSort(true)
+      } else {
+          setDataTable(currentPosts)
+          //setIsSort(false)
+      }
+
+      setIsSortPriceAsc(!isSortPriceAsc)
+  }
+
+  function sortPriceDesc() {
+      if(isSortPriceAsc) {
+          setIsSortPriceAsc(false)
+      }
+
+      if(!isSortPriceDesc) {
+
+          // array temporal contiene objetos con posición y valor de ordenamiento
+          var mapped = dataTable.map(function(item, index) {
+              return { index, value: item.price}
+          })
+          
+          // ordenando el array mapeado que contiene los valores reducidos
+          mapped.sort(function(a, b) {
+              if (a.value > b.value) {
+              return 1
+              }
+              if (a.value < b.value) {
+              return -1
+              }
+              return 0
+          })
+
+          // contenedor para el orden resultante
+          var auxArray = mapped.map(function(item){
+              return dataTable[item.index]
+          })
+
+          setDataTable(auxArray)
+          //setIsSort(true)
+      } else {
+          setDataTable(currentPosts)
+          //setIsSort(false)
+      }
+
+      setIsSortPriceDesc(!isSortPriceDesc)
+  }
+  */
 
   return (
     <>
+    
       <Modal show={openModal} onHide={handleCloseModal}>
           <Modal.Header closeButton>
               <Modal.Title>Attention</Modal.Title>
@@ -473,9 +533,10 @@ function sortPriceDesc() {
 
 
       {(!isFiltered && !isSort) && <HomeCarousel />}
-      {isSearchAndSortOpen ? <h3>Results</h3> :<h1>LATEST PRODUCTS</h1>}
+      {(isFiltered || isSort) ? dataPage.length > 0 ? <h3>Results</h3> :<h5 style={{color: 'red', marginTop: '3px'}}>No results</h5> :<h1>LATEST PRODUCTS</h1>}
+      {totalData.length <= postsPerPage  ? `${totalData.length} Results` : `${postsPerPage} of ${totalData.length} Results` }
         <Row>
-            {dataTable.map((product) => (
+            {dataPage.map((product) => (
               <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
                     <Product product={product} preDeleteProduct={preDeleteProduct}/>             
               </Col> 
@@ -483,7 +544,8 @@ function sortPriceDesc() {
         </Row>
         {/* <Paginate pages={pages} page={page} keyword={keyword ? keyword : ''}/> */}
 
-        {((dataTable === currentPosts) || (isSort && !isFiltered))  && <Pagination postsPerPage={postsPerPage} totalPosts={products.length} paginate={paginate} currentPage={currentPage} />}
+        {totalData.length > postsPerPage && <Pagination postsPerPage={postsPerPage} totalPosts={products.length} paginate={paginate} currentPage={currentPage} />}
+        
     </>
   )
 }

@@ -496,7 +496,7 @@ const ProductList = () => {
                         <th>
                             PRICE
                             <i className='fas fa-arrow-up ms-2' onClick={() => sortPriceAsc()} style={{color: isSortPriceAsc ? '#18bc9c' : '#000000', cursor: 'pointer'}}></i>
-                            <i className='fas fa-arrow-down ms-1' onClick={() => sortPriceDesc()} style={{color: isSortPriceDesc ? '#18bc9c' : '#000000'}}></i>
+                            <i className='fas fa-arrow-down ms-1' onClick={() => sortPriceDesc()} style={{color: isSortPriceDesc ? '#18bc9c' : '#000000', cursor: 'pointer'}}></i>
                         </th>
                         <th>CATEGORY</th>
                         <th>BRAND</th>

@@ -1,4 +1,5 @@
-import React from 'react';
+import React from 'react'
+import { HomeProvider } from './context/HomeContext'
 import {BrowserRouter as Router, Routes, Route, Link} from 'react-router-dom'
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -24,7 +25,7 @@ import NoContent from './pages/NoContent'
 
 function App() {
   return (
-    <>
+    <HomeProvider>
     <Router>
       <Header />
         <main className='py-3'>
@@ -67,8 +68,8 @@ function App() {
         </main>
       <Footer />
     </Router>
-    </>
-  );
+    </HomeProvider>
+  )
 }
 
 export default App;

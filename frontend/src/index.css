@@ -115,6 +115,7 @@ h3 {
   transform: scale(0.80);
 }
 
+/*
 .fa-edit {
   color: #000000;
   font-size: 20px;
@@ -129,6 +130,7 @@ h3 {
 .fa-edit :hover {
 color: blue;
 }
+*/
 
 @media screen and (max-width: 810px) {
     .carousel-caption h3 {

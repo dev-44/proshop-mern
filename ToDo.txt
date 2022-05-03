@@ -83,6 +83,7 @@ BUGS
 
 PENDIENTES
 ===================================
+-Seleccionar productos por color-diseño o tamaño (en ese orden). Ver cuestión logica de ProductModel, si se toma cada producto por separado.
 -Pedir el num de telefono al registrarse (obligatorio)
 -Colocar iconos de redes sociales al pie de la pagina con links.
 -Pagina de contactos de la tienda con informacion de cuenta bancaria.
