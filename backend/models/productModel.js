@@ -22,7 +22,7 @@ const reviewSchema = mongoose.Schema({
     timestamps: true
 })
 
-/*
+
 var subProductSchema = new mongoose.Schema({
     images: [String],
     size: {
@@ -38,7 +38,7 @@ var subProductSchema = new mongoose.Schema({
 }, {
     timestamps: true
 })
-*/
+
 
 const productSchema = mongoose.Schema({
     user : {
@@ -50,18 +50,7 @@ const productSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    //produts: [subProductSchema],
-    
-    images: [String],
-/*     image: {
-        type: String,
-        required: true
-    },    
-    picture: {
-        data: Buffer,
-        contentType: String
-    }, */
-    
+    products: [subProductSchema],
     brand: {
         type: String,
         required: true
@@ -86,12 +75,6 @@ const productSchema = mongoose.Schema({
         default: 0
     },
     price: {
-        type: Number,
-        required: true,
-        default: 0
-    },
-    
-    countInStock: {
         type: Number,
         required: true,
         default: 0
