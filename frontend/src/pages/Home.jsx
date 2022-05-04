@@ -148,26 +148,20 @@ const Home = () => {
     }
     
     if(!nameFilter && !minPriceFilter && !maxPriceFilter && !categoryFilter && !brandFilter) {
-      console.log('NO Filter')
       setIsFiltered(false)
       
       var indexOfLastPost = currentPage * postsPerPage
       var indexOfFirstPost = indexOfLastPost - postsPerPage
       var slice = products.slice(indexOfFirstPost, indexOfLastPost)
-      console.log('Takes the slice of products')
       setTotalData(products)
       setDataPage(slice)
     } else {
-      console.log('Filter')
-
       var indexOfLastPost = currentPage * postsPerPage
       var indexOfFirstPost = indexOfLastPost - postsPerPage
       if (filteredPosts.length > postsPerPage) {
-        console.log('Takes the slice of TotalData')
         var slice = filteredPosts.slice(indexOfFirstPost, indexOfLastPost)
         setDataPage(slice)
       } else {
-        console.log('Takes the ALL totalData')
         setDataPage(filteredPosts)
       }
 
@@ -202,16 +196,11 @@ const Home = () => {
       var indexOfLastPost = currentPage * postsPerPage
       var indexOfFirstPost = indexOfLastPost - postsPerPage
       if (aux.length > postsPerPage) {
-        console.log('Lets paginate the sorted array')
         var slice = aux.slice(indexOfFirstPost, indexOfLastPost)
         setDataPage(slice)
       } else {
-        console.log('The sorted array is show in 1 page')
         setDataPage(aux)
       }
-      setIsSortNameDesc(false)
-      setIsSortPriceAsc(false)
-      setIsSortPriceDesc(false)
     }
 
     if(isSortNameDesc) {
@@ -243,16 +232,11 @@ const Home = () => {
       var indexOfLastPost = currentPage * postsPerPage
       var indexOfFirstPost = indexOfLastPost - postsPerPage
       if (aux.length > postsPerPage) {
-        console.log('Lets paginate the sorted array')
         var slice = aux.slice(indexOfFirstPost, indexOfLastPost)
         setDataPage(slice)
       } else {
-        console.log('The sorted array is show in 1 page')
         setDataPage(aux)
       }
-      setIsSortNameAsc(false)
-      setIsSortPriceAsc(false)
-      setIsSortPriceDesc(false)
     }
 
     //Price Ascending
@@ -285,18 +269,11 @@ const Home = () => {
       var indexOfLastPost = currentPage * postsPerPage
       var indexOfFirstPost = indexOfLastPost - postsPerPage
       if (aux.length > postsPerPage) {
-        console.log('Lets paginate the sorted array')
         var slice = aux.slice(indexOfFirstPost, indexOfLastPost)
         setDataPage(slice)
       } else {
-        console.log('The sorted array is show in 1 page')
         setDataPage(aux)
-      }
-
-      setIsSortNameAsc(false)
-      setIsSortNameDesc(false)
-      setIsSortPriceDesc(false)
-      
+      }      
     }
 
     //Price Descending
@@ -328,17 +305,15 @@ const Home = () => {
       var indexOfLastPost = currentPage * postsPerPage
       var indexOfFirstPost = indexOfLastPost - postsPerPage
       if (aux.length > postsPerPage) {
-        console.log('Lets paginate the sorted array')
         var slice = aux.slice(indexOfFirstPost, indexOfLastPost)
         setDataPage(slice)
       } else {
-        console.log('The sorted array is show in 1 page')
         setDataPage(aux)
       }
+    }
 
-      setIsSortNameAsc(false)
-      setIsSortNameDesc(false)
-      setIsSortPriceAsc(false)
+    if(currentPage !==1) {
+      paginate(1)
     }
 
 
@@ -353,9 +328,6 @@ const Home = () => {
     //Name Ascending
     if (isSortNameAsc) {
 
-      setIsSortNameDesc(false)
-      setIsSortPriceAsc(false)
-      setIsSortPriceDesc(false)
 
       // array temporal contiene objetos con posición y valor de ordenamiento
       var mapped = totalData.map(function(item, index) {
@@ -384,21 +356,15 @@ const Home = () => {
       var indexOfLastPost = currentPage * postsPerPage
       var indexOfFirstPost = indexOfLastPost - postsPerPage
       if (aux.length > postsPerPage) {
-        console.log('Lets paginate the sorted array')
         var slice = aux.slice(indexOfFirstPost, indexOfLastPost)
         setDataPage(slice)
       } else {
-        console.log('The sorted array is show in 1 page')
         setDataPage(aux)
       }
     }
 
     //Name Descending
     if (isSortNameDesc) {
-
-      setIsSortNameAsc(false)
-      setIsSortPriceAsc(false)
-      setIsSortPriceDesc(false)
 
       // array temporal contiene objetos con posición y valor de ordenamiento
       var mapped = totalData.map(function(item, index) {
@@ -427,21 +393,15 @@ const Home = () => {
       var indexOfLastPost = currentPage * postsPerPage
       var indexOfFirstPost = indexOfLastPost - postsPerPage
       if (aux.length > postsPerPage) {
-        console.log('Lets paginate the sorted array')
         var slice = aux.slice(indexOfFirstPost, indexOfLastPost)
         setDataPage(slice)
       } else {
-        console.log('The sorted array is show in 1 page')
         setDataPage(aux)
       }
     }
 
     //Price Ascending
     if(isSortPriceAsc) {
-
-      setIsSortNameAsc(false)
-      setIsSortNameDesc(false)
-      setIsSortPriceDesc(false)
 
       // array temporal contiene objetos con posición y valor de ordenamiento
       var mapped = totalData.map(function(item, index) {
@@ -470,11 +430,9 @@ const Home = () => {
       var indexOfLastPost = currentPage * postsPerPage
       var indexOfFirstPost = indexOfLastPost - postsPerPage
       if (aux.length > postsPerPage) {
-        console.log('Lets paginate the sorted array')
         var slice = aux.slice(indexOfFirstPost, indexOfLastPost)
         setDataPage(slice)
       } else {
-        console.log('The sorted array is show in 1 page')
         setDataPage(aux)
       }
 
@@ -483,10 +441,6 @@ const Home = () => {
     //Price Descending
     if(isSortPriceDesc) {
 
-      setIsSortNameAsc(false)
-      setIsSortNameDesc(false)
-      setIsSortPriceAsc(false)
-  
       // array temporal contiene objetos con posición y valor de ordenamiento
       var mapped = totalData.map(function(item, index) {
           return { index, value: item.price}
@@ -527,6 +481,11 @@ const Home = () => {
       setIsSort(false)
     } else {
       setIsSort(true)
+    }
+
+    //Always start in the page 1
+    if(currentPage !==1) {
+      paginate(1)
     }
 
   }, [isSortNameAsc, isSortNameDesc, isSortPriceAsc, isSortPriceDesc])
@@ -604,19 +563,71 @@ const Home = () => {
   }
 
   //Sorting
+
+  const chooseTypeOfSort = (option) => {
+    option = Number(option)
+    switch (option) {
+      case 1:
+        setIsSortNameDesc(false)
+        setIsSortPriceAsc(false)
+        setIsSortPriceDesc(false)
+        setIsSortNameAsc(!isSortNameAsc)
+        break
+      
+      case 2:
+        setIsSortNameAsc(false)
+        setIsSortPriceAsc(false)
+        setIsSortPriceDesc(false)
+        setIsSortNameDesc(!isSortNameDesc)
+        console.log('Option 2')
+        break
+
+      case 3:
+        setIsSortNameAsc(false)
+        setIsSortNameDesc(false)
+        setIsSortPriceDesc(false)
+        setIsSortPriceAsc(!isSortPriceAsc)
+        console.log('Option 3')
+        break
+        
+        case 4:
+        setIsSortNameAsc(false)
+        setIsSortNameDesc(false)
+        setIsSortPriceAsc(false)
+        setIsSortPriceDesc(!isSortPriceDesc)
+        console.log('Option 4')
+        break
+
+      default:
+        break;
+    }
+  }
+
   const sortNameAsc = () => {
+    setIsSortNameDesc(false)
+    setIsSortPriceAsc(false)
+    setIsSortPriceDesc(false)
     setIsSortNameAsc(!isSortNameAsc)
   }
 
   const sortNameDesc = () => {
+    setIsSortNameAsc(false)
+    setIsSortPriceAsc(false)
+    setIsSortPriceDesc(false)
     setIsSortNameDesc(!isSortNameDesc)
   }
 
   const sortPriceAsc = () => {
+    setIsSortNameAsc(false)
+    setIsSortNameDesc(false)
+    setIsSortPriceDesc(false)
     setIsSortPriceAsc(!isSortPriceAsc)
   }
 
   const sortPriceDesc = () => {
+    setIsSortNameAsc(false)
+    setIsSortNameDesc(false)
+    setIsSortPriceAsc(false)
     setIsSortPriceDesc(!isSortPriceDesc)
   }
   
@@ -653,6 +664,7 @@ const Home = () => {
         </Button>
       )}
       {isSearchAndSortOpen && (
+        <>
         <InputGroup>
 
           <Col className='me-3 mb-3' >
@@ -689,8 +701,24 @@ const Home = () => {
               {brands.map((item, index) => <option key={index} value={item}>{item}</option>)}
             </Form.Select>
           </Col>
-
         </InputGroup>
+        
+            <Col md lg="4" className='mb-3'>
+              <Form.Label>Sort</Form.Label>
+              <Form.Select aria-label="Default select example" onChange={(e) => chooseTypeOfSort(e.target.value)} >
+                <option>Open this select menu</option>
+                <option value="1">Sort By Name Ascending A-Z</option>
+                <option value="2">Sort By Name Descending Z-A</option>
+                <option value="3">Sort By Major Price</option>
+                <option value="4">Sort By Less Price</option>
+                <option value="5">New Products</option>
+                <option value="6">Most Seen</option>
+                <option value="7">Most Shopped</option>
+                <option value="8">Best Ranked</option>
+              </Form.Select>
+            </Col>
+          
+        </>
       )}
 
 
