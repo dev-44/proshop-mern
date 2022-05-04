@@ -26,6 +26,10 @@ const ProductDetails = () => {
     const [colors, setColors] = useState()
     const [images, setImages] = useState()
 
+    //Filters
+    const [sizeChoosed, setSizeChoosed] = useState()
+    const [colorChoosed, setColorChoosed] = useState()
+
     //Set Image on the carousel
     const [indexSelected, setIndexSelected] = useState(0)
 
@@ -146,6 +150,7 @@ const ProductDetails = () => {
 
     //Filter Results
     const filter = (size) => {
+        setSizeChoosed(size)
         var filtered = []
         var filteredImages = []
 
@@ -222,7 +227,7 @@ const ProductDetails = () => {
                                 <ListGroup.Item><strong>SELECCIONE UN TAMAÑO</strong></ListGroup.Item>
                                 <ListGroup.Item>
                                     {sizes.map(size => (
-                                        <Button className='me-2' value={size} onClick={(e) => filter(e.target.value)}>{size}</Button>
+                                        <Button variant={sizeChoosed === size ? 'success' : 'light'} className='me-2' value={size} onClick={(e) => filter(e.target.value)}>{size}</Button>
                                     ))}
                                 </ListGroup.Item>
                             </ListGroup>
