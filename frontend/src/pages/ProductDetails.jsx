@@ -21,6 +21,9 @@ const ProductDetails = () => {
     const [comment, setComment] = useState('')
     const [successMsg, setSuccessMsg] = useState('')
     const [url, setUrl] = useState('')
+
+    const [sizes, setSizes] = useState()
+    const [colors, setColors] = useState()
     const [images, setImages] = useState()
 
     //Set Image on the carousel
@@ -94,12 +97,25 @@ const ProductDetails = () => {
         if(isLoaded) {
             //All Images
             var allImages = []
+            var allSizes = []
+
             product.products.map(product => product.images.map((img => allImages.push(img))))
             setImages(allImages)
+
+            product.products.map(function(product) {
+                if(!allSizes.includes(product.size)) {
+                    allSizes.push(product.size)
+                }
+            })
+            setSizes(allSizes)
         }
 
         dispatch(resetCrud())
     }, [isLoaded])
+
+    useEffect(() => {
+        setIndexSelected(0)
+    }, [images])
 
 
 
@@ -117,16 +133,30 @@ const ProductDetails = () => {
     const openImageViewer = useCallback((index) => {
         setCurrentImage(index)
         setIsViewerOpen(true)
-      }, [])
+    }, [])
     
-      const closeImageViewer = () => {
+    const closeImageViewer = () => {
         setCurrentImage(0)
         setIsViewerOpen(false)
-      }
+    }
 
-      const sincronize = (index) => {
+    const sincronize = (index) => {
         setIndexSelected(index)
-      }
+    }
+
+    //Filter Results
+    const filter = (size) => {
+        var filtered = []
+        var filteredImages = []
+
+        filtered = product.products.filter(item => item.size === size)
+        console.log(filtered)
+        //setSizes(filtered)
+
+        filtered.map(product => product.images.map((img => filteredImages.push(img))))
+        console.log(filteredImages)
+        setImages(filteredImages)
+    }
 
   return (
     <>
@@ -186,10 +216,21 @@ const ProductDetails = () => {
                                 <strong>Description: </strong> {product.description}
                             </ListGroup.Item>
                         </ListGroup>
+
+                        {sizes && (
+                            <ListGroup variant='flush' className='mt-3'>
+                                <ListGroup.Item><strong>SELECCIONE UN TAMAÑO</strong></ListGroup.Item>
+                                <ListGroup.Item>
+                                    {sizes.map(size => (
+                                        <Button className='me-2' value={size} onClick={(e) => filter(e.target.value)}>{size}</Button>
+                                    ))}
+                                </ListGroup.Item>
+                            </ListGroup>
+                        )}
                     </Col>
+
                     <Col md={3}>
                         <ListGroup variant='flush'>
-
                             <ListGroup.Item>
                                 <Row>
                                     <Col>
