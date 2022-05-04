@@ -22,13 +22,15 @@ const ProductDetails = () => {
     const [successMsg, setSuccessMsg] = useState('')
     const [url, setUrl] = useState('')
 
-    const [sizes, setSizes] = useState()
-    const [colors, setColors] = useState()
-    const [images, setImages] = useState()
+    const [sizes, setSizes] = useState([])
+    const [colors, setColors] = useState([])
+    const [images, setImages] = useState([])
 
     //Filters
-    const [sizeChoosed, setSizeChoosed] = useState()
-    const [colorChoosed, setColorChoosed] = useState()
+    const [sizeChoosed, setSizeChoosed] = useState('')
+    const [colorChoosed, setColorChoosed] = useState('')
+    const [filteredProducts, setFilteredProducts] = useState(null)
+    const [productChoosed, setProductChoosed] = useState(null)
 
     //Set Image on the carousel
     const [indexSelected, setIndexSelected] = useState(0)
@@ -100,8 +102,8 @@ const ProductDetails = () => {
     useEffect(() => {
         if(isLoaded) {
             //All Images
-            var allImages = []
             var allSizes = []
+            var allImages = []
 
             product.products.map(product => product.images.map((img => allImages.push(img))))
             setImages(allImages)
@@ -112,6 +114,9 @@ const ProductDetails = () => {
                 }
             })
             setSizes(allSizes)
+
+            setFilteredProducts(product.products)
+
         }
 
         dispatch(resetCrud())
@@ -149,18 +154,38 @@ const ProductDetails = () => {
     }
 
     //Filter Results
-    const filter = (size) => {
+    const filterBySize = (size) => {
+
+        setColorChoosed('')
+        setProductChoosed('')
+
         setSizeChoosed(size)
         var filtered = []
         var filteredImages = []
+        var colorsFiltered = []
 
         filtered = product.products.filter(item => item.size === size)
-        console.log(filtered)
-        //setSizes(filtered)
+        setFilteredProducts(filtered)
 
         filtered.map(product => product.images.map((img => filteredImages.push(img))))
         console.log(filteredImages)
         setImages(filteredImages)
+
+        colorsFiltered = filtered.map(product => product.colorOrStyle)
+        setColors(colorsFiltered)
+    }
+
+    const filterByColor = (color) => {
+        setColorChoosed(color)
+        var filtered = []
+        var filteredImages = []
+
+        filtered = filteredProducts.filter(item => item.colorOrStyle === color)
+        setProductChoosed(filtered)
+
+        filtered.map(product => product.images.map((img => filteredImages.push(img))))
+        setImages(filteredImages)
+        console.log(filteredImages)
     }
 
   return (
@@ -226,8 +251,19 @@ const ProductDetails = () => {
                             <ListGroup variant='flush' className='mt-3'>
                                 <ListGroup.Item><strong>SELECCIONE UN TAMAÑO</strong></ListGroup.Item>
                                 <ListGroup.Item>
-                                    {sizes.map(size => (
-                                        <Button variant={sizeChoosed === size ? 'success' : 'light'} className='me-2' value={size} onClick={(e) => filter(e.target.value)}>{size}</Button>
+                                    {sizes.map((size, index) => (
+                                        <Button variant={sizeChoosed === size ? 'success' : 'light'} className='me-2' value={size} onClick={(e) => filterBySize(e.target.value)} key={index}>{size}</Button>
+                                    ))}
+                                </ListGroup.Item>
+                            </ListGroup>
+                        )}
+
+                        {colors && (
+                            <ListGroup variant='flush' className='mt-3'>
+                                <ListGroup.Item><strong>SELECCIONE UN COLOR</strong></ListGroup.Item>
+                                <ListGroup.Item>
+                                    {colors.map((color, index) => (
+                                        <Button variant={colorChoosed === color ? 'success' : 'light'} className='me-2 mb-2' value={color} onClick={(e) => filterByColor(e.target.value)} key={index}>{color}</Button>
                                     ))}
                                 </ListGroup.Item>
                             </ListGroup>
@@ -253,10 +289,24 @@ const ProductDetails = () => {
                                         Status:
                                     </Col>
                                     <Col>
-                                        {product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}
+                                        {productChoosed ? Number(productChoosed[0].countInStock) > 0 ? 'In Stock' : 'Out of Stock' : null}
                                     </Col>
                                 </Row>
                             </ListGroup.Item>
+
+                            {productChoosed && productChoosed[0].countInStock > 0 && (
+                                <ListGroup.Item>
+                                    <Row>
+                                        <Col>
+                                            Cantidad: 
+                                        </Col>
+                                        <Col>
+                                            {productChoosed[0].countInStock}
+                                        </Col>
+                                    </Row>
+                                </ListGroup.Item>
+                            )}
+
 
                             {product.countInStock > 0 && (
                                 <ListGroup.Item>
@@ -274,7 +324,7 @@ const ProductDetails = () => {
                             )}
 
                             <ListGroup.Item>
-                                <Button className='btn-block' type='button' disabled={product.countInStock === 0} onClick={addToCartHandler}>
+                                <Button className='btn-block' type='button' disabled={productChoosed && productChoosed.countInStock === 0 || !sizeChoosed || !colorChoosed} onClick={addToCartHandler}>
                                     Add to Cart
                                 </Button>
                             </ListGroup.Item>
