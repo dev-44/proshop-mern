@@ -1,4 +1,5 @@
 const products = [
+  /*
   {
     name: 'Airpods Wireless Bluetooth Headphones',
     images: ['/images/airpods.jpg'],
@@ -71,6 +72,52 @@ const products = [
     rating: 4,
     numReviews: 12,
   },
+  */
+  
+ 
+  {
+    name: "Vestido de Lino",
+    description: 'Hermosos vestidos hechos de lino',
+    products: [
+      {
+        images: ['/images/vino.jpg'],
+        size: 'md',
+        colorOrStyle: 'Rojo Vino',
+        countInStock: 2
+      },
+      {
+        images: ['/images/motas_azul.jpg'],
+        size: 'md',
+        colorOrStyle: 'Azul con motas blancas',
+        countInStock: 3
+      },
+      {
+        images: ['/images/motas_negro.jpg'],
+        size: 'xl',
+        colorOrStyle: 'Negro con motas blancas',
+        countInStock: 1
+      },
+    ],
+    brand: 'S/M',
+    category: 'Vestidos',
+    price: '35000'
+  },
+
+  {
+    name: "Otro Vestido de Lino",
+    description: 'Otro hermoso vestido hecho de lino',
+    products: [
+      {
+        images: ['/images/magenta.jpg'],
+        size: 'xs',
+        colorOrStyle: 'Magenta',
+        countInStock: 5
+      }
+    ],
+    brand: 'S/M',
+    category: 'Vestidos',
+    price: '37000'
+  }
 ]
 
 export default products

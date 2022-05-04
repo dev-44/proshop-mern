@@ -3,7 +3,7 @@ import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { Row, Col, Image, ListGroup, Card, Button, Form} from 'react-bootstrap'
 import Rating from '../components/Rating'
 import { useDispatch, useSelector } from 'react-redux'
-import { getProductDetails, createProductReview, resetMessage, resetReviewCreated } from '../features/products/productSlice'
+import { getProductDetails, createProductReview, resetMessage, resetReviewCreated, resetCrud } from '../features/products/productSlice'
 import { addItem } from '../features/cart/cartSlice'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
@@ -14,11 +14,14 @@ import ImageViewer from 'react-simple-image-viewer';
 //import products from '../products'
 
 const ProductDetails = () => {
+
+
     const [qty, setQty] = useState(1)
     const [rating, setRating] = useState(0)
     const [comment, setComment] = useState('')
     const [successMsg, setSuccessMsg] = useState('')
     const [url, setUrl] = useState('')
+    const [images, setImages] = useState()
 
     //Set Image on the carousel
     const [indexSelected, setIndexSelected] = useState(0)
@@ -36,7 +39,7 @@ const ProductDetails = () => {
     const {id} = useParams()
 
     const {user} = useSelector((state) => state.user)
-    const {product, isLoading, isSuccess, isError, message, reviewCreated, isLoadingReview} = useSelector((state) => state.product)
+    const {product, isLoading, isSuccess, isError, message, reviewCreated, isLoadingReview, isLoaded} = useSelector((state) => state.product)
 
     //const product = products.find(p => p._id === params.id)
     //const [product, setProduct] = useState({})
@@ -85,7 +88,20 @@ const ProductDetails = () => {
         }
 
     
-      }, [dispatch, id, isError, message, reviewCreated])
+    }, [dispatch, id, isError, message, reviewCreated])
+
+    useEffect(() => {
+        if(isLoaded) {
+            //All Images
+            var allImages = []
+            product.products.map(product => product.images.map((img => allImages.push(img))))
+            setImages(allImages)
+        }
+
+        dispatch(resetCrud())
+    }, [isLoaded])
+
+
 
     const addToCartHandler = () => {
         dispatch(addItem({id, qty}))
@@ -143,11 +159,14 @@ const ProductDetails = () => {
                                   }}
                                 />
                             )}
+                    {images && (
+                        <Col m={8}>
+                            <ProductCarousel images={images} indexPar={indexSelected} openImageViewer={openImageViewer} sincronize={sincronize} />
+                            <div className="form-group multi-preview">{images.map((img, index) => (<Image onClick={() => setIndexSelected(index)} key={index} style={{width: '100px', padding: '5px', opacity: indexSelected !== index && '0.4', cursor: 'pointer'}} src={img} alt="..." />))}
+                            </div>                       
+                        </Col>
+                    )}
 
-                    <Col m={8}>
-                        <ProductCarousel images={product.images} indexPar={indexSelected} openImageViewer={openImageViewer} sincronize={sincronize} />
-                        <div className="form-group multi-preview">{product.images.map((img, index) => (<Image onClick={() => setIndexSelected(index)} key={index} style={{width: '100px', padding: '5px', opacity: indexSelected !== index && '0.4'}} src={img} alt="..." />))}</div>
-                    </Col>
                     <Col md={3}>
                         <ListGroup variant='flush'>                                 {/*variant='flush' Takes away the spacing or takes away the border*/}
 
@@ -160,7 +179,7 @@ const ProductDetails = () => {
                             </ListGroup.Item>
 
                             <ListGroup.Item>
-                                <strong>Price: </strong>$ {product.price}
+                                <strong>Precio: Gs. </strong> {product.price}
                             </ListGroup.Item>
 
                             <ListGroup.Item>
@@ -174,10 +193,10 @@ const ProductDetails = () => {
                             <ListGroup.Item>
                                 <Row>
                                     <Col>
-                                        Price:
+                                        Precio:
                                     </Col>
                                     <Col>
-                                        <strong>$ {product.price}</strong>
+                                        <strong>Gs. {product.price}</strong>
                                     </Col>
                                 </Row>
                             </ListGroup.Item>

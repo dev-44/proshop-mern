@@ -21,7 +21,7 @@ const HomeCarousel = () => {
           {topRated.map(product => (
               <Carousel.Item key={product._id}>
                   <Link to={`/product/${product._id}`}>
-                      <Image src={product.images[0]} alt={product.name} fluid className='carousel-details'/>
+                  <Image src={product.products[0].images[0]} alt={product.name} fluid className='carousel-details'/>
                       <Carousel.Caption className='carousel-caption'>
                         <h3>{product.name} ($ {product.price})</h3>
                       </Carousel.Caption>
