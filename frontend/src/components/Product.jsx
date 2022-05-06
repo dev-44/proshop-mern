@@ -27,7 +27,7 @@ const Product = ({product, preDeleteProduct}) => {
       {(user && user.isAdmin) ? (
                   <Card className='my-3 p-3 rounded position-relative' style={{ minHeight: '28rem', maxHeight: '28rem' }}>
                   <Link to={`/product/${product._id}?redirect=home`}>
-                      <Card.Img src={product.products[0].images[0]} variant='top' style={{minHeight: '14rem', maxHeight: '14rem'}} />
+                      <Card.Img src={product.imageCover} variant='top' style={{minHeight: '14rem', maxHeight: '14rem'}} />
                       {/* <ProductCarousel images={product.images} style={{minHeight: '12rem', maxHeight: '12rem'}} /> */}
                   </Link>
       
@@ -60,7 +60,7 @@ const Product = ({product, preDeleteProduct}) => {
       ) : (
                   <Card className='my-3 p-3 rounded' style={{ minHeight: '24rem', maxHeight: '24rem' }}>
                   <Link to={`/product/${product._id}`}>
-                      <Card.Img src={product.image} variant='top' style={{minHeight: '12rem', maxHeight: '12rem'}} />
+                      <Card.Img src={product.imageCover} variant='top' style={{minHeight: '12rem', maxHeight: '12rem'}} />
                   </Link>
       
                   <Card.Body>

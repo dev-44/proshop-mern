@@ -82,19 +82,19 @@ const products = [
     products: [
       {
         images: ['/images/vino.jpg'],
-        size: 'md',
+        size: 'm',
         color: 'Rojo Vino',
         countInStock: 2
       },
       {
         images: ['/images/motas_azul.jpg'],
-        size: 'md',
+        size: 'm',
         color: 'Azul con motas blancas',
         countInStock: 3
       },
       {
         images: ['/images/motas_negro.jpg'],
-        size: 'xl',
+        size: 'XG',
         color: 'Negro con motas blancas',
         countInStock: 1
       },
@@ -111,7 +111,7 @@ const products = [
     products: [
       {
         images: ['/images/magenta.jpg'],
-        size: 'xs',
+        size: 'xp',
         color: 'Magenta',
         countInStock: 5
       }

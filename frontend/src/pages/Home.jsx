@@ -706,7 +706,7 @@ const Home = () => {
             <Col md lg="4" className='mb-3'>
               <Form.Label>Sort</Form.Label>
               <Form.Select aria-label="Default select example" onChange={(e) => chooseTypeOfSort(e.target.value)} >
-                <option>Open this select menu</option>
+                <option value="">Seleccione una forma de ordenar</option>
                 <option value="1">Sort By Name Ascending A-Z</option>
                 <option value="2">Sort By Name Descending Z-A</option>
                 <option value="3">Sort By Major Price</option>

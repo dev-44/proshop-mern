@@ -171,7 +171,7 @@ const ProductDetails = () => {
         console.log(filteredImages)
         setImages(filteredImages)
 
-        colorsFiltered = filtered.map(product => product.colorOrStyle)
+        colorsFiltered = filtered.map(product => product.color)
         setColors(colorsFiltered)
     }
 
@@ -180,7 +180,7 @@ const ProductDetails = () => {
         var filtered = []
         var filteredImages = []
 
-        filtered = filteredProducts.filter(item => item.colorOrStyle === color)
+        filtered = filteredProducts.filter(item => item.color === color)
         setProductChoosed(filtered)
 
         filtered.map(product => product.images.map((img => filteredImages.push(img))))

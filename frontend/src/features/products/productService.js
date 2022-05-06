@@ -77,6 +77,20 @@ const getTopProducts = async() => {
     return data
 }
 
+//Create a SubProduct
+const createSubProduct = async(id, token, subProduct) => {
+
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const {data} = await axios.post(`/api/products/${id}/subproduct`, subProduct, config)
+    return data
+}
+
 /*
 //Insert Image in the DB
 const createImage = async(image, id, token) => {
@@ -112,7 +126,8 @@ const productService = {
     createProduct,
     updateProduct,
     createProductReview,
-    getTopProducts
+    getTopProducts,
+    createSubProduct
 }
 
 export default productService

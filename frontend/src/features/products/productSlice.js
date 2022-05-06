@@ -102,6 +102,23 @@ export const getTopProducts = createAsyncThunk('products/top', async(_, thunkAPI
     }
 })
 
+//Create a SubProduct
+export const createSubProduct = createAsyncThunk('products/subproducts/create', async(data, thunkAPI) => {
+    try {
+        const {id, token, images, size, color, countInStock} = data
+        const subProduct = {
+            images,
+            size,
+            color,
+            countInStock
+        }
+        return await productService.createSubProduct(id, token, subProduct)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
 /*
 //Insert Image
 export const createImage = createAsyncThunk('product/image/create', async(image, thunkAPI) => {
@@ -244,6 +261,20 @@ export const productSlice = createSlice({
             })
             .addCase(getTopProducts.rejected, (state, action) => {
                 state.isLoadingCarousel = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(createSubProduct.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(createSubProduct.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.product = action.payload
+                state.isCreated = true
+            })
+            .addCase(createSubProduct.rejected, (state, action) => {
+                state.isLoading = false
                 state.isError = true
                 state.message = action.payload
             })

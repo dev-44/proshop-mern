@@ -182,6 +182,36 @@ const getTopProducts = asyncHandler(async(req, res) => {
     res.json(products)
 })
 
+//@description      Create a SubProduct
+//@route            POST api/products/:id/subproduct
+//@access           Private/Admin
+const createSubProduct = asyncHandler(async(req, res) => {
+
+    const {images, size, color, countInStock} = req.body
+
+    var product = await Product.findById(req.params.id)
+
+    if(product) {
+        product.products.push({
+            images,
+            size, 
+            color, 
+            countInStock
+        })
+
+        try {
+            const productUpdated = await product.save()
+            //const products = await Product.find()
+            res.json(productUpdated)
+        } catch (error) {
+            console.log(error)
+        }
+    } else {
+        res.status(404)
+        throw new Error('Product not found')
+    }
+})
+
 export {
     getProducts,
     getProductById,
@@ -190,4 +220,5 @@ export {
     updateProduct,
     createProductReview,
     getTopProducts,
+    createSubProduct
 }

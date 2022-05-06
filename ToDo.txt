@@ -96,6 +96,7 @@ PENDIENTES
     -Mostrar solo los productos con subProductos
 
 -ProductList
+    -Actualizar Sorting and Pagination(como en Home)
     -Si el producto no tiene subproductos al hacer click sobre el nombre llevar a '/admin/subproducts'. Si tiene llevar a ProductDetails
 
 

@@ -49,7 +49,7 @@ const ProductCreate = () => {
         if(isCreated) {
             let index = products.length - 1
             let id = products[index]._id
-            navigate('/admin/subproducts/id')
+            navigate(`/admin/subproducts/${id}`)
             //navigate('/admin/productlist')
         }
         /*
