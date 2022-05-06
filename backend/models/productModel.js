@@ -27,9 +27,9 @@ var subProductSchema = new mongoose.Schema({
     images: [String],
     size: {
          type: String,
-         enum: ["xs", "sm", "md", "lg", "xl"]
+         enum: ["xp", "p", "m", "G", "XG", "XXG"]
     },
-    colorOrStyle: String,
+    color: String,
     countInStock: {
          type: Number,
          required: true,
@@ -50,6 +50,14 @@ const productSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String,
+        required: true,
+    },
+    imageCover: {
+        type: String,
+        required: true
+    },
     products: [subProductSchema],
     brand: {
         type: String,
@@ -59,9 +67,14 @@ const productSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    description: {
-        type: String,
+    price: {
+        type: Number,
         required: true,
+        default: 0
+    },
+    views: {
+        type: Number,
+        default: 0
     },
     reviews : [reviewSchema],
     rating: {
@@ -74,12 +87,7 @@ const productSchema = mongoose.Schema({
         required: true,
         default: 0
     },
-    price: {
-        type: Number,
-        required: true,
-        default: 0
-    },
-    
+ 
 }, {
     timestamps: true
 })

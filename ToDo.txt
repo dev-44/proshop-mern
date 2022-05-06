@@ -89,6 +89,15 @@ PENDIENTES
 -Pagina de contactos de la tienda con informacion de cuenta bancaria.
 -Total vendido en el mes/año
 
+-ProductCreate
+    -Fomatear para agregar un punto cada 3 cifras y no permitir escribir el punto(regex)
+
+-Home
+    -Mostrar solo los productos con subProductos
+
+-ProductList
+    -Si el producto no tiene subproductos al hacer click sobre el nombre llevar a '/admin/subproducts'. Si tiene llevar a ProductDetails
+
 
 PAQUETE APARTE
 ========================================

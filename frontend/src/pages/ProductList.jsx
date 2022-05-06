@@ -529,6 +529,7 @@ const ProductList = () => {
                                 {brands.map((item, index) => <option key={index} value={item}>{item}</option>)}
                             </Form.Select>
                         </td>
+                        <td></td>
                     </tr>
                         {/* DATA */}
                     {dataTable.length > 0 ? dataTable.map((item) => (
@@ -541,6 +542,10 @@ const ProductList = () => {
                                 <td>{item.category}</td>
                                 <td>{item.brand}</td>
                                 <td>
+
+                                    <Button variant='success' className='btn-sm' onClick={()=> navigate(`/admin/subproducts/${item._id}`)}>
+                                        <i className='fas fa-plus'></i>
+                                    </Button>
                     
                                     <Button variant='light' className='btn-sm' onClick={()=> editProduct(item._id)}>
                                         <i className='fas fa-edit'></i>

@@ -1,8 +1,7 @@
 import React from 'react'
 import {useState, useEffect} from 'react'
-import axios from 'axios'
 import {Link, useNavigate, useParams} from 'react-router-dom'
-import {Form, Button, Image} from 'react-bootstrap'
+import {Form, Button, Image, InputGroup} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
@@ -19,21 +18,20 @@ const ProductCreate = () => {
     const [errorMsg, setErrorMsg] = useState('')
     const [successMessage, setSuccessMessage] = useState('')
 
+    //Product
     const [name, setName] = useState('')
-    const [price, setPrice] = useState(0)
-    //const [image, setImage] = useState()
-    const [images, setImages] = useState()
+    const [description, setDescription] = useState('')
+    const [imageCover, setImageCover] = useState()
     const [brand, setBrand] = useState('')
     const [category, setCategory] = useState('')
-    const [countInStock, setCountInStock] = useState(0)
-    const [description, setDescription] = useState('')
+    const [price, setPrice] = useState(0)
 
-    const [previewImages, setPreviewImages] = useState()
+    const [previewImage, setPreviewImage] = useState()
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const {product, isLoading, isError, isSuccess, message, isCreated, isLoaded, pages} = useSelector(state => state.product)
+   const {products, product, isLoading, isError, isSuccess, message, isCreated, isLoaded} = useSelector(state => state.product)
     const {user} = useSelector(state => state.user)
 
     useEffect(() => {
@@ -49,7 +47,10 @@ const ProductCreate = () => {
         }
 
         if(isCreated) {
-            navigate('/admin/productlist')
+            let index = products.length - 1
+            let id = products[index]._id
+            navigate('/admin/subproducts/id')
+            //navigate('/admin/productlist')
         }
         /*
         if(isSuccess && isCreated) {
@@ -66,21 +67,11 @@ const ProductCreate = () => {
     const onSubmit = async (e) => {
         e.preventDefault()
         
-        const files = Array.from(images)
-        console.log(files)
-        var convertedImages = []
-        
-        for (var i=0; i<files.length; i++) {
-            var element = files[i]
-            var elementConverted = await Convert(element)
-            convertedImages.push(elementConverted)
-        }
-        
-        //const convertedImage = await Convert(image)
+        const convertedImage = await Convert(imageCover)
 
-        if(convertedImages) {
+        if(convertedImage) {
             console.log('Images converted')
-            console.log(convertedImages)
+            console.log(convertedImage)
         } else{
             console.log('The file is not in format of image/jpeg or image/png')
         }
@@ -88,24 +79,21 @@ const ProductCreate = () => {
         const newProduct = {
             user: user._id,
             name,
-            images: convertedImages,
+            description,
+            image: convertedImage,
             brand,
             category,
-            description,
             price,
-            countInStock
         }
  
         dispatch(createProduct(newProduct))
     }
 
-    const handleUploadFiles = (e) => {
-        var fileArray = []
-        var ObjImgs = (e.target.files)
-        for (let i = 0; i < ObjImgs.length; i++) {
-            fileArray.push(URL.createObjectURL(ObjImgs[i]))
-        }
-        setPreviewImages(fileArray)
+    const handleUploadImage = (file) => {
+
+        let fileConverted = URL.createObjectURL(file)
+        
+        setPreviewImage(fileConverted)
     }
 
     /*
@@ -144,18 +132,23 @@ const ProductCreate = () => {
                 {successMessage && <Message variant='success'>{successMessage}</Message>}
                 {isLoading ? <Loader/> : (
                     <FormContainer>
-                            <Form onSubmit={onSubmit}>
+                        <Form onSubmit={onSubmit}>
 
-                            <Form.Group controlId='name'>
-                                <Form.Label>Name</Form.Label>
-                                <Form.Control type='text' placeholder='Enter Name' value={name} onChange={(e) => setName(e.target.value)}></Form.Control>
+                            <Form.Group controlId='name' className="mb-2">
+                                <Form.Label>Nombre</Form.Label>
+                                <Form.Control type='text' placeholder='Ingrese el nombre del Producto' value={name} onChange={(e) => setName(e.target.value)}></Form.Control>
                             </Form.Group>
-
-                            <Form.Group controlId='price'>
-                                <Form.Label>Price</Form.Label>
-                                <Form.Control type='number' placeholder='Enter Price' value={price} onChange={(e) => setPrice(e.target.value)}></Form.Control>
+                            
+                            <Form.Group controlId='price' className="mb-2">
+                                <Form.Label>Precio</Form.Label>
+                                <InputGroup>
+                                    <InputGroup.Text id="basic-addon1">Gs.</InputGroup.Text>
+                                    <Form.Control type='number' placeholder='Ingrese el Precio' value={price} onChange={(e) => setPrice(e.target.value)}></Form.Control>
+                                </InputGroup>
                             </Form.Group>
+                            
 
+                            {/* MULTIPLES IMAGENES                        
                             <Form.Group controlId='images'>
                                 <Form.Label>Image/s</Form.Label>
                                 <Form.Control type='file' multiple placeholder='Select the images to upload' onChange={(e) => {
@@ -163,16 +156,12 @@ const ProductCreate = () => {
                                     handleUploadFiles(e)
                                     }}></Form.Control>
                                 <div className="form-group multi-preview">{previewImages && previewImages.map(img => (<Image style={{width: '140px', padding: '5px'}} src={img} alt="..." />))}</div>
-                            </Form.Group>
+                            </Form.Group> */}
 
-                            {/*}
-                            <Form.Group controlId='image'>
-                                <Form.Label>Image</Form.Label>
-                                <Form.Control type='file' placeholder='Enter Image url' onChange={(e) => setImage(e.target.files[0])}></Form.Control>
-                            </Form.Group>
-                            */}
+                            
 
-                            {/*
+
+                            {/* BRAD'S SECTION
                             <Form.Group controlId='image'>
                                 <Form.Label>Image</Form.Label>
                                 <Form.Control type='text' placeholder='Enter Image url' value={image} onChange={(e) => setImage(e.target.value)}></Form.Control>
@@ -185,27 +174,39 @@ const ProductCreate = () => {
                             </Form.Group>
                             */}
 
-                            <Form.Group controlId='brand'>
-                                <Form.Label>Brand</Form.Label>
-                                <Form.Control type='text' placeholder='Enter Brand' value={brand} onChange={(e) => setBrand(e.target.value)}></Form.Control>
+                            <Form.Group controlId='brand' className="mb-2">
+                                <Form.Label>Marca</Form.Label>
+                                <Form.Control type='text' placeholder='Ingrese la Marca' value={brand} onChange={(e) => setBrand(e.target.value)}></Form.Control>
                             </Form.Group>
 
+                            {/* MOVE TO SUBPRODUCT                           
                             <Form.Group controlId='countInStock'>
                                 <Form.Label>Count in Stock</Form.Label>
                                 <Form.Control type='number' placeholder='Enter Count in Stock' value={countInStock} onChange={(e) => setCountInStock(e.target.value)}></Form.Control>
+                            </Form.Group> */}
+
+                            <Form.Group controlId='category' className="mb-2">
+                                <Form.Label>Categoría</Form.Label>
+                                <Form.Control type='text' placeholder='Ingrese la Categoría del Producto' value={category} onChange={(e) => setCategory(e.target.value)}></Form.Control>
                             </Form.Group>
 
-                            <Form.Group controlId='category'>
-                                <Form.Label>Category</Form.Label>
-                                <Form.Control type='text' placeholder='Enter Category' value={category} onChange={(e) => setCategory(e.target.value)}></Form.Control>
+                            <Form.Group controlId='imageCover' className="mb-2">
+                                <Form.Label>Imagen de Portada</Form.Label>
+                                <Form.Control type='file' placeholder='Adjunte la imagen' onChange={(e) => 
+                                    {setImageCover(e.target.files[0])
+                                    handleUploadImage(e.target.files[0])
+                                }}></Form.Control>
+                                <div className="form-group multi-preview">{previewImage && (<Image style={{width: '140px', padding: '5px'}} src={previewImage} alt="..." />)}</div>                           
                             </Form.Group>
 
-                            <Form.Group controlId='description'>
-                                <Form.Label>Description</Form.Label>
-                                <Form.Control type='text' placeholder='Enter Category' value={description} onChange={(e) => setDescription(e.target.value)}></Form.Control>
+                            <Form.Group controlId='description' className="mb-2">
+                                <Form.Label>Descripción</Form.Label>
+                                <Form.Control as='textarea' type='text' placeholder='Ingresa una Descripción del Producto' value={description} onChange={(e) => setDescription(e.target.value)} cols='30' rows='5'></Form.Control>
                             </Form.Group>
 
-                            <Button className='btn-block mt-3' type='submit' variant='primary'>CREATE</Button>
+                            <div className="d-grid gap-2">
+                                <Button className='mt-3' type='submit' variant='primary'>CREATE</Button>
+                            </div>
                         </Form>
                     </FormContainer>
                 )}

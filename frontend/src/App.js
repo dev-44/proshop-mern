@@ -22,6 +22,7 @@ import ProductEdit from './pages/ProductEdit'
 import ProductCreate from './pages/ProductCreate'
 import OrderList from './pages/OrderList'
 import NoContent from './pages/NoContent'
+import SubProductManage from './pages/SubProductManage'
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
             <Route path='/admin/product/:id' element={<ProductEdit />} />
             <Route path='/admin/product/create' element={<ProductCreate />} />
             <Route path='/admin/orderlist' element={<OrderList />} />
+            <Route path='/admin/subproducts/:id' element={<SubProductManage />} />
             <Route path="*" element={<NoContent />}/>
 
 

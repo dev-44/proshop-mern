@@ -221,7 +221,7 @@ const Shipping = () => {
                     Delete
                 </Button>
             </Modal.Footer>
-      </Modal>
+        </Modal>
 
             <CheckoutSteps step1 step2 />
             <h1 className='text-center'>SHIPPING ADDRESS</h1>

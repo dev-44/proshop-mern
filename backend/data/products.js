@@ -78,23 +78,24 @@ const products = [
   {
     name: "Vestido de Lino",
     description: 'Hermosos vestidos hechos de lino',
+    imageCover: '/images/vino.jpg',
     products: [
       {
         images: ['/images/vino.jpg'],
         size: 'md',
-        colorOrStyle: 'Rojo Vino',
+        color: 'Rojo Vino',
         countInStock: 2
       },
       {
         images: ['/images/motas_azul.jpg'],
         size: 'md',
-        colorOrStyle: 'Azul con motas blancas',
+        color: 'Azul con motas blancas',
         countInStock: 3
       },
       {
         images: ['/images/motas_negro.jpg'],
         size: 'xl',
-        colorOrStyle: 'Negro con motas blancas',
+        color: 'Negro con motas blancas',
         countInStock: 1
       },
     ],
@@ -106,11 +107,12 @@ const products = [
   {
     name: "Otro Vestido de Lino",
     description: 'Otro hermoso vestido hecho de lino',
+    imageCover: '/images/magenta.jpg',
     products: [
       {
         images: ['/images/magenta.jpg'],
         size: 'xs',
-        colorOrStyle: 'Magenta',
+        color: 'Magenta',
         countInStock: 5
       }
     ],
