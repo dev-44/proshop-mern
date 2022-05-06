@@ -47,12 +47,16 @@ Ordernar por Precio, asc y desc: OK
 Agregar Columna de Stock y marcar en rojo ante un stock mínimo
 
 Home------------------------------
-Filtrar por Nombre:
-Filtrar por Rango de Precios:
-Filtar por Categorias:
-Filtrar por Marca:
-Ordenar por Nombre, asc y desc:
-Ordernar por Precio, asc y desc:
+Filtrar por Nombre: OK
+Filtrar por Rango de Precios: OK
+Filtar por Categorias: OK
+Filtrar por Marca: OK
+Filtrar Productos Nuevos
+Filtrar Productos Más Vistos
+Filtrar Productos Más Vendidos
+Filtrar Productos Mejor Rankeados
+Ordenar por Nombre, asc y desc: OK
+Ordernar por Precio, asc y desc: OK
 
 Notificacion para el admin en caso de nueva orden
 Notificacion en caso de stock minimo.
@@ -88,6 +92,15 @@ PENDIENTES
 -Colocar iconos de redes sociales al pie de la pagina con links.
 -Pagina de contactos de la tienda con informacion de cuenta bancaria.
 -Total vendido en el mes/año
+
+-ProductCreate
+    -Fomatear para agregar un punto cada 3 cifras y no permitir escribir el punto(regex)
+
+-Home
+    -Mostrar solo los productos con subProductos
+
+-ProductList
+    -Si el producto no tiene subproductos al hacer click sobre el nombre llevar a '/admin/subproducts'. Si tiene llevar a ProductDetails
 
 
 PAQUETE APARTE
