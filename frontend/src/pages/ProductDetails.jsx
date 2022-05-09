@@ -15,7 +15,6 @@ import ImageViewer from 'react-simple-image-viewer';
 
 const ProductDetails = () => {
 
-
     const [qty, setQty] = useState(1)
     const [rating, setRating] = useState(0)
     const [comment, setComment] = useState('')
@@ -49,6 +48,7 @@ const ProductDetails = () => {
 
     const {user} = useSelector((state) => state.user)
     const {product, isLoading, isSuccess, isError, message, reviewCreated, isLoadingReview, isLoaded} = useSelector((state) => state.product)
+
 
     //const product = products.find(p => p._id === params.id)
     //const [product, setProduct] = useState({})
@@ -127,7 +127,6 @@ const ProductDetails = () => {
     }, [images])
 
 
-
     const addToCartHandler = () => {
         dispatch(addItem({id, qty}))
         navigate(`/cart`)
@@ -155,24 +154,38 @@ const ProductDetails = () => {
 
     //Filter Results
     const filterBySize = (size) => {
+        if (sizeChoosed === size) {
+            setSizeChoosed('')
+            setColors('')
 
-        setColorChoosed('')
-        setProductChoosed('')
+            //All Images
+            var allImages = []
 
-        setSizeChoosed(size)
-        var filtered = []
-        var filteredImages = []
-        var colorsFiltered = []
+            product.products.map(product => product.images.map((img => allImages.push(img))))
+            setImages(allImages)
 
-        filtered = product.products.filter(item => item.size === size)
-        setFilteredProducts(filtered)
+            setFilteredProducts(product.products)
+        } else {
 
-        filtered.map(product => product.images.map((img => filteredImages.push(img))))
-        //console.log(filteredImages)
-        setImages(filteredImages)
+            setColorChoosed('')
+            setProductChoosed('')
+    
+            setSizeChoosed(size)
+            var filtered = []
+            var filteredImages = []
+            var colorsFiltered = []
+    
+            filtered = product.products.filter(item => item.size === size)
+            setFilteredProducts(filtered)
+    
+            filtered.map(product => product.images.map((img => filteredImages.push(img))))
+            //console.log(filteredImages)
+            setImages(filteredImages)
+    
+            colorsFiltered = filtered.map(product => product.color)
+            setColors(colorsFiltered)
+        }
 
-        colorsFiltered = filtered.map(product => product.color)
-        setColors(colorsFiltered)
     }
 
     const filterByColor = (color) => {
@@ -193,6 +206,7 @@ const ProductDetails = () => {
             //console.log(filteredImages)
         }
     }
+
 
   return (
     <>

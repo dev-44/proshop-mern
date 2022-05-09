@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import {Link, useNavigate, useParams} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 
@@ -28,6 +28,7 @@ const SubProductManage = () => {
      const [openForm, setOpenForm] = useState(false)
 
      const [isEditing, setIsEditing] = useState(false)
+     const [isArraysMatch, setIsArraysMatch] = useState(false)
      const [chooseToDelete, setChooseToDelete] = useState('')
 
      const [dragId, setDragId] = useState("")
@@ -40,6 +41,11 @@ const SubProductManage = () => {
 
      const {user} = useSelector(state => state.user)
      const {product, isLoading, isError, isSuccess, message, isCreated, isLoaded, pages} = useSelector(state => state.product)
+
+     const imagesRef = useRef()
+     const colorRef = useRef('')
+     const stockRef = useRef(0)
+     const sizeRef = useRef('')
 
      useEffect(() => {
           dispatch(getProductDetails(id))
@@ -70,13 +76,22 @@ const SubProductManage = () => {
           }
      }, [isCreated])
 
-/*      useEffect(() => {
-          if(previewImages.length > 0){
-               previewImages.map((item, index) => {
-                    item.id = index
-               })
+     useEffect(() => {
+          console.log('Call')
+          const compare = async(a,b) => {
+               return await a.every((v, i) => v === b[i])
           }
-     }, [previewImages]) */
+          if(imagesRef) {
+
+               var match = compare(previewImages, imagesRef)
+               if(match == true) {
+                    console.log('Match')
+                    setIsArraysMatch(true)
+               } else {
+                    setIsArraysMatch(false)
+               }
+          }
+     }, [previewImages])
 
     const onSubmit = async (e) => {
           e.preventDefault()
@@ -122,6 +137,7 @@ const SubProductManage = () => {
           setPreviewImages(fileArray)
      }
 
+
      const editProduct = (product) => {
           if(!user){
                navigate('/')
@@ -130,10 +146,16 @@ const SubProductManage = () => {
                setSubProductId(product._id)
                setImages(product.images)
                setPreviewImages(product.images)
-               setSize(product.size)
+               imagesRef.current = product.images
                setColor(product.color)
+               colorRef.current = product.color
+               setSize(product.size)
+               sizeRef.current = product.size
                setCountInStock(product.countInStock)
+               stockRef.current = product.countInStock
                setOpenForm(true)
+
+               console.log(previewImages.every((v, i) => v === imagesRef[i]))
           }
      }
 
@@ -180,6 +202,7 @@ const SubProductManage = () => {
      }
 
 
+
      return (
           <>
           {message && <Message variant='danger'>{message}</Message>}
@@ -188,7 +211,10 @@ const SubProductManage = () => {
           {isLoading && <Loader />}
 
           {openForm && (
-               <Button type='button' className='my-4' onClick={() => setOpenForm(!openForm)}>
+               <Button type='button' className='my-4' onClick={() => {
+                    setOpenForm(!openForm)
+                    isEditing && setIsEditing(false)
+               }}>
                     Volver a SubProductos
                </Button>
           )}
@@ -253,9 +279,9 @@ const SubProductManage = () => {
                                    }}>
                               </Form.Control>
                               {previewImages && previewImages.map((img, index) => (
-                                   <div className='gallery'>
+                                   <div className='gallery' key={index}>
                                         <Image 
-                                             id={index} 
+                                             id={index}                                        
                                              // style={{width: '140px', padding: '5px', marginBlockEnd: '1px'}} 
                                              src={img} alt="..." 
                                              draggable 
@@ -303,13 +329,13 @@ const SubProductManage = () => {
                          
                          {(openForm && !isEditing) && (
                               <div className="d-grid gap-2">
-                                   <Button className='mt-3' type='submit' variant='primary' disabled={!images || !size || !color || !countInStock}>CREAR</Button>
+                                   <Button className='mt-3' type='submit' variant='primary' disabled={!images || !size || !color || Number(countInStock) === 0}>CREAR</Button>
                               </div>
                          )}
 
                          {(openForm && isEditing) && (
                               <div className="d-grid gap-2">
-                                   <Button className='mt-3' type='submit' variant='info' disabled={!images || !size || !color || !countInStock}>EDITAR</Button>
+                                   <Button className='mt-3' type='submit' variant='info' disabled={(isArraysMatch && color === colorRef.current && size === sizeRef.current && Number(countInStock) === stockRef.current) || !color || !size || Number(countInStock) === 0}>EDITAR</Button>
                               </div>
                          )}
 
