@@ -5,6 +5,7 @@ const create = (app) => {
             "/api/products", 
             "/api/products/:id", 
             "/api/products/top",
+            "/api/products/:id/subproduct",
             "/api/users", 
             "/api/users/login", 
             "/api/users/check-password", 

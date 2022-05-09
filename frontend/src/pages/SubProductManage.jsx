@@ -10,7 +10,7 @@ import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
 
 import {Convert} from '../converter'
-import { Form, FormGroup, Image, Col, ListGroup, Card, Button, CardGroup } from 'react-bootstrap'
+import { Form, FormGroup, Image, Row, Col, ListGroup, Card, Button, CardGroup } from 'react-bootstrap'
 
 const SubProductManage = () => {
 
@@ -18,48 +18,65 @@ const SubProductManage = () => {
      const [successMessage, setSuccessMessage] = useState('')
 
      //SubProducts
-    const [images, setImages] = useState()
-    const [size, setSize] = useState('')
-    const [color, setColor] = useState('')
-    const [countInStock, setCountInStock] = useState(0)
-    const [previewImages, setPreviewImages] = useState('')
-    const [subProducts, setSubProducts] = useState([])
-    const [openForm, setOpenForm] = useState(false)
+     const [subProductId, setSubProductId] = useState('')
+     const [images, setImages] = useState()
+     const [size, setSize] = useState('')
+     const [color, setColor] = useState('')
+     const [countInStock, setCountInStock] = useState(0)
+     const [previewImages, setPreviewImages] = useState([])
+     const [subProducts, setSubProducts] = useState([])
+     const [openForm, setOpenForm] = useState(false)
 
-    const [chooseToDelete, setChooseToDelete] = useState('')
+     const [isEditing, setIsEditing] = useState(false)
+     const [chooseToDelete, setChooseToDelete] = useState('')
 
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
-    const params = useParams()
+     const [dragId, setDragId] = useState("")
 
-    const id = params.id
+     const dispatch = useDispatch()
+     const navigate = useNavigate()
+     const params = useParams()
 
-    const {user} = useSelector(state => state.user)
-    const {product, isLoading, isError, isSuccess, message, isCreated, isLoaded, pages} = useSelector(state => state.product)
+     const id = params.id
 
-    useEffect(() => {
-     dispatch(getProductDetails(id))
-    }, [])
+     const {user} = useSelector(state => state.user)
+     const {product, isLoading, isError, isSuccess, message, isCreated, isLoaded, pages} = useSelector(state => state.product)
+
+     useEffect(() => {
+          dispatch(getProductDetails(id))
+     }, [])
 
 
-    useEffect(() => {
-          if(isLoaded && product.products){
+     useEffect(() => {
+          if(isLoaded) {
+
+               if(product.products.length > 0){
+                    setSubProducts(product.products)
+                    dispatch(resetCrud())
+               }
+     
+               if(product.products.length === 0) {
+                    setOpenForm(true)
+                    dispatch(resetCrud())
+               }
+          }
+          
+     }, [isLoaded])
+
+     useEffect(() => {
+          if(isCreated) {
+               setOpenForm(false)
                setSubProducts(product.products)
                dispatch(resetCrud())
           }
+     }, [isCreated])
 
-          if(isLoaded && !product.products) {
-               setOpenForm(true)
+/*      useEffect(() => {
+          if(previewImages.length > 0){
+               previewImages.map((item, index) => {
+                    item.id = index
+               })
           }
-    }, [isLoaded])
-
-    useEffect(() => {
-         if(isCreated) {
-              setOpenForm(false)
-              setSubProducts(product.products)
-              dispatch(resetCrud())
-         }
-    }, [isCreated])
+     }, [previewImages]) */
 
     const onSubmit = async (e) => {
           e.preventDefault()
@@ -103,10 +120,21 @@ const SubProductManage = () => {
               fileArray.push(URL.createObjectURL(ObjImgs[i]))
           }
           setPreviewImages(fileArray)
-      }
+     }
 
-     const editProduct = (id) => {
-
+     const editProduct = (product) => {
+          if(!user){
+               navigate('/')
+          } else {
+               setIsEditing(true)
+               setSubProductId(product._id)
+               setImages(product.images)
+               setPreviewImages(product.images)
+               setSize(product.size)
+               setColor(product.color)
+               setCountInStock(product.countInStock)
+               setOpenForm(true)
+          }
      }
 
      const preDeleteProduct = (id) => {
@@ -122,6 +150,36 @@ const SubProductManage = () => {
           console.log('Form Cleared');
      }
 
+     //Drag, Drop and Sort Images
+     const handleDragStart = (e) => {
+          setDragId(e.currentTarget.id)
+     }
+
+     const handleDragOver = (e) => {
+          e.preventDefault()
+     }
+     
+     const handleDrop = async (e) => {
+          e.preventDefault()
+          var from = dragId
+          var to = e.currentTarget.id
+          console.log('From: ' + from)
+          console.log('To: ' + to)
+          
+          
+          var imagesData = previewImages.map(img => img);
+
+          [imagesData[from], imagesData[to]] = [imagesData[to], imagesData[from]]
+          setPreviewImages(imagesData)
+     }
+
+     const deleteImage = (i) => {
+          var imagesData = previewImages.map(img => img)
+          imagesData = imagesData.filter((img, index) => index !== i)
+          setPreviewImages(imagesData)
+     }
+
+
      return (
           <>
           {message && <Message variant='danger'>{message}</Message>}
@@ -129,47 +187,93 @@ const SubProductManage = () => {
           {successMessage && <Message variant='success'>{successMessage}</Message>}
           {isLoading && <Loader />}
 
-          {(!isLoading && subProducts.length > 0) && (
-               <>
-                    <h3 className='text-center'>SUB PRODUCTOS</h3> 
-                    <ListGroup variant='flush' >
-                         <ListGroup.Item>
-                              <h3><strong>{product.name}</strong></h3>
-                              <h5><strong>Descripción:</strong> {product.description}</h5>
-                              <h5><strong>Marca:</strong> {product.brand}</h5>
-                              <h5><strong>Categoría:</strong> {product.category}</h5>
-                              <h5><strong>Precio: </strong> {product.price}</h5>
-                         </ListGroup.Item>
-                    </ListGroup>
+          {openForm && (
+               <Button type='button' className='my-4' onClick={() => setOpenForm(!openForm)}>
+                    Volver a SubProductos
+               </Button>
+          )}
 
-                    <CardGroup>
-                    {subProducts.map((product) => (<SubProduct key={product._id} product={product} editProduct={editProduct} preDeleteProduct={preDeleteProduct}/> ))}
-                    </CardGroup>
+
+          {!isLoading && (
+               
+                         <ListGroup as='div' variant='flush' style={{justifyItems: 'center' , display: 'grid', margin: 'auto'}}>
+                              <ListGroup.Item>
+                                   <Row>
+                                        <Col>
+                                             <h3><strong>{product.name}</strong></h3>
+                                             <h5><strong>Descripción:</strong></h5>
+                                             <h5>{product.description}</h5>
+                                             <h5><strong>Marca:</strong> {product.brand}</h5>
+                                             <h5><strong>Categoría:</strong> {product.category}</h5>
+                                             <h5><strong>Precio: </strong> {product.price}</h5>
+                                        </Col>
+                                        <Col className='mt-5'>
+                                             <Image src={product.imageCover} style={{width: '200px', height: '200px'}} />
+                                        </Col>
+
+                                   </Row>
+                              
+                              </ListGroup.Item>
+                         </ListGroup>
+                    
+          )}
+
+          {(!isLoading && subProducts.length > 0 && !openForm) && (
+               <>
+                    <h3 className='text-center'><strong>SUB PRODUCTOS</strong></h3>
+                    <CardGroup as='div'>
+                         <Row xs={1} md={2} lg xl={4}>
+                              {subProducts.map((product) => (<SubProduct key={product._id} product={product} editProduct={editProduct} preDeleteProduct={preDeleteProduct}/> ))} 
+                         </Row>   
+                    </CardGroup>    
+                    
                </>
           )}
 
           {(!isLoading && !openForm) && (
-               <Button variant='success' className='my-3' onClick={() => setOpenForm(!openForm)}>
-                    <i className='fas fa-plus'></i> Agregar 
+               
+               <Button size="lg" variant='success' className='mt-3 mb-3' style={{display: 'block',  margin: 'auto'}} onClick={() => setOpenForm(!openForm)}>
+                    <i className='fas fa-plus'></i>Agregar 
                </Button>
           )}
 
-          {openForm && <h2 className='text-center mt-3'>Agrega un Nuevo SubProducto</h2>}
 
-          {((!isLoading && subProducts.length === 0) || (!isLoading && openForm)) && (
+
+          {(!isLoading && openForm && !isEditing) && <h2 className='text-center mt-3'>Agrega un Nuevo SubProducto</h2>}
+          {(!isLoading && openForm && isEditing) && <h2 className='text-center mt-3'>Editar SubProducto</h2>}
+
+          {((!isLoading && openForm)) && (
                <FormContainer>
-
                     <Form onSubmit={onSubmit}>
                          <Form.Group controlId='images' className="mb-2">
                               <Form.Label>Imágenes</Form.Label>
                               <Form.Control type='file' multiple placeholder='Select the images to upload' onChange={(e) => {
                                    setImages(e.target.files)
                                    handleUploadFiles(e)
-                                   }}></Form.Control>
-                              <div className="form-group multi-preview">{previewImages && previewImages.map(img => (<Image style={{width: '140px', padding: '5px', marginBlockEnd: '1px'}} src={img} alt="..." />))}</div>
+                                   }}>
+                              </Form.Control>
+                              {previewImages && previewImages.map((img, index) => (
+                                   <div className='gallery'>
+                                        <Image 
+                                             id={index} 
+                                             // style={{width: '140px', padding: '5px', marginBlockEnd: '1px'}} 
+                                             src={img} alt="..." 
+                                             draggable 
+                                             onDragStart={(e) => handleDragStart(e)} 
+                                             onDragOver={(e) => handleDragOver(e)} 
+                                             onDrop={(e) => handleDrop(e)}
+                                        />
+                                        <div className='desc'>
+                                             <div className='image-order'>
+                                                  <i className='fas fa-trash' style={{cursor: 'pointer'}} onClick={() => deleteImage(index)}></i>
+                                             </div>
+                                        </div>
+                                   </div>
+                                   ))}
+                              
                          </Form.Group>
 
-                         <FormGroup>
+                         <FormGroup className="mb-2">
                               <Form.Label>Color o Estilo</Form.Label>
                               <Form.Control type="text" placeholder='Ingrese un Color o Estilo' value={color} onChange={(e) => setColor(e.target.value)}></Form.Control>
                          </FormGroup> 
@@ -177,7 +281,7 @@ const SubProductManage = () => {
                          <FormGroup className="mb-2">
                               <Form.Label>Tamaño</Form.Label>
                               <Col md lg="6">
-                                   <Form.Select aria-label="Default select example" onChange={(e) => setSize(e.target.value)}>
+                                   <Form.Select aria-label="Default select example" value={size ? size : ''}  onChange={(e) => setSize(e.target.value)}>
                                         <option value="">Seleccione un Tamaño</option>
                                         <option value="xp">Extra Pequeño - xp</option>
                                         <option value="p">Pequeño - p</option>
@@ -197,9 +301,17 @@ const SubProductManage = () => {
                               </Col>
                          </Form.Group>
                          
-                         <div className="d-grid gap-2">
-                                <Button className='mt-3' type='submit' variant='primary' disabled={!images || !size || !color || !countInStock}>CREATE</Button>
-                         </div>
+                         {(openForm && !isEditing) && (
+                              <div className="d-grid gap-2">
+                                   <Button className='mt-3' type='submit' variant='primary' disabled={!images || !size || !color || !countInStock}>CREAR</Button>
+                              </div>
+                         )}
+
+                         {(openForm && isEditing) && (
+                              <div className="d-grid gap-2">
+                                   <Button className='mt-3' type='submit' variant='info' disabled={!images || !size || !color || !countInStock}>EDITAR</Button>
+                              </div>
+                         )}
 
                     </Form>
                </FormContainer>

@@ -70,7 +70,12 @@ const Home = () => {
     dispatch(getTopProducts())
     //dispatch(getProducts({keyword, pageNumber}))
     dispatch(getProducts())
-    setTimeout(() => {dispatch(resetCrud())}, 2000)
+
+    return () => {
+      if(isLoaded) {
+        dispatch(resetCrud())
+      }
+    }
   }, [])
 
   //Triggers after Products Load, Logged in and Delete
@@ -100,6 +105,8 @@ const Home = () => {
     }
 
     if(isLoaded) {
+      dispatch(resetCrud())
+
       const indexOfLastPost = currentPage * postsPerPage
       const indexOfFirstPost = indexOfLastPost - postsPerPage
       if (products.length > postsPerPage) {

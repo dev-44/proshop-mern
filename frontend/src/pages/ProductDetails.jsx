@@ -29,8 +29,8 @@ const ProductDetails = () => {
     //Filters
     const [sizeChoosed, setSizeChoosed] = useState('')
     const [colorChoosed, setColorChoosed] = useState('')
-    const [filteredProducts, setFilteredProducts] = useState(null)
-    const [productChoosed, setProductChoosed] = useState(null)
+    const [filteredProducts, setFilteredProducts] = useState()
+    const [productChoosed, setProductChoosed] = useState()
 
     //Set Image on the carousel
     const [indexSelected, setIndexSelected] = useState(0)
@@ -168,7 +168,7 @@ const ProductDetails = () => {
         setFilteredProducts(filtered)
 
         filtered.map(product => product.images.map((img => filteredImages.push(img))))
-        console.log(filteredImages)
+        //console.log(filteredImages)
         setImages(filteredImages)
 
         colorsFiltered = filtered.map(product => product.color)
@@ -176,16 +176,22 @@ const ProductDetails = () => {
     }
 
     const filterByColor = (color) => {
-        setColorChoosed(color)
-        var filtered = []
-        var filteredImages = []
+        if (colorChoosed === color) {
+            setColorChoosed('')
+            filterBySize(sizeChoosed)
+        } else {
 
-        filtered = filteredProducts.filter(item => item.color === color)
-        setProductChoosed(filtered)
-
-        filtered.map(product => product.images.map((img => filteredImages.push(img))))
-        setImages(filteredImages)
-        console.log(filteredImages)
+            setColorChoosed(color)
+            var filtered = []
+            var filteredImages = []
+    
+            filtered = filteredProducts.filter(item => item.color === color)
+            setProductChoosed(filtered)
+    
+            filtered.map(product => product.images.map((img => filteredImages.push(img))))
+            setImages(filteredImages)
+            //console.log(filteredImages)
+        }
     }
 
   return (
@@ -289,7 +295,7 @@ const ProductDetails = () => {
                                         Status:
                                     </Col>
                                     <Col>
-                                        {productChoosed ? Number(productChoosed[0].countInStock) > 0 ? 'In Stock' : 'Out of Stock' : null}
+                                        {productChoosed ? Number(productChoosed[0].countInStock) > 0 ? <span className='highlight-green'>Disponible!</span> : <p><span className='circle-sketch-highlight'>No Disponible</span></p> : null}
                                     </Col>
                                 </Row>
                             </ListGroup.Item>
