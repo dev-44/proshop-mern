@@ -20,6 +20,7 @@ const SubProductManage = () => {
      //SubProducts
      const [subProductId, setSubProductId] = useState('')
      const [images, setImages] = useState()
+     const [newImages, setNewImages] = useState()
      const [size, setSize] = useState('')
      const [color, setColor] = useState('')
      const [countInStock, setCountInStock] = useState(0)
@@ -28,7 +29,6 @@ const SubProductManage = () => {
      const [openForm, setOpenForm] = useState(false)
 
      const [isEditing, setIsEditing] = useState(false)
-     const [isArraysMatch, setIsArraysMatch] = useState(false)
      const [chooseToDelete, setChooseToDelete] = useState('')
 
      const [dragId, setDragId] = useState("")
@@ -42,7 +42,6 @@ const SubProductManage = () => {
      const {user} = useSelector(state => state.user)
      const {product, isLoading, isError, isSuccess, message, isCreated, isLoaded, pages} = useSelector(state => state.product)
 
-     const imagesRef = useRef()
      const colorRef = useRef('')
      const stockRef = useRef(0)
      const sizeRef = useRef('')
@@ -76,22 +75,6 @@ const SubProductManage = () => {
           }
      }, [isCreated])
 
-     useEffect(() => {
-          console.log('Call')
-          const compare = async(a,b) => {
-               return await a.every((v, i) => v === b[i])
-          }
-          if(imagesRef) {
-
-               var match = compare(previewImages, imagesRef)
-               if(match == true) {
-                    console.log('Match')
-                    setIsArraysMatch(true)
-               } else {
-                    setIsArraysMatch(false)
-               }
-          }
-     }, [previewImages])
 
     const onSubmit = async (e) => {
           e.preventDefault()
@@ -101,9 +84,9 @@ const SubProductManage = () => {
           var convertedImages = []
           
           for (var i=0; i<files.length; i++) {
-          var element = files[i]
-          var elementConverted = await Convert(element)
-          convertedImages.push(elementConverted)
+               var element = files[i]
+               var elementConverted = await Convert(element)
+               convertedImages.push(elementConverted)
           }
      
 
@@ -134,9 +117,43 @@ const SubProductManage = () => {
           for (let i = 0; i < ObjImgs.length; i++) {
               fileArray.push(URL.createObjectURL(ObjImgs[i]))
           }
+
           setPreviewImages(fileArray)
      }
 
+     const handleUploadFilesInEdit = async(e) => {
+          
+                    
+          const files = Array.from(e.target.files)
+          console.log(files)
+          var convertedImages = []
+          
+          
+          for (var i=0; i<files.length; i++) {
+               var element = files[i]
+               var elementConverted = await Convert(element)
+               convertedImages.push(elementConverted)
+          }
+     
+
+          if(convertedImages) {
+               console.log('Images converted')
+               if(newImages) {
+                    var accArray = Array.from(newImages)
+                    convertedImages.map(item => accArray.push(item))
+                    setNewImages(accArray)
+               } else {
+                    setNewImages(convertedImages)
+               }
+          } else{
+               console.log('The file is not in format of image/jpeg or image/png')
+          }
+
+          const finalArray = Array.from(previewImages)
+          convertedImages.map(item => finalArray.push(item))
+          setPreviewImages(finalArray)
+          
+     }
 
      const editProduct = (product) => {
           if(!user){
@@ -146,7 +163,6 @@ const SubProductManage = () => {
                setSubProductId(product._id)
                setImages(product.images)
                setPreviewImages(product.images)
-               imagesRef.current = product.images
                setColor(product.color)
                colorRef.current = product.color
                setSize(product.size)
@@ -154,8 +170,9 @@ const SubProductManage = () => {
                setCountInStock(product.countInStock)
                stockRef.current = product.countInStock
                setOpenForm(true)
-
-               console.log(previewImages.every((v, i) => v === imagesRef[i]))
+               
+               //imagesRef.current = product.images
+               //console.log(previewImages.every((v, i) => v === imagesRef[i]))
           }
      }
 
@@ -273,11 +290,16 @@ const SubProductManage = () => {
                     <Form onSubmit={onSubmit}>
                          <Form.Group controlId='images' className="mb-2">
                               <Form.Label>Imágenes</Form.Label>
-                              <Form.Control type='file' multiple placeholder='Select the images to upload' onChange={(e) => {
-                                   setImages(e.target.files)
-                                   handleUploadFiles(e)
-                                   }}>
-                              </Form.Control>
+                              {!isEditing ? (
+                                   <Form.Control type='file' multiple placeholder='Select the images to upload' onChange={(e) => {
+                                        setImages(e.target.files)
+                                        handleUploadFiles(e)
+                                        }}>
+                                   </Form.Control>
+
+                              ): (
+                                   <Form.Control type='file' multiple placeholder='This is Edit' onChange={(e) => handleUploadFilesInEdit(e)}></Form.Control>  
+                              )}
                               {previewImages && previewImages.map((img, index) => (
                                    <div className='gallery' key={index}>
                                         <Image 
@@ -335,7 +357,7 @@ const SubProductManage = () => {
 
                          {(openForm && isEditing) && (
                               <div className="d-grid gap-2">
-                                   <Button className='mt-3' type='submit' variant='info' disabled={(isArraysMatch && color === colorRef.current && size === sizeRef.current && Number(countInStock) === stockRef.current) || !color || !size || Number(countInStock) === 0}>EDITAR</Button>
+                                   <Button className='mt-3' type='submit' variant='info' disabled={(images === previewImages && color === colorRef.current && size === sizeRef.current && Number(countInStock) === stockRef.current) || !color || !size || Number(countInStock) === 0}>EDITAR</Button>
                               </div>
                          )}
 
