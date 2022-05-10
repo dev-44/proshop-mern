@@ -20,7 +20,8 @@ const initialState = {
     image: false,
     isLoadingReview: false,
     reviewCreated: false,
-    isLoaded: false
+    isLoaded: false,
+    subUpdated: ''
 }
 
 //Get All Products
@@ -119,6 +120,36 @@ export const createSubProduct = createAsyncThunk('products/subproducts/create', 
     }
 })
 
+//Update a SubProduct
+export const updateSubProduct = createAsyncThunk('products/subproducts/update', async(data, thunkAPI) => {
+    try {
+        const {id, subid, token, images, size, color, countInStock} = data
+        const subProduct = {
+            images,
+            size,
+            color,
+            countInStock
+        }
+        return await productService.updateSubProduct(id, subid, token, subProduct)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+//Delete SubProduct
+export const deleteSubProduct = createAsyncThunk('products/subproducts/delete', async(subid, thunkAPI) => {
+    try {
+        const token = thunkAPI.getState().user.user.token
+        const product = thunkAPI.getState().product.product
+        const id = product._id
+        return await productService.deleteSubProduct(id, subid, token)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
 /*
 //Insert Image
 export const createImage = createAsyncThunk('product/image/create', async(image, thunkAPI) => {
@@ -148,6 +179,7 @@ export const productSlice = createSlice({
             state.isUpdated = false
             state.isDeleted = false
             state.isLoaded = false
+            state.subUpdated = ''
         },
         resetMessage: (state) => {
             state.message = ''
@@ -274,6 +306,35 @@ export const productSlice = createSlice({
                 state.isCreated = true
             })
             .addCase(createSubProduct.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(updateSubProduct.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(updateSubProduct.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.product = action.payload.data
+                state.subUpdated = action.payload.subid
+                state.isUpdated = true
+            })
+            .addCase(updateSubProduct.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(deleteSubProduct.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(deleteSubProduct.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.isDeleted = true
+                state.product = action.payload
+            })
+            .addCase(deleteSubProduct.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload

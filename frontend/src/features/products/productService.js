@@ -91,6 +91,35 @@ const createSubProduct = async(id, token, subProduct) => {
     return data
 }
 
+//Update a SubProduct
+const updateSubProduct = async(id, subid, token, subProduct) => {
+
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const {data} = await axios.put(`/api/products/${id}/subproduct/${subid}`, subProduct, config)
+    console.log(data)
+    return data
+}
+
+//Delete SubProduct
+const deleteSubProduct = async(id, subid, token) => {
+
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const {data} = await axios.delete(`/api/products/${id}/subproduct/${subid}`, config)
+    return data
+}
+
 /*
 //Insert Image in the DB
 const createImage = async(image, id, token) => {
@@ -127,7 +156,9 @@ const productService = {
     updateProduct,
     createProductReview,
     getTopProducts,
-    createSubProduct
+    createSubProduct,
+    updateSubProduct,
+    deleteSubProduct
 }
 
 export default productService

@@ -7,7 +7,9 @@ import {getProducts,
         createProduct,
         createProductReview,
         getTopProducts,
-        createSubProduct
+        createSubProduct,
+        updateSubProduct,
+        deleteSubProduct
 } from '../controllers/productController.js'
 import {protect, isAdmin} from '../middleware/authMiddleware.js'
 
@@ -27,10 +29,14 @@ router.route('/:id')
 
 //  /api/products/:id/reviews
 router.route('/:id/reviews')
-    .post(protect, createProductReview)
+    .post(protect, isAdmin, createProductReview)
 
-//  /api/products/:id/subproduct
-router.route('/:id/subproduct')
-.post(protect, createSubProduct)
+//  /api/products/:id/subproduct/:subid/
+router.route('/:id/subproduct/:subid')
+    .put(protect, isAdmin, updateSubProduct)
+
+//  /api/products/:id/subproduct/:subid
+router.route('/:id/subproduct/:subid')
+    .delete(protect, isAdmin, deleteSubProduct)
 
 export default router

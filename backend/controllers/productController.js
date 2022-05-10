@@ -212,6 +212,63 @@ const createSubProduct = asyncHandler(async(req, res) => {
     }
 })
 
+//@description      Edit a SubProduct
+//@route            PUT api/products/:id/subproduct/:id
+//@access           Private/Admin
+const updateSubProduct = asyncHandler(async(req, res) => {
+
+    const {id, subid} = req.params
+    const {images, size, color, countInStock} = req.body
+
+    try {
+        let subproduct = await Product.findOneAndUpdate(
+            { "_id": id, "products._id": subid},
+            { 
+                "$set": {
+                    "products.$.images": images,
+                    "products.$.size": size,
+                    "products.$.color": color,
+                    "products.$.countInStock": countInStock,
+                    "products.$.updateAt": new Date()
+                },
+                
+            }, {new: true, timestamps:{createdAt:false, updatedAt:true}}
+                
+        )
+
+        if(subproduct) {
+            res.status(200).json({data: subproduct, subid: subid})
+        } else {
+            res.status(404)
+            throw new Error('Product not found')
+        }
+    
+    } catch (error) {
+        console.log(error)
+    }
+
+})
+
+//@description      Delete a SubProduct
+//@route            DELETE api/products/:id/subproduct/:id 
+//@access           Private/Admin
+const deleteSubProduct = asyncHandler(async(req, res) => {
+    const {id, subid} = req.params
+
+    try {
+        const product = await Product.findById(id)
+        await product.products.id(subid).remove()
+        await product.save((err) => {
+            if (err) return console.log(err)
+            res.status(200).json(product)
+        })
+    } catch (error) {
+        res.status(404)
+        throw new Error('User not found')
+    }
+  
+})
+
 export {
     getProducts,
     getProductById,
@@ -220,5 +277,7 @@ export {
     updateProduct,
     createProductReview,
     getTopProducts,
-    createSubProduct
+    createSubProduct,
+    updateSubProduct,
+    deleteSubProduct
 }

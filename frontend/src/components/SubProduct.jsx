@@ -1,13 +1,17 @@
 import React from 'react'
+import {useSelector} from 'react-redux'
 import { Card, Button, Col} from 'react-bootstrap'
 import {FaEdit, FaTrash} from 'react-icons/fa'
 import SubProductCarousel from './SubProductCarousel'
 
 const SubProduct = ({product, editProduct, preDeleteProduct}) => {
 
+      const {subUpdated} = useSelector(state => state.product)
+
+
   return (
       
-        <Card >
+        <Card bg={subUpdated === product._id && 'success'}>
               <SubProductCarousel images={product.images}  />
             <Card.Body>
                   <Card.Title><strong>Tamaño: </strong>{product.size}</Card.Title>

@@ -2,7 +2,12 @@ import React, {useState, useEffect, useRef} from 'react'
 import {Link, useNavigate, useParams} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 
-import { getProductDetails, resetMessage, resetCrud, createSubProduct } from '../features/products/productSlice'
+import { getProductDetails, 
+          resetCrud, 
+          createSubProduct,
+          updateSubProduct,
+          deleteSubProduct
+     } from '../features/products/productSlice'
 
 import SubProduct from '../components/SubProduct'
 import Message from '../components/Message'
@@ -10,17 +15,17 @@ import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
 
 import {Convert} from '../converter'
-import { Form, FormGroup, Image, Row, Col, ListGroup, Card, Button, CardGroup } from 'react-bootstrap'
+import { Form, FormGroup, Image, Row, Col, ListGroup, Modal, Button, CardGroup } from 'react-bootstrap'
 
 const SubProductManage = () => {
 
+     //Messages
      const [errorMsg, setErrorMsg] = useState('')
      const [successMessage, setSuccessMessage] = useState('')
 
      //SubProducts
      const [subProductId, setSubProductId] = useState('')
-     const [images, setImages] = useState()
-     const [newImages, setNewImages] = useState()
+     const [images, setImages] = useState([])
      const [size, setSize] = useState('')
      const [color, setColor] = useState('')
      const [countInStock, setCountInStock] = useState(0)
@@ -29,7 +34,9 @@ const SubProductManage = () => {
      const [openForm, setOpenForm] = useState(false)
 
      const [isEditing, setIsEditing] = useState(false)
-     const [chooseToDelete, setChooseToDelete] = useState('')
+     const [isArraysMatch, setIsArraysMatch] = useState(false)
+     const [productToRemove, setProductToRemove] = useState('')
+     const [openModal, setOpenModal] = useState(false)
 
      const [dragId, setDragId] = useState("")
 
@@ -40,7 +47,7 @@ const SubProductManage = () => {
      const id = params.id
 
      const {user} = useSelector(state => state.user)
-     const {product, isLoading, isError, isSuccess, message, isCreated, isLoaded, pages} = useSelector(state => state.product)
+     const {product, isLoading, message, isCreated, isLoaded, pages, isUpdated, subUpdated, isDeleted} = useSelector(state => state.product)
 
      const colorRef = useRef('')
      const stockRef = useRef(0)
@@ -52,7 +59,7 @@ const SubProductManage = () => {
 
 
      useEffect(() => {
-          if(isLoaded) {
+          if(isLoaded && product.products) {
 
                if(product.products.length > 0){
                     setSubProducts(product.products)
@@ -73,42 +80,99 @@ const SubProductManage = () => {
                setSubProducts(product.products)
                dispatch(resetCrud())
           }
-     }, [isCreated])
+
+          if(isUpdated) {
+               setOpenForm(false)
+               setSubProducts(product.products)
+               
+               setSuccessMessage('Producto Actualizado exitosamente')
+               setTimeout(() => setSuccessMessage(''), 5000)
+               //dispatch(resetCrud())
+          }
+
+          if(subUpdated) {
+               setTimeout(() => dispatch(resetCrud()), 5000)
+          }
+
+          if(isDeleted) {
+               setSubProducts(product.products)
+               setSuccessMessage('Producto Eliminado exitosamente')
+               setTimeout(() => setSuccessMessage(''), 5000)
+          }
+
+     }, [isCreated, isUpdated, subUpdated])
+
+     useEffect(() => {
+          console.log('Fired off')
+          if(images && previewImages) {
+               console.log(images.length)
+               console.log(previewImages.length)
+               if(images.length === previewImages.length) {
+                    console.log('same length')
+                    if(images.every((v, i) => v === previewImages[i])) {
+                         setIsArraysMatch(true)
+                         console.log('MATCH!')
+                    } else {
+                         setIsArraysMatch(false)
+                         console.log('False 1')
+                    }
+               } else {
+                    setIsArraysMatch(false)
+                    console.log('False 2')
+               }
+          }
+
+     }, [previewImages])
 
 
     const onSubmit = async (e) => {
           e.preventDefault()
+
+          if(!isEditing) {
+               const files = Array.from(images)
+               console.log(files)
+               var convertedImages = []
+               
+               for (var i=0; i<files.length; i++) {
+                    var element = files[i]
+                    var elementConverted = await Convert(element)
+                    convertedImages.push(elementConverted)
+               }
           
-          const files = Array.from(images)
-          console.log(files)
-          var convertedImages = []
-          
-          for (var i=0; i<files.length; i++) {
-               var element = files[i]
-               var elementConverted = await Convert(element)
-               convertedImages.push(elementConverted)
-          }
+               if(convertedImages) {
+                    console.log('Images converted')
+                    //console.log(convertedImages)
+               } else{
+                    console.log('The file is not in format of image/jpeg or image/png')
+               }
+                 
+               const newSubProduct = {
+                    id: product._id,
+                    token: user.token,
+                    images: convertedImages,
+                    size,
+                    color,
+                    countInStock
+               }
      
-
-          if(convertedImages) {
-               console.log('Images converted')
-               //console.log(convertedImages)
-          } else{
-               console.log('The file is not in format of image/jpeg or image/png')
+               dispatch(createSubProduct(newSubProduct))
+               clearForm()
+          } else {
+               const editedSubProduct = {
+                    id: product._id,
+                    subid: subProductId,
+                    token: user.token,
+                    images: previewImages,
+                    size,
+                    color,
+                    countInStock
+               }
+     
+               dispatch(updateSubProduct(editedSubProduct))
+               clearForm()
           }
-            
-          const newSubProduct = {
-               id: product._id,
-               token: user.token,
-               images: convertedImages,
-               size,
-               color,
-               countInStock
-          }
-          
 
-          dispatch(createSubProduct(newSubProduct))
-          clearForm()
+
      }
 
      const handleUploadFiles = (e) => {
@@ -123,7 +187,6 @@ const SubProductManage = () => {
 
      const handleUploadFilesInEdit = async(e) => {
           
-                    
           const files = Array.from(e.target.files)
           console.log(files)
           var convertedImages = []
@@ -138,6 +201,7 @@ const SubProductManage = () => {
 
           if(convertedImages) {
                console.log('Images converted')
+               /*
                if(newImages) {
                     var accArray = Array.from(newImages)
                     convertedImages.map(item => accArray.push(item))
@@ -145,6 +209,7 @@ const SubProductManage = () => {
                } else {
                     setNewImages(convertedImages)
                }
+               */
           } else{
                console.log('The file is not in format of image/jpeg or image/png')
           }
@@ -152,7 +217,6 @@ const SubProductManage = () => {
           const finalArray = Array.from(previewImages)
           convertedImages.map(item => finalArray.push(item))
           setPreviewImages(finalArray)
-          
      }
 
      const editProduct = (product) => {
@@ -177,7 +241,14 @@ const SubProductManage = () => {
      }
 
      const preDeleteProduct = (id) => {
+          setProductToRemove(id)
+          handleOpenModal()
+     }
 
+     const deleteHandler = (id) => {
+          dispatch(deleteSubProduct(productToRemove))
+          setProductToRemove('')
+          handleCloseModal()
      }
 
      const clearForm = () => {
@@ -218,16 +289,34 @@ const SubProductManage = () => {
           setPreviewImages(imagesData)
      }
 
-
+     //Modals
+     const handleOpenModal = () => setOpenModal(true)
+     const handleCloseModal = () => setOpenModal(false)
 
      return (
           <>
+
+               <Modal show={openModal} onHide={handleCloseModal}>
+                    <Modal.Header closeButton>
+                    <Modal.Title>Attention</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Are you sure you want to delete this Product?</Modal.Body>
+                    <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseModal}>
+                         Close
+                    </Button>
+                    <Button variant="danger" onClick={() => deleteHandler()}>
+                         Delete
+                    </Button>
+                    </Modal.Footer>
+               </Modal>
+
           {message && <Message variant='danger'>{message}</Message>}
           {errorMsg && <Message variant='danger'>{errorMsg}</Message>}
           {successMessage && <Message variant='success'>{successMessage}</Message>}
           {isLoading && <Loader />}
 
-          {openForm && (
+          {(!isLoading && openForm) && (
                <Button type='button' className='my-4' onClick={() => {
                     setOpenForm(!openForm)
                     isEditing && setIsEditing(false)
@@ -266,7 +355,7 @@ const SubProductManage = () => {
                     <h3 className='text-center'><strong>SUB PRODUCTOS</strong></h3>
                     <CardGroup as='div'>
                          <Row xs={1} md={2} lg xl={4}>
-                              {subProducts.map((product) => (<SubProduct key={product._id} product={product} editProduct={editProduct} preDeleteProduct={preDeleteProduct}/> ))} 
+                              {subProducts.map((product) => (<SubProduct key={product._id} product={product} editProduct={editProduct} preDeleteProduct={preDeleteProduct} />))} 
                          </Row>   
                     </CardGroup>    
                     
@@ -351,13 +440,13 @@ const SubProductManage = () => {
                          
                          {(openForm && !isEditing) && (
                               <div className="d-grid gap-2">
-                                   <Button className='mt-3' type='submit' variant='primary' disabled={!images || !size || !color || Number(countInStock) === 0}>CREAR</Button>
+                                   <Button className='mt-3' type='submit' variant='primary' disabled={images.length === 0 || !size || !color || Number(countInStock) === 0}>CREAR</Button>
                               </div>
                          )}
 
                          {(openForm && isEditing) && (
                               <div className="d-grid gap-2">
-                                   <Button className='mt-3' type='submit' variant='info' disabled={(images === previewImages && color === colorRef.current && size === sizeRef.current && Number(countInStock) === stockRef.current) || !color || !size || Number(countInStock) === 0}>EDITAR</Button>
+                                   <Button className='mt-3' type='submit' variant='info' disabled={(isArraysMatch && color === colorRef.current && size === sizeRef.current && Number(countInStock) === stockRef.current) || !color || !size || Number(countInStock) === 0}>EDITAR</Button>
                               </div>
                          )}
 

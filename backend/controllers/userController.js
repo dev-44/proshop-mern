@@ -189,7 +189,7 @@ const editShippingAddress = asyncHandler(async(req, res) => {
                     "shippingAddresses.$.city": newAddress.city,
                     "shippingAddresses.$.postalCode": newAddress.postalCode,
                     "shippingAddresses.$.country": newAddress.country,
-                    "shippingAddress.$.updateAt": new Date()
+                    "shippingAddresses.$.updateAt": new Date()
                 },
                 
             }, {new: true, timestamps:{createdAt:false, updatedAt:true}}
