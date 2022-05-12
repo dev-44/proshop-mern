@@ -124,6 +124,15 @@ const SubProductManage = () => {
 
      }, [previewImages])
 
+     useEffect(() => {
+          if(productToRemove) {
+
+               var card = document.getElementById(productToRemove)
+               card.setAttribute("style", "background-color: #e74c3c;")
+          }
+
+     }, [productToRemove])
+
 
     const onSubmit = async (e) => {
           e.preventDefault()
@@ -291,7 +300,12 @@ const SubProductManage = () => {
 
      //Modals
      const handleOpenModal = () => setOpenModal(true)
-     const handleCloseModal = () => setOpenModal(false)
+
+     const handleCloseModal = () => {
+          setOpenModal(false)
+          var card = document.getElementById(productToRemove)
+          card.setAttribute("style", "background-color: none;")
+     }
 
      return (
           <>

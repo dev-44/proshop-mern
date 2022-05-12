@@ -11,7 +11,7 @@ const SubProduct = ({product, editProduct, preDeleteProduct}) => {
 
   return (
       
-        <Card bg={subUpdated === product._id && 'success'}>
+        <Card bg={subUpdated === product._id && 'success'} id={product._id}>
               <SubProductCarousel images={product.images}  />
             <Card.Body>
                   <Card.Title><strong>Tamaño: </strong>{product.size}</Card.Title>
