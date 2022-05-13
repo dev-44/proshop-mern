@@ -31,6 +31,10 @@ router.route('/:id')
 router.route('/:id/reviews')
     .post(protect, isAdmin, createProductReview)
 
+//  /api/products/:id/subproduct
+router.route('/:id/subproduct')
+    .post(protect, isAdmin, createSubProduct)
+
 //  /api/products/:id/subproduct/:subid/
 router.route('/:id/subproduct/:subid')
     .put(protect, isAdmin, updateSubProduct)

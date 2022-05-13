@@ -64,11 +64,13 @@ const SubProductManage = () => {
                if(product.products.length > 0){
                     setSubProducts(product.products)
                     dispatch(resetCrud())
+                    console.log('There are subproducts')
                }
      
                if(product.products.length === 0) {
                     setOpenForm(true)
                     dispatch(resetCrud())
+                    console.log('There are NOT subproducts')
                }
           }
           
@@ -78,6 +80,8 @@ const SubProductManage = () => {
           if(isCreated) {
                setOpenForm(false)
                setSubProducts(product.products)
+               setSuccessMessage('Producto Creado exitosamente')
+               setTimeout(() => setSuccessMessage(''), 5000)
                dispatch(resetCrud())
           }
 
@@ -100,25 +104,27 @@ const SubProductManage = () => {
                setTimeout(() => setSuccessMessage(''), 5000)
           }
 
-     }, [isCreated, isUpdated, subUpdated])
+     }, [isCreated, isUpdated, subUpdated, isDeleted])
 
      useEffect(() => {
-          console.log('Fired off')
-          if(images && previewImages) {
-               console.log(images.length)
-               console.log(previewImages.length)
-               if(images.length === previewImages.length) {
-                    console.log('same length')
-                    if(images.every((v, i) => v === previewImages[i])) {
-                         setIsArraysMatch(true)
-                         console.log('MATCH!')
+          if(isEditing){
+
+               if(images && previewImages) {
+                    //console.log(images.length)
+                    //console.log(previewImages.length)
+                    if(images.length === previewImages.length) {
+                         //console.log('same length')
+                         if(images.every((v, i) => v === previewImages[i])) {
+                              setIsArraysMatch(true)
+                              //console.log('MATCH!')
+                         } else {
+                              setIsArraysMatch(false)
+                              //console.log('False 1')
+                         }
                     } else {
                          setIsArraysMatch(false)
-                         console.log('False 1')
+                         //console.log('False 2')
                     }
-               } else {
-                    setIsArraysMatch(false)
-                    console.log('False 2')
                }
           }
 
@@ -138,6 +144,7 @@ const SubProductManage = () => {
           e.preventDefault()
 
           if(!isEditing) {
+               //INSERT
                const files = Array.from(images)
                console.log(files)
                var convertedImages = []
@@ -167,6 +174,7 @@ const SubProductManage = () => {
                dispatch(createSubProduct(newSubProduct))
                clearForm()
           } else {
+               //EDIT
                const editedSubProduct = {
                     id: product._id,
                     subid: subProductId,

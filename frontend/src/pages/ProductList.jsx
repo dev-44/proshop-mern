@@ -80,6 +80,13 @@ const ProductList = () => {
             }
             dispatch(resetCrud())
         }
+
+        return () => {
+            
+            dispatch(resetCrud())
+            console.log('When')
+            
+        }
         // eslint-disable-next-line
     },[])
 
