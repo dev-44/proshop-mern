@@ -182,6 +182,31 @@ const getTopProducts = asyncHandler(async(req, res) => {
     res.json(products)
 })
 
+//@description      Get a SubProduct
+//@route            GET api/products/:id/subproduct/:id 
+//@access           Public
+const getSubProduct = asyncHandler(async(req, res) => {
+    const {id, subid} = req.params
+
+    try {
+        const product = await Product.findById(id).select('-imageCover')
+
+        const subproduct = await product.products.id(subid)
+
+        if(subproduct) {
+            console.log(subproduct)
+            res.status(200).json(subproduct)
+        } else {
+            res.status(404)
+            throw new Error('SubProduct not found')
+        }
+
+    } catch (error) {
+        console.error(error)
+    }
+  
+})
+
 //@description      Create a SubProduct
 //@route            POST api/products/:id/subproduct
 //@access           Private/Admin
@@ -264,7 +289,7 @@ const deleteSubProduct = asyncHandler(async(req, res) => {
         })
     } catch (error) {
         res.status(404)
-        throw new Error('User not found')
+        throw new Error('Product not found')
     }
   
 })
@@ -277,6 +302,7 @@ export {
     updateProduct,
     createProductReview,
     getTopProducts,
+    getSubProduct,
     createSubProduct,
     updateSubProduct,
     deleteSubProduct

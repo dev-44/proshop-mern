@@ -18,13 +18,14 @@ const initialState = {
 }
 
 //Add an item to the cart
-export const addItem = createAsyncThunk('cart/item/add', async({id, qty}, thunkAPI) => {
+export const addItem = createAsyncThunk('cart/item/add', async(data, thunkAPI) => {
     try {
         console.log('This is addItem from cartSlice')
-        console.log(`Id: ${id} and Qty: ${qty}`)
+        const {productData, qty} = data
+        console.log(`Id: ${productData.id}, subid: ${productData.subid} and Qty: ${qty}`)
         const cart = thunkAPI.getState().cart.cart
         console.log(cart)
-        return await cartService.addItem(id, qty, cart)
+        return await cartService.addItem(productData, qty, cart)
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)
@@ -32,10 +33,10 @@ export const addItem = createAsyncThunk('cart/item/add', async({id, qty}, thunkA
 })
 
 //Change Qty of Item in the Cart
-export const changeQty = createAsyncThunk('cart/item/changeQty', async({id, qty}, thunkAPI) => {
+export const changeQty = createAsyncThunk('cart/item/changeQty', async({subid, qty}, thunkAPI) => {
     try {
         let cart = thunkAPI.getState().cart.cart
-        return await cartService.changeQty(id, qty, cart)
+        return await cartService.changeQty(subid, qty, cart)
 
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
@@ -45,10 +46,10 @@ export const changeQty = createAsyncThunk('cart/item/changeQty', async({id, qty}
 
 
 //Remove Item from the Cart
-export const removeItem = createAsyncThunk('/cart/item/remove', async(id,thunkAPI) => {
+export const removeItem = createAsyncThunk('/cart/item/remove', async(subid,thunkAPI) => {
     try {
         let cart = thunkAPI.getState().cart.cart
-        return await cartService.removeItem(id, cart)
+        return await cartService.removeItem(subid, cart)
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)

@@ -43,10 +43,10 @@ const PlaceOrder = () => {
         return (Math.round(num * 100) / 100).toFixed(2)
     }
 
-    let itemsPrice = addDecimals(cart.reduce((acc, item) => acc + item.price * item.qty, 0))
-    let shippingPrice = itemsPrice > 100 ? 10 : 0
-    let taxPrice = addDecimals(Number(0.15 * itemsPrice))
-    let totalPrice = addDecimals(Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice))
+    let itemsPrice = cart.reduce((acc, item) => acc + item.price * item.qty, 0)
+    let shippingPrice = itemsPrice < 100000 ? 10000 : 0
+    let taxPrice = Number(0.1 * itemsPrice)
+    let totalPrice = Number(itemsPrice) + Number(shippingPrice)
 
     const placeOrderHandler = () => {
 
@@ -71,30 +71,30 @@ const PlaceOrder = () => {
                 <ListGroup variant='flush'>
 
                     <ListGroup.Item>
-                        <h2>SHIPPING</h2>
+                        <h2>DIRECCIÓN DE ENVÍO</h2>
                         <p>
-                            <strong>Address: </strong>
+                            <strong>Dirección: </strong>
                             {shippingAddress.address}, {shippingAddress.city}, {shippingAddress.postalCode}, {shippingAddress.country}
                         </p>
                     </ListGroup.Item>
 
                     <ListGroup.Item>
-                        <h2>PAYMENT METHOD</h2>
+                        <h2>MÉTODO DE PAGO</h2>
                         <p>
-                            <strong>Method: </strong>
+                            <strong>Método: </strong>
                             {paymentMethod}
                         </p>
                     </ListGroup.Item>
 
                     <ListGroup.Item>
-                        <h2>ORDER ITEMS</h2>
+                        <h2>ORDEN</h2>
                         {cart.length === 0 ? <Message>Your Cart is Empty</Message> : (
                             <ListGroup variant='flush'>
                                 {cart.map((item, index) => (
                                     <ListGroup.Item key={index}>
                                         <Row>
                                             <Col md={1}>
-                                                 <Image src={item.images[0]} alt={item.name} fluid rounded />
+                                                 <Image src={item.image} alt={item.name} fluid rounded />
                                             </Col>
                                             <Col>
                                                 <Link to={`/product/${item.product}`}>
@@ -102,7 +102,7 @@ const PlaceOrder = () => {
                                                 </Link>
                                             </Col>
                                             <Col md={4}>
-                                                {item.qty} x ${item.price} = ${addDecimals(item.qty * item.price)}
+                                                {item.qty} x Gs.{item.price.toLocaleString('es-CO')} = Gs.{(item.qty * item.price).toLocaleString('es-CO')}
                                             </Col>
                                         </Row>
                                     </ListGroup.Item>
@@ -119,34 +119,34 @@ const PlaceOrder = () => {
                     <ListGroup variant='flush'>
 
                         <ListGroup.Item>
-                            <h2>Order Summary</h2>
+                            <h2>Resumen</h2>
                         </ListGroup.Item>
 
                         <ListGroup.Item>
                             <Row>
                                 <Col>Items</Col>
-                                <Col>$ {itemsPrice}</Col>
+                                <Col>Gs. {itemsPrice.toLocaleString('es-CO')}</Col>
                             </Row>
                         </ListGroup.Item>
 
                         <ListGroup.Item>
                             <Row>
-                                <Col>Shipping</Col>
-                                <Col>$ {shippingPrice}</Col>
+                                <Col>Delivery</Col>
+                                <Col>Gs. {shippingPrice.toLocaleString('es-CO')}</Col>
                             </Row> 
                         </ListGroup.Item>
 
                         <ListGroup.Item>
                             <Row>
-                                <Col>Tax</Col>
-                                <Col>$ {taxPrice}</Col>
+                                <Col>IVA</Col>
+                                <Col>Gs. {taxPrice.toLocaleString('es-CO')}</Col>
                             </Row>
                         </ListGroup.Item>
 
                         <ListGroup.Item>
                             <Row>
-                                <Col>TOTAL</Col>
-                                <Col>$ {totalPrice}</Col>
+                                <Col><strong>TOTAL</strong></Col>
+                                <Col>Gs. <strong>{totalPrice.toLocaleString('es-CO')}</strong></Col>
                             </Row>
                         </ListGroup.Item>
                         
@@ -157,7 +157,9 @@ const PlaceOrder = () => {
                         )}
 
                         <ListGroup.Item>
-                            <Button type='button' className='btn btn-block' disabled={cart.lenght === 0} onClick={placeOrderHandler}>Place Order</Button>
+                            <div className="d-grid gap-2">
+                                <Button type='button' className='btn btn-block' disabled={cart.lenght === 0} onClick={placeOrderHandler}>CONFIRMAR</Button>
+                            </div>
                         </ListGroup.Item>
                     </ListGroup>
                 </Card>

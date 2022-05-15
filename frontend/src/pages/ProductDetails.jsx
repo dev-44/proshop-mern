@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react'
+import {FaCartPlus} from 'react-icons/fa'
 import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { Row, Col, Image, ListGroup, Card, Button, Form} from 'react-bootstrap'
 import Rating from '../components/Rating'
@@ -60,7 +61,7 @@ const ProductDetails = () => {
             setUrl('/admin/productlist')
         }
 
-        if(redirect === 'home') {
+        if(redirect === 'home' || !redirect) {
             setUrl('/')
         }
 
@@ -128,7 +129,21 @@ const ProductDetails = () => {
 
 
     const addToCartHandler = () => {
-        dispatch(addItem({id, qty}))
+
+        const {_id, name, price} = product
+        const {_id: subid, images, size, color, countInStock} = productChoosed[0]
+
+        const productData = {
+            id: _id,
+            name,
+            price,
+            subid,
+            image: images[0],
+            size,
+            color,
+            countInStock
+        }
+        dispatch(addItem({productData, qty}))
         navigate(`/cart`)
     }
 
@@ -157,6 +172,7 @@ const ProductDetails = () => {
         if (sizeChoosed === size) {
             setSizeChoosed('')
             setColors('')
+            setProductChoosed('')
 
             //All Images
             var allImages = []
@@ -167,6 +183,7 @@ const ProductDetails = () => {
             setFilteredProducts(product.products)
         } else {
 
+            console.log('aqui');
             setColorChoosed('')
             setProductChoosed('')
     
@@ -179,11 +196,28 @@ const ProductDetails = () => {
             setFilteredProducts(filtered)
     
             filtered.map(product => product.images.map((img => filteredImages.push(img))))
-            //console.log(filteredImages)
             setImages(filteredImages)
     
             colorsFiltered = filtered.map(product => product.color)
             setColors(colorsFiltered)
+
+            if(colorsFiltered.length === 1){
+                var color = colorsFiltered[0]
+                console.log("Solo un color")
+                console.log(colorsFiltered)
+
+                setColorChoosed(color)
+        
+                filtered = filtered.filter(item => item.color === color)
+                console.log('Product Choosed')
+                console.log(filtered)
+                setProductChoosed(filtered)
+        
+                filteredImages = []
+                filtered.map(product => product.images.map((img => filteredImages.push(img))))
+                setImages(filteredImages)
+                console.log('Hasta aqui')
+            }
         }
 
     }
@@ -191,9 +225,22 @@ const ProductDetails = () => {
     const filterByColor = (color) => {
         if (colorChoosed === color) {
             setColorChoosed('')
-            filterBySize(sizeChoosed)
-        } else {
+            setProductChoosed('')
+            
+            var filtered = []
+            var filteredImages = []
+            var colorsFiltered = []
+    
+            filtered = product.products.filter(item => item.size === sizeChoosed)
+            setFilteredProducts(filtered)
+    
+            filtered.map(product => product.images.map((img => filteredImages.push(img))))
+            setImages(filteredImages)
+    
+            colorsFiltered = filtered.map(product => product.color)
+            setColors(colorsFiltered)
 
+        } else {
             setColorChoosed(color)
             var filtered = []
             var filteredImages = []
@@ -203,14 +250,13 @@ const ProductDetails = () => {
     
             filtered.map(product => product.images.map((img => filteredImages.push(img))))
             setImages(filteredImages)
-            //console.log(filteredImages)
         }
     }
 
 
   return (
     <>
-        <Link to={url} className='btn btn-light my-3 mx-3'>Go Back <i className='fas fa-arrow-left'></i></Link>
+        
         {/*
         <Link to='/' className='btn btn-light my-3 mx-3'>Go Home <i className='fas fa-home'></i></Link>
         <Link to='/admin/productlist' className='btn btn-light my-3'>Go to Products Table <i className='fas fa-table'></i></Link>
@@ -219,6 +265,7 @@ const ProductDetails = () => {
         {isLoading ? <Loader /> : Object.keys(product).length !== 0 && (
             <>
                 <Meta title={product.name}/>
+                <Link to={url} className='btn btn-light my-3 mx-3'>Volver <i className='fas fa-arrow-left'></i></Link>
                 <Row>
                     
                     {/*fluid: Fill only his container */}
@@ -255,15 +302,15 @@ const ProductDetails = () => {
                             </ListGroup.Item>
 
                             <ListGroup.Item>
-                                <Rating value={product.rating} text={`${product.numReviews} reviews`}/>
+                                <Rating value={product.rating} text={`${product.numReviews} reseñas`}/>
                             </ListGroup.Item>
 
                             <ListGroup.Item>
-                                <strong>Precio: Gs. </strong> {product.price}
+                                <strong>Precio: Gs. </strong> {product.price.toLocaleString('es-CO')}
                             </ListGroup.Item>
 
                             <ListGroup.Item>
-                                <strong>Description: </strong> {product.description}
+                                <strong>Descripción: </strong> {product.description}
                             </ListGroup.Item>
                         </ListGroup>
 
@@ -298,7 +345,7 @@ const ProductDetails = () => {
                                         Precio:
                                     </Col>
                                     <Col>
-                                        <strong>Gs. {product.price}</strong>
+                                        <strong>Gs. {product.price.toLocaleString('es-CO')}</strong>
                                     </Col>
                                 </Row>
                             </ListGroup.Item>
@@ -306,15 +353,19 @@ const ProductDetails = () => {
                             <ListGroup.Item>
                                 <Row>
                                     <Col>
-                                        Status:
+                                        Estado:
                                     </Col>
-                                    <Col>
-                                        {productChoosed ? Number(productChoosed[0].countInStock) > 0 ? <span className='highlight-green'>Disponible!</span> : <p><span className='circle-sketch-highlight'>No Disponible</span></p> : null}
-                                    </Col>
+                                    {productChoosed && (
+                                        <Col>
+                                            {(Number(productChoosed[0].countInStock) > 0) && <span className='highlight-green'>Disponible!</span>}
+                                            {(Number(productChoosed[0].countInStock) === 0) && <span className='circle-sketch-highlight'>No Disponible</span>}
+                                        </Col>
+
+                                    )}
                                 </Row>
                             </ListGroup.Item>
 
-                            {productChoosed && productChoosed[0].countInStock > 0 && (
+                            {(user && user.isAdmin && productChoosed && productChoosed[0].countInStock > 0) && (
                                 <ListGroup.Item>
                                     <Row>
                                         <Col>
@@ -327,11 +378,39 @@ const ProductDetails = () => {
                                 </ListGroup.Item>
                             )}
 
+                            {((!user && productChoosed && productChoosed[0].countInStock > 0) || (user && !user.isAdmin && productChoosed && productChoosed[0].countInStock > 0)) && (
+                                                  
+                                <ListGroup.Item>
+                                    <Row>
+                                        <Col>
+                                            Cantidad: 
+                                        </Col>
+                                        <Col>
+                                            <Form.Control
+                                            as='select'
+                                            className='form-select'
+                                            value={qty}
+                                            onChange={(e) => setQty(e.target.value)}
+                                            >
+                                            {[...Array(productChoosed[0].countInStock).keys()].map(
+                                                (x) => (
+                                                <option key={x + 1} value={x + 1}>
+                                                    {x + 1}
+                                                </option>
+                                                )
+                                            )}
+                                            </Form.Control>
+                                        </Col>
+                                    </Row>
+                                </ListGroup.Item>
+                                                 
+                            )}
+
 
                             {product.countInStock > 0 && (
                                 <ListGroup.Item>
                                     <Row>
-                                        <Col>Qty</Col>
+                                        <Col>Cantidad</Col>
                                         <Col>
                                             <Form.Control as='select'  className='form-select' value={qty} onChange={(e) => setQty(e.target.value)}>
                                                 {[...Array(product.countInStock).keys()].map((x => (
@@ -344,8 +423,8 @@ const ProductDetails = () => {
                             )}
 
                             <ListGroup.Item>
-                                <Button className='btn-block' type='button' disabled={productChoosed && productChoosed.countInStock === 0 || !sizeChoosed || !colorChoosed} onClick={addToCartHandler}>
-                                    Add to Cart
+                                <Button className='btn-block' type='button' disabled={(productChoosed && Number(productChoosed.countInStock) === 0) || !sizeChoosed || !colorChoosed} onClick={addToCartHandler}>
+                                    Agregar al Carrito <FaCartPlus />
                                 </Button>
                             </ListGroup.Item>
 
@@ -355,10 +434,10 @@ const ProductDetails = () => {
 
                 <Row>
                     <Col md={6}>
-                        <h2>Reviews</h2>
+                        <h2>Reseñas</h2>
                         {successMsg && <Message variant='success'>{successMsg}</Message>}
                         {isError && (<Message variant='danger'>{message}</Message>)}
-                        {!isLoadingReview && product.reviews.length === 0 && <Message>No reviews</Message>}
+                        {!isLoadingReview && product.reviews.length === 0 && <Message>No hay reseñas</Message>}
                         {isLoadingReview ? <Loader /> : (
                         <ListGroup variant='flush'>
                         {product.reviews.map(review => (
@@ -371,29 +450,29 @@ const ProductDetails = () => {
                         ))}
 
                         <ListGroup.Item>
-                            <h2>Write a Customer Review</h2>
+                            <h2>Escribe una reseña</h2>
                             {user ? (
                             <Form onSubmit={addReviewHandler}>
                                 <Form.Group controlId='rating'>
                                     <Form.Label>Rating</Form.Label>
                                     <Form.Control as='select' value={rating} onChange={(e) => setRating(e.target.value)}>
-                                        <option value=''>Select...</option>
-                                        <option value='1'>1 - Poor</option>
-                                        <option value='2'>2 - Fair</option>
-                                        <option value='3'>3 - Good</option>
-                                        <option value='4'>4 - Very Good</option>
-                                        <option value='5'>5 - Excellent</option>
+                                        <option value=''>Seleccionar...</option>
+                                        <option value='1'>1 - Malo</option>
+                                        <option value='2'>2 - Aceptable</option>
+                                        <option value='3'>3 - Bueno</option>
+                                        <option value='4'>4 - Muy Bueno</option>
+                                        <option value='5'>5 - Excelente</option>
                                     </Form.Control>
                                 </Form.Group>
 
                                 <Form.Group controlId='comment'>
-                                    <Form.Label>Comment</Form.Label>
+                                    <Form.Label>Comentario</Form.Label>
                                     <Form.Control as='textarea' row='3' value={comment} onChange={(e) => setComment(e.target.value)}></Form.Control>
                                 </Form.Group>
 
-                                <Button type='submit' variant='primary'>Submit</Button>
+                                <Button type='submit' variant='primary' className='mt-2'>Enviar</Button>
                             </Form>
-                            ) : (<Message>Please <Link to='/login'>sign in</Link> to write a review</Message>)}
+                            ) : (<Message>Por favor <Link to='/login'>inicie Sesión</Link> para escribir una reseña</Message>)}
                         </ListGroup.Item>
                     </ListGroup>
                         )}

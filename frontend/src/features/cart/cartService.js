@@ -1,27 +1,31 @@
 import axios from 'axios'
 
 //Add an item to the cart
-const addItem = async (id, qty, cartItems) => {
+const addItem = async (data, qty, cartItems) => {
     console.log('This is cartService')
-    console.log(id, qty)
-    const response = await axios.get(`/api/products/${id}`)
-    const data = response.data
+    //const response = await axios.get(`/api/products/${id}/subproduct/${subid}`)
+    //const data = response.data
+
+
 
     let item = {
-        name: data.name,
-        qty,
-        image: data.images[0],
-        price: data.price,
-        countInStock: data.countInStock,
         id: data._id,
+        name: data.name,
+        price: data.price,
+        subid: data.subid,
+        image: data.image,
+        size: data.size,
+        color: data.color,
+        countInStock: data.countInStock,
+        qty,
     }
 
-    const existItem = cartItems.find(x => x.id === item.id)
+    const existItem = cartItems.find(x => x.subid === item.subid)
 
     if(existItem){
         console.log('The item already exists')
         //Replace
-        cartItems = cartItems.map(x => x.id === existItem.id ? item : x)
+        cartItems = cartItems.map(x => x.subid === existItem.subid ? item : x)
         localStorage.setItem('cartItems', JSON.stringify(cartItems))
         return cartItems
     } else {
@@ -35,18 +39,18 @@ const addItem = async (id, qty, cartItems) => {
 }
 
 //Change quantity of the Item in the Cart
-const changeQty = (id, qty, cartItems) => {
+const changeQty = (subid, qty, cartItems) => {
     //console.log(`Id: ${id} and Qty: ${qty}`)
-    let updItem = cartItems.find(x => x.id === id)
+    let updItem = cartItems.find(x => x.subid === subid)
     updItem = {...updItem, qty}
-    cartItems = cartItems.map(x => x.id === id ? updItem : x)
+    cartItems = cartItems.map(x => x.subid === subid ? updItem : x)
     localStorage.setItem('cartItems', JSON.stringify(cartItems))
     return cartItems
 }
 
 //Remove item from the Cart
-const removeItem = (id, cartItems) => {
-    cartItems = cartItems.filter((item) => item.id !== id)
+const removeItem = (subid, cartItems) => {
+    cartItems = cartItems.filter((item) => item.subid !== subid)
     localStorage.setItem('cartItems', JSON.stringify(cartItems))
     return cartItems 
 }

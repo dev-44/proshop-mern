@@ -7,6 +7,7 @@ import {getProducts,
         createProduct,
         createProductReview,
         getTopProducts,
+        getSubProduct,
         createSubProduct,
         updateSubProduct,
         deleteSubProduct
@@ -37,10 +38,8 @@ router.route('/:id/subproduct')
 
 //  /api/products/:id/subproduct/:subid/
 router.route('/:id/subproduct/:subid')
+    .get(getSubProduct)
     .put(protect, isAdmin, updateSubProduct)
-
-//  /api/products/:id/subproduct/:subid
-router.route('/:id/subproduct/:subid')
     .delete(protect, isAdmin, deleteSubProduct)
 
 export default router

@@ -59,7 +59,7 @@ const Product = ({product, preDeleteProduct}) => {
               </Card>
       ) : (
                   <Card className='my-3 p-3 rounded' style={{ minHeight: '24rem', maxHeight: '24rem' }}>
-                  <Link to={`/product/${product._id}`}>
+                  <Link to={`/product/${product._id}?redirect=home`}>
                       <Card.Img src={product.imageCover} variant='top' style={{minHeight: '12rem', maxHeight: '12rem'}} />
                   </Link>
       

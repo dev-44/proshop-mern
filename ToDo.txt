@@ -80,6 +80,7 @@ BUGS
 ==========================================
 -Si se elimina un usuario el apartado de pedido sale sin nombre. (ver como se hace en review)
 -Despues de agregar un producto la paginacion no funciono (posiblemente falte ejecutar resetCrud()) OK
+-Ver cuestión de diferentes usuarios con LocalStorage
 
 PENDIENTES
 ===================================
@@ -88,6 +89,8 @@ PENDIENTES
 -Colocar iconos de redes sociales al pie de la pagina con links.
 -Pagina de contactos de la tienda con informacion de cuenta bancaria.
 -Total vendido en el mes/año
+-Habilitar la opción para retirar del local, en este caso no habrá dirección de envío ni delivery.
+-Calcular delivery/encomienda de acuerdo a la distancia o hardcode.
 
 -ProductCreate
     -Fomatear para agregar un punto cada 3 cifras y no permitir escribir el punto(regex)
